@@ -32,7 +32,11 @@ namespace RestApi
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
+            services.AddMvcCore()
+                    .AddJsonFormatters()
+                    .AddApiExplorer();
+
+            services.AddSwaggerGen();
 
             // Create the container builder.
             var builder = new ContainerBuilder();
@@ -56,6 +60,10 @@ namespace RestApi
             loggerFactory.AddDebug();
 
             app.UseMvc();
-        }
+            app.UseSwagger();
+            app.UseSwaggerUi(); //default, available at /swagger/ui
+		}
     }
 }
+    
+
