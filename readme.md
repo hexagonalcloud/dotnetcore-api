@@ -2,6 +2,8 @@
 
 Prototype .NET Core API implementation
 
+## Parts
+- Authentication and authorizaton using [IdentityServer4](https://github.com/IdentityServer/IdentityServer4) (OpenID Connect and OAuth 2.0).
 - [Autofac](https://autofac.org/) for dependency injection.
 - [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) for REST API documentation.
 - API Integration tests using [Autorest](https://github.com/Azure/AutoRest) (or [Swagger-codegen](https://github.com/swagger-api/swagger-codegen)?).
@@ -16,6 +18,11 @@ Prototype .NET Core API implementation
             - How to handle evnironment variables (like the URL) for integration tests (if we do not use the integration server)?
 - CI and CD to Azure App Services using VSTS
     - [API on Azure](http://dotnetcore-api.azurewebsites.net/api/values) 
+
+## Azure
+- [Api](http://dotnetcore-api.azurewebsites.net/)
+- [Auth](https://dotnetcore-auth.azurewebsites.net/)
+
     
 
 

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,12 +31,14 @@ namespace RestApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            // Configure Cors Policy
+            var cors = Configuration.GetSection("CorsOrigins").GetChildren().Select(o => o.Value).ToArray();
+
 			services.AddCors(options =>
 		   {
-				// this defines a CORS policy called "default"
 				options.AddPolicy("default", policy =>
 			   {
-				   policy.WithOrigins("http://localhost:5003")
+				   policy.WithOrigins(cors)
 					   .AllowAnyHeader()
 					   .AllowAnyMethod();
 			   });
@@ -73,9 +75,11 @@ namespace RestApi
 			// this uses the policy called "default"
 			app.UseCors("default");
 
+            var authority = Configuration.GetValue<string>("IdentityServer");
+
 			app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
-			{
-				Authority = "http://localhost:5000",
+            {
+                Authority = authority,
 				RequireHttpsMetadata = false,
 
 				ApiName = "api1"
