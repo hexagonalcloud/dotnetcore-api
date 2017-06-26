@@ -31,6 +31,17 @@ namespace RestApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+			services.AddCors(options =>
+		   {
+				// this defines a CORS policy called "default"
+				options.AddPolicy("default", policy =>
+			   {
+				   policy.WithOrigins("http://localhost:5003")
+					   .AllowAnyHeader()
+					   .AllowAnyMethod();
+			   });
+		   });
+            
             // Add framework services.
             services.AddMvcCore()
                     .AddJsonFormatters()
@@ -58,6 +69,17 @@ namespace RestApi
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+			// this uses the policy called "default"
+			app.UseCors("default");
+
+			app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
+			{
+				Authority = "http://localhost:5000",
+				RequireHttpsMetadata = false,
+
+				ApiName = "api1"
+			});
 
             app.UseMvc();
             app.UseSwagger();
