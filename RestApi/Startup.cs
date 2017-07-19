@@ -6,6 +6,8 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -72,7 +74,13 @@ namespace RestApi
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-			// this uses the policy called "default"
+            if (!env.EnvironmentName.Equals("Development", StringComparison.OrdinalIgnoreCase))
+            {
+				var options = new RewriteOptions().AddRedirectToHttps();
+				app.UseRewriter(options);   
+            }
+			
+            // this uses the policy called "default"
 			app.UseCors("default");
 
             var authority = Configuration.GetValue<string>("IdentityServer");
