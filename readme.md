@@ -20,11 +20,18 @@ Prototype .NET Core API implementation
     - [API on Azure](http://dotnetcore-api.azurewebsites.net/api/values) 
 
 ## Azure
-- [Api](http://dotnetcore-api.azurewebsites.net/)
+- [Api](https://dotnetcore-api.azurewebsites.net/)
 - [Auth](https://dotnetcore-auth.azurewebsites.net/)
 
 ## A solution to define a local url that seems to work across all tools
 - add "server.urls=http://localhost:5001" to the program args
+
+## Integration tests
+- For now not using the testserver, but just running the regular api and run the tests against that.
+- For CI we do not want to run against a test server but against the deployed api.
+- To use the correct config for dev (local), make sure the enviroment is set correctly to Development before running the tests. (https://dotnetcoretutorials.com/2017/05/03/environments-asp-net-core/)
+
+
 
 
 

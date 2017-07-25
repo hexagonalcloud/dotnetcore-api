@@ -1,0 +1,4 @@
+﻿{
+  "RestApi": "http://localhost:5001",
+  "IdentityServer": "http://localhost:5000"
+}
