@@ -23,6 +23,11 @@ Prototype .NET Core API implementation
 - [Api](http://dotnetcore-api.azurewebsites.net/)
 - [Auth](https://dotnetcore-auth.azurewebsites.net/)
 
+## A solution to define a local url that seems to work across all tools
+- add "server.urls=http://localhost:5001" to the program args
+
+
+
     
 
 

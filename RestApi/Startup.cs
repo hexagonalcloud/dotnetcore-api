@@ -74,12 +74,11 @@ namespace RestApi
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if (!env.EnvironmentName.Equals("Development", StringComparison.OrdinalIgnoreCase))
+            if(!env.IsDevelopment())
             {
-				var options = new RewriteOptions().AddRedirectToHttps();
+            	var options = new RewriteOptions().AddRedirectToHttps();
 				app.UseRewriter(options);   
-            }
-			
+            }			
             // this uses the policy called "default"
 			app.UseCors("default");
 
