@@ -36,20 +36,25 @@ namespace RestApi
             // Configure Cors Policy
             var cors = Configuration.GetSection("CorsOrigins").GetChildren().Select(o => o.Value).ToArray();
 
-			services.AddCors(options =>
-		   {
-				options.AddPolicy("default", policy =>
-			   {
-				   policy.WithOrigins(cors)
-					   .AllowAnyHeader()
-					   .AllowAnyMethod();
-			   });
-		   });
-            
+            services.AddCors(options =>
+           {
+               options.AddPolicy("default", policy =>
+              {
+                  policy.WithOrigins(cors)
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+              });
+           });
+
             // Add framework services.
-            services.AddMvcCore()
+            services.AddMvcCore(setupAction =>
+            {
+                setupAction.ReturnHttpNotAcceptable = true;
+            })
                     .AddJsonFormatters()
                     .AddApiExplorer();
+
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddSwaggerGen();
 
@@ -74,29 +79,35 @@ namespace RestApi
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if(!env.IsDevelopment())
+            if (!env.IsDevelopment())
             {
-            	var options = new RewriteOptions().AddRedirectToHttps();
-				app.UseRewriter(options);   
-            }			
+                var options = new RewriteOptions().AddRedirectToHttps();
+                app.UseRewriter(options);
+                app.UseExceptionHandler(); // TODO: custom exception handling middleware with logging?
+            }
+            else
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
             // this uses the policy called "default"
-			app.UseCors("default");
+            app.UseCors("default");
 
             var authority = Configuration.GetValue<string>("IdentityServer");
 
-			app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
+            app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
                 Authority = authority,
-				RequireHttpsMetadata = false,
+                RequireHttpsMetadata = false,
 
-				ApiName = "api1"
-			});
+                ApiName = "api1"
+            });
 
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUi(); //default, available at /swagger/ui
-		}
+        }
     }
 }
-    
+
 
