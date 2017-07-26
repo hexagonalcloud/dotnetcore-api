@@ -1,17 +1,19 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using RestApi.Models;
 
 namespace RestApi.Controllers
 {
     [Route("api/[controller]")]
-    public class ProductsController : Controller
+    public partial class ProductsController : Controller
     {
         public ProductsController()
         {
             
         }
         
+        [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         [HttpGet]
         public IActionResult Get()
         {
@@ -19,9 +21,13 @@ namespace RestApi.Controllers
                 new Product[] { new Product() { Name = "Product One" }, new Product() { Name = "Product Two" } });
         }
 
-        public class Product
+        [ProducesResponseType(typeof(Product), 200)]
+        [Route("{id}")]        
+        [HttpGet]
+        public ObjectResult Get(string id)
         {
-            public string Name { get; set; }
+            return Ok(
+                new Product() { Name = $"Product {id}" });
         }
     }
 }
