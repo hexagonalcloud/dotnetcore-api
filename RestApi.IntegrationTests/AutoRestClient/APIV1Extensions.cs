@@ -17,6 +17,44 @@ namespace Swagger
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
+            public static void ApiIdentityGet(this IAPIV1 operations)
+            {
+                operations.ApiIdentityGetAsync().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task ApiIdentityGetAsync(this IAPIV1 operations, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.ApiIdentityGetWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            public static void ApiProductsGet(this IAPIV1 operations)
+            {
+                operations.ApiProductsGetAsync().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task ApiProductsGetAsync(this IAPIV1 operations, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.ApiProductsGetWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
             public static IList<string> ApiValuesGet(this IAPIV1 operations)
             {
                 return operations.ApiValuesGetAsync().GetAwaiter().GetResult();
