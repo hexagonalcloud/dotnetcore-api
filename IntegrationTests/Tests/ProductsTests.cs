@@ -5,7 +5,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace RestApi.IntegrationTests.Tests
+namespace IntegrationTests.Tests
 {
     public class ProductsTests
     {

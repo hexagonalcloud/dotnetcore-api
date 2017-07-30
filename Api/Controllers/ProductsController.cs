@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using RestApi.Models;
+using Api.Models;
 
-namespace RestApi.Controllers
+namespace Api.Controllers
 {
     [Route("api/[controller]")]
     public partial class ProductsController : Controller

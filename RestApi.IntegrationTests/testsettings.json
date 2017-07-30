@@ -1,4 +1,0 @@
-﻿{
-  "RestApi": "https://dotnetcore-api.azurewebsites.net/",
-  "IdentityServer": "https://dotnetcore-auth.azurewebsites.net/"
-}

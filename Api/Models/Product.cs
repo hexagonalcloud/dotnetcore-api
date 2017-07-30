@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace RestApi.Models
+namespace Api.Models
 {
     public class Product
     {
