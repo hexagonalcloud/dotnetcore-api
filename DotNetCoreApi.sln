@@ -6,6 +6,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{01317C89-7DF9-45CB-9810-C258FFAFD1AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specs", "Specs\Specs.csproj", "{7D1C2896-5D97-4003-8689-37485DF16E5E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{6B60D665-F85E-4921-87AE-B486AFEBB0AF}"
+	ProjectSection(SolutionItems) = preProject
+		features.md = features.md
+		readme.md = readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +28,10 @@ Global
 		{01317C89-7DF9-45CB-9810-C258FFAFD1AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01317C89-7DF9-45CB-9810-C258FFAFD1AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01317C89-7DF9-45CB-9810-C258FFAFD1AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D1C2896-5D97-4003-8689-37485DF16E5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D1C2896-5D97-4003-8689-37485DF16E5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D1C2896-5D97-4003-8689-37485DF16E5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D1C2896-5D97-4003-8689-37485DF16E5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
