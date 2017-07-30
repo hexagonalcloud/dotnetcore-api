@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Api.Controllers;
+using Api.Data;
 using Api.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using Xunit;
 
 namespace Specs.Products
@@ -18,7 +20,10 @@ namespace Specs.Products
         [Fact(DisplayName = "Send Products response")]
         public void Send_Products_Response()
         {
-            var controller = new ProductsController();
+            var mockData = new Mock<IProductData>();
+            mockData.Setup(data => data.Get()).Returns(new List<Product>() {new Product() {Name = "Product One"}});
+
+            var controller = new ProductsController(mockData.Object);
             var result = controller.Get() as OkObjectResult;
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(200);

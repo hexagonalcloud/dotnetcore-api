@@ -1,12 +1,11 @@
-﻿﻿using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Autofac;
+using Api.Data;
+ using Api.Data.Sql;
+ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,6 +65,9 @@ namespace Api
             // to dispose of the container at the end of the app,
             // be sure to keep a reference to it as a property or field.
             builder.Populate(services);
+
+            builder.RegisterType<ProductData>().As<IProductData>();
+
             this.ApplicationContainer = builder.Build();
 
             // Create the IServiceProvider based on the container.
