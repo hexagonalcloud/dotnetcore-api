@@ -57,6 +57,14 @@ namespace Api
 
             services.AddSwaggerGen();
 
+            services.AddOptions();
+
+            services.Configure<ConnectionStrings>(options =>
+            {
+                options.SqlAdventure =
+                    Configuration.GetConnectionString("SqlAdventure");
+            });
+
             // Create the container builder.
             var builder = new ContainerBuilder();
 
