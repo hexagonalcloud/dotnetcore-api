@@ -27,7 +27,7 @@ namespace Api.Data.Sql
             } 
         }
 
-        public Product GetById(string id)
+        public Product GetById(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
             {

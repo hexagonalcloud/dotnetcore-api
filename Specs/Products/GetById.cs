@@ -15,11 +15,11 @@ namespace Specs.Products
         public void Send_Product_Response()
         {
             var mockData = new Mock<IProductData>();
-            mockData.Setup(data => data.GetById(It.IsAny<string>())).Returns(new Product{ Name = "Product One" });
+            mockData.Setup(data => data.GetById(It.IsAny<int>())).Returns(new Product{ Name = "Product One" });
 
             var controller = new ProductsController(mockData.Object);
 
-            var result = controller.Get("one") as OkObjectResult;
+            var result = controller.Get(1) as OkObjectResult;
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(200);
 

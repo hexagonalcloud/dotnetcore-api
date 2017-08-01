@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -10,25 +11,24 @@ namespace IntegrationTests.Tests
     public class ProductsTests
     {
         [Fact]
-        public async Task GetProducts()
+        public async Task Get()
         {
             var client = new Swagger.APIV1(TestConfiguration.ApiUri);
-            var result = await client.ApiProductsGetWithHttpMessagesAsync();
-            result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
-            string content = await result.Response.Content.ReadAsStringAsync();
-            var products = JsonConvert.DeserializeObject<IEnumerable<Swagger.Models.Product>>(content);
+            var getResult = await client.ApiProductsGetWithHttpMessagesAsync();
+            getResult.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            string getContent = await getResult.Response.Content.ReadAsStringAsync();
+            var products = JsonConvert.DeserializeObject<IEnumerable<Swagger.Models.Product>>(getContent);
             products.Should().NotBeNullOrEmpty();
-        }
 
-        [Fact]
-        public async Task GetProduct()
-        {
-            var client = new Swagger.APIV1(TestConfiguration.ApiUri);
-            var result = await client.ApiProductsByIdGetWithHttpMessagesAsync("one");
-            result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
-              string content = await result.Response.Content.ReadAsStringAsync();
-            var product = JsonConvert.DeserializeObject<Swagger.Models.Product>(content);
+            // pick one of the products to get by id
+
+            var selectedProduct = products.FirstOrDefault();
+            var getByIdResult = await client.ApiProductsByIdGetWithHttpMessagesAsync(selectedProduct.ProductID.GetValueOrDefault());
+            getByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            string getByIdContent = await getByIdResult.Response.Content.ReadAsStringAsync();
+            var product = JsonConvert.DeserializeObject<Swagger.Models.Product>(getByIdContent);
             product.Should().NotBeNull();
+
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Api.Data
     public interface IProductData
     {
         IEnumerable<Product> Get();
-        Product GetById(string id);
+        Product GetById(int id);
     }
 }

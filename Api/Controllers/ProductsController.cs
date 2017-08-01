@@ -20,18 +20,14 @@ namespace Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            //return Ok(
-            //    new Product[] { new Product() { Name = "Product One" }, new Product() { Name = "Product Two" } });
             return Ok(_data.Get());
         }
 
         [ProducesResponseType(typeof(Product), 200)]
         [Route("{id}")]        
         [HttpGet]
-        public ObjectResult Get(string id)
+        public ObjectResult Get(int id)
         {
-            //return Ok(
-            //    new Product() { Name = $"Product {id}" });
             return Ok(_data.GetById(id));
         }
     }
