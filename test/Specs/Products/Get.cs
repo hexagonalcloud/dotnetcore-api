@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Api.Controllers;
 using Api.Data;
 using Api.Models;
@@ -18,13 +19,14 @@ namespace Specs.Products
     public class Get
     {
         [Fact(DisplayName = "Send Products response")]
-        public void Send_Products_Response()
+        public async Task Send_Products_Response()
         {
-            var mockData = new Mock<IProductData>();
-            mockData.Setup(data => data.Get()).Returns(new List<Product>() {new Product() {Name = "Product One"}});
-
+            var mockData = new Mock<IProductData>(); 
+            mockData.Setup(data => data.Get()).ReturnsAsync(new List<Product>(){ new Product() { Name = "Product One" } });
             var controller = new ProductsController(mockData.Object);
-            var result = controller.Get() as OkObjectResult;
+
+            var result = await controller.Get() as ObjectResult;
+
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(200);
 

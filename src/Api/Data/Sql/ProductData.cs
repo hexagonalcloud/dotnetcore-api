@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using Api.Models;
 using Dapper;
 using Microsoft.Extensions.Options;
@@ -17,21 +18,22 @@ namespace Api.Data.Sql
             _connectionStrings = options.Value;
         }
 
-        public IEnumerable<Product> Get()
+        public async Task<IEnumerable<Product>> Get()
         {
             using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
             {
                 string query = "SELECT TOP (100) [ProductID] ,[Name] FROM [SalesLT].[Product]";
-                var products = (List<Product>)db.Query<Product>(query);
-                return products;
+                var response = await db.QueryAsync<Product>(query);
+                return (List<Product>)response;
             } 
         }
 
-        public Product GetById(int id)
+        public async Task<Product> GetById(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
             {
-                return db.Query<Product>("SELECT[ProductID] ,[Name] FROM [SalesLT].[Product] WHERE [ProductID]=@ProductID", new { ProductID = id }).SingleOrDefault();
+                var response = await db.QueryAsync<Product>("SELECT[ProductID] ,[Name] FROM [SalesLT].[Product] WHERE [ProductID]=@ProductID", new { ProductID = id });
+                return response.FirstOrDefault();
             }
         }
     }

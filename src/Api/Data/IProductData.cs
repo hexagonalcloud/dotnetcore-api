@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Api.Models;
 
 namespace Api.Data
 {
     public interface IProductData
     {
-        IEnumerable<Product> Get();
-        Product GetById(int id);
+        Task<IEnumerable<Product>> Get();
+        Task<Product> GetById(int id);
     }
 }

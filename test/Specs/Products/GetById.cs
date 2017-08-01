@@ -1,4 +1,5 @@
-﻿using Api.Controllers;
+﻿using System.Threading.Tasks;
+using Api.Controllers;
 using Api.Data;
 using Api.Models;
 using FluentAssertions;
@@ -12,14 +13,14 @@ namespace Specs.Products
     public class GetById
     {
         [Fact(DisplayName = "Send Single Product response")]
-        public void Send_Product_Response()
+        public async Task Send_Product_Response()
         {
             var mockData = new Mock<IProductData>();
-            mockData.Setup(data => data.GetById(It.IsAny<int>())).Returns(new Product{ Name = "Product One" });
-
+            mockData.Setup(data => data.GetById(It.IsAny<int>())).ReturnsAsync(new Product{ Name = "Product One" });
             var controller = new ProductsController(mockData.Object);
 
-            var result = controller.Get(1) as OkObjectResult;
+            var result = await controller.Get(1) as OkObjectResult;
+
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(200);
 

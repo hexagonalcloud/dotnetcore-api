@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Api.Models;
@@ -18,17 +18,17 @@ namespace Api.Controllers
         
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(_data.Get());
+            return Ok(await _data.Get());
         }
 
         [ProducesResponseType(typeof(Product), 200)]
         [Route("{id}")]        
         [HttpGet]
-        public ObjectResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return Ok(_data.GetById(id));
+            return Ok(await _data.GetById(id));
         }
     }
 }
