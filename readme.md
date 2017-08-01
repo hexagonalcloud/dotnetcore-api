@@ -2,17 +2,21 @@
 
 Prototype .NET Core API implementation
 
+# Prerequisites
+
+-.NET Core 1.1
+- Autorest
+- SQL Server if you want to run the sample db locally.
+
 ## Parts
 
 - Authentication and authorizaton using [IdentityServer4](https://github.com/IdentityServer/IdentityServer4) (OpenID Connect and OAuth 2.0).
 - [Autofac](https://autofac.org/) for dependency injection.
 - [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) for API documentation generation.
-- API Integration tests using [Autorest](https://github.com/Azure/AutoRest).
+- API Integration tests using a strongly typed [Autorest](https://github.com/Azure/AutoRest) API client.
+- [Dapper]() for SQL stuff
+- [Adventure]() database
 - CI and CD to Azure App Services using VSTS
-
-## Autorest
-- npm install -g autorest   
-- autorest --input-file=http://localhost:5001/swagger/v1/swagger.json --csharp --output-folder=AutoRestClient  
 
 ## Azure
 - [Api](https://dotnetcore-api.azurewebsites.net/) and [Swagger UI](https://dotnetcore-api.azurewebsites.net/swagger/ui)
@@ -31,6 +35,7 @@ Prototype .NET Core API implementation
 
 ## A solution to define a local url that seems to work across all tools
 - add "server.urls=http://localhost:5001" to the program args
+- dotnet run --server.urls=http://localhost:5001
 
 ## TODO
 - Check [Swagger-codegen](https://github.com/swagger-api/swagger-codegen) if we continue to go the swagger route for generating clients and tests.
