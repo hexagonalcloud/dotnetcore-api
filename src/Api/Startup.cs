@@ -65,6 +65,21 @@ namespace Api
                     Configuration.GetConnectionString("SqlAdventure");
             });
 
+            var useInMemoryCache = Configuration.GetValue<bool>("UseInMemoryCache");
+
+            if (useInMemoryCache)
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                services.AddDistributedRedisCache(option =>
+                {
+                    option.Configuration = Configuration.GetConnectionString("Redis");
+                    option.InstanceName = Configuration.GetValue<string>("RedisInstanceName");
+                });
+            } 
+
             // Create the container builder.
             var builder = new ContainerBuilder();
 

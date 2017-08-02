@@ -18,6 +18,78 @@ namespace Swagger
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
+            /// <param name='id'>
+            /// </param>
+            public static Product ApiIntegrationCacheByIdGet(this IAPIV1 operations, string id)
+            {
+                return operations.ApiIntegrationCacheByIdGetAsync(id).GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<Product> ApiIntegrationCacheByIdGetAsync(this IAPIV1 operations, string id, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ApiIntegrationCacheByIdGetWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            public static void ApiIntegrationCacheByIdDelete(this IAPIV1 operations, string id)
+            {
+                operations.ApiIntegrationCacheByIdDeleteAsync(id).GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task ApiIntegrationCacheByIdDeleteAsync(this IAPIV1 operations, string id, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.ApiIntegrationCacheByIdDeleteWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='product'>
+            /// </param>
+            public static void ApiIntegrationCachePost(this IAPIV1 operations, Product product = default(Product))
+            {
+                operations.ApiIntegrationCachePostAsync(product).GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='product'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task ApiIntegrationCachePostAsync(this IAPIV1 operations, Product product = default(Product), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.ApiIntegrationCachePostWithHttpMessagesAsync(product, null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
             public static void IdentityGet(this IAPIV1 operations)
             {
                 operations.IdentityGetAsync().GetAwaiter().GetResult();

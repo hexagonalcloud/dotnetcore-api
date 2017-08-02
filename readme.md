@@ -4,9 +4,9 @@ Prototype .NET Core API implementation
 
 # Prerequisites
 
--.NET Core 1.1
-- Autorest
-- SQL Server if you want to run the sample db locally.
+-.[NET Core 1.1]()
+- [Autorest]().
+- [SQL Server] (if you want to run the sample db locally).
 
 ## Parts
 
@@ -14,9 +14,10 @@ Prototype .NET Core API implementation
 - [Autofac](https://autofac.org/) for dependency injection.
 - [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) for API documentation generation.
 - API Integration tests using a strongly typed [Autorest](https://github.com/Azure/AutoRest) API client.
-- [Dapper]() for SQL stuff
-- [Adventure]() database
-- CI and CD to Azure App Services using VSTS
+- [Dapper]() for SQL stuff.
+- [Adventure]() database.
+- [Redis]() cache.
+- CI and CD to Azure App Services using VSTS.
 
 ## Azure
 - [Api](https://dotnetcore-api.azurewebsites.net/) and [Swagger UI](https://dotnetcore-api.azurewebsites.net/swagger/ui)
