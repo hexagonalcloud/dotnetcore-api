@@ -6,6 +6,7 @@ using Api.Models;
 
 namespace Api.Controllers
 {
+    [ResponseCache(CacheProfileName = "Default")]
     [Route("api/[controller]")]
     public class ProductsController : Controller
     {
@@ -15,7 +16,7 @@ namespace Api.Controllers
         {
             _data = data;
         }
-        
+
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         [HttpGet]
         public async Task<IActionResult> Get()

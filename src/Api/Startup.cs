@@ -6,6 +6,7 @@ using Api.Data;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,10 +46,26 @@ namespace Api
               });
            });
 
+            services.AddResponseCaching();
+
             // Add framework services.
-            services.AddMvcCore(setupAction =>
+            services.AddMvcCore(options =>
             {
-                setupAction.ReturnHttpNotAcceptable = true;
+                //options.ReturnHttpNotAcceptable = true;
+                options.CacheProfiles.Add("Default",
+                    new CacheProfile()
+                    {
+                        Duration = 60,
+                        VaryByHeader = "Accept",
+                        Location = ResponseCacheLocation.Any
+                    });
+                options.CacheProfiles.Add("Never",
+                    new CacheProfile()
+                    {
+                        Location = ResponseCacheLocation.None,
+                        NoStore = true
+                    });
+
             })
                     .AddJsonFormatters()
                     .AddApiExplorer();
@@ -115,6 +132,7 @@ namespace Api
                 app.UseDeveloperExceptionPage();
             }
 
+
             // this uses the policy called "default"
             app.UseCors("default");
 
@@ -131,6 +149,9 @@ namespace Api
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUi(); //default, available at /swagger/ui
+
+            app.UseResponseCaching();
+
         }
     }
 }
