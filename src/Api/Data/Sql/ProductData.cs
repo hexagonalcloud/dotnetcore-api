@@ -22,7 +22,7 @@ namespace Api.Data.Sql
         {
             using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
             {
-                string query = "SELECT TOP (100) [ProductID] ,[Name] FROM [SalesLT].[Product]";
+                string query = "SELECT TOP (100) [ProductID], [Name], [ModifiedDate] FROM [SalesLT].[Product]";
                 var response = await db.QueryAsync<Product>(query);
                 return (List<Product>)response;
             } 
@@ -32,7 +32,7 @@ namespace Api.Data.Sql
         {
             using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
             {
-                var response = await db.QueryAsync<Product>("SELECT[ProductID] ,[Name] FROM [SalesLT].[Product] WHERE [ProductID]=@ProductID", new { ProductID = id });
+                var response = await db.QueryAsync<Product>("SELECT[ProductID], [Name], [ModifiedDate] FROM [SalesLT].[Product] WHERE [ProductID]=@ProductID", new { ProductID = id });
                 return response.FirstOrDefault();
             }
         }

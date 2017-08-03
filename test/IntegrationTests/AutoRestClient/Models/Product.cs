@@ -20,10 +20,11 @@ namespace Swagger.Models
         /// <summary>
         /// Initializes a new instance of the Product class.
         /// </summary>
-        public Product(int? productID = default(int?), string name = default(string))
+        public Product(int? productID = default(int?), string name = default(string), System.DateTime? modifiedDate = default(System.DateTime?))
         {
             ProductID = productID;
             Name = name;
+            ModifiedDate = modifiedDate;
             CustomInit();
         }
 
@@ -41,6 +42,11 @@ namespace Swagger.Models
         /// </summary>
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "modifiedDate")]
+        public System.DateTime? ModifiedDate { get; set; }
 
     }
 }

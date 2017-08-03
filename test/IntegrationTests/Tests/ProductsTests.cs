@@ -11,7 +11,7 @@ namespace IntegrationTests.Tests
     public class ProductsTests
     {
         [Fact]
-        public async Task Get()
+        public async Task Run()
         {
             var client = new Swagger.APIV1(TestConfiguration.ApiUri);
             var getResult = await client.ApiProductsGetWithHttpMessagesAsync();
@@ -29,6 +29,17 @@ namespace IntegrationTests.Tests
             var product = JsonConvert.DeserializeObject<Swagger.Models.Product>(getByIdContent);
             product.Should().NotBeNull();
 
+            var eTagHeader = getByIdResult.Response.Headers.ETag;
+            eTagHeader.IsWeak.Should().BeTrue();
+
+            // now make another request with the etag
+            // we expect the result to be empty and the status code to be 304
+            client.HttpClient.DefaultRequestHeaders.IfNoneMatch.Add(eTagHeader);
+
+            var getUnmodifiedByIdResult = await client.ApiProductsByIdGetWithHttpMessagesAsync(selectedProduct.ProductID.GetValueOrDefault());
+            getUnmodifiedByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.NotModified);
+            string unmodifiedResult = await getUnmodifiedByIdResult.Response.Content.ReadAsStringAsync();
+            unmodifiedResult.Should().BeNullOrWhiteSpace();
         }
     }
 }
