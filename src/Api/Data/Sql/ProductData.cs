@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.Models;
 using Dapper;
+using Dapper.Contrib.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace Api.Data.Sql
@@ -18,13 +19,24 @@ namespace Api.Data.Sql
             _connectionStrings = options.Value;
         }
 
-        public async Task<IEnumerable<Product>> Get()
+        public async Task<PagedList<Product>> Get(int pageNumber, int pageSize)
         {
             using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
             {
-                string query = "SELECT TOP (100) [ProductID], [Name], [ModifiedDate] FROM [SalesLT].[Product]";
-                var response = await db.QueryAsync<Product>(query);
-                return (List<Product>)response;
+                var offset = (pageNumber - 1) * pageSize;
+                int totalCount = 0;
+
+                string query = $"SELECT *, COUNT(*) OVER () as TotalCount FROM [SalesLT].[Product] ORDER BY [ProductID] OFFSET {offset} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+
+                Func<Product, int, Product> map = (result, count) =>
+                {
+                    totalCount = count;
+                    return result;
+                };
+
+               var response = await db.QueryAsync<Product, int, Product>(query, map, splitOn:"TotalCount");
+               var pagedResult = new PagedList<Product>(response.ToList(), totalCount, pageNumber, pageSize);
+                return pagedResult;
             } 
         }
 
@@ -32,8 +44,8 @@ namespace Api.Data.Sql
         {
             using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
             {
-                var response = await db.QueryAsync<Product>("SELECT[ProductID], [Name], [ModifiedDate] FROM [SalesLT].[Product] WHERE [ProductID]=@ProductID", new { ProductID = id });
-                return response.FirstOrDefault();
+                var response = await db.GetAsync<Product>(id);
+                return response;
             }
         }
     }

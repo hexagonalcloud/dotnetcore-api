@@ -14,7 +14,7 @@ Prototype .NET Core API implementation
 - [Autofac](https://autofac.org/) for dependency injection.
 - [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) for API documentation generation.
 - API Integration tests using a strongly typed [Autorest](https://github.com/Azure/AutoRest) API client.
-- [Dapper]() for SQL stuff.
+- [Dapper]() with [Dapper Contrib](https://github.com/StackExchange/Dapper/tree/master/Dapper.Contrib)for SQL stuff.
 - [Adventure]() database.
 - [Redis]() cache.
 - CI and CD to Azure App Services using VSTS.

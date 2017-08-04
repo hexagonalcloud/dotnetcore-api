@@ -21,8 +21,10 @@ namespace Specs.Products
         [Fact(DisplayName = "Send Products response")]
         public async Task Send_Products_Response()
         {
-            var mockData = new Mock<IProductData>(); 
-            mockData.Setup(data => data.Get()).ReturnsAsync(new List<Product>(){ new Product() { Name = "Product One" } });
+            var mockData = new Mock<IProductData>();
+
+            var pagedList = new PagedList<Product>(new List<Product>() {new Product() {Name = "Product One"}}, 1, 1, 1);
+            mockData.Setup(data => data.Get(1, 10)).ReturnsAsync(pagedList);
             var controller = new ProductsController(mockData.Object);
 
             var result = await controller.Get() as ObjectResult;
