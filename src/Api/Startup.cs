@@ -7,6 +7,8 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -95,7 +97,17 @@ namespace Api
                     option.Configuration = Configuration.GetConnectionString("Redis");
                     option.InstanceName = Configuration.GetValue<string>("RedisInstanceName");
                 });
-            } 
+            }
+
+            // TODO:  verify how to best regster all services: only use autofac for non-framework, or register everything with autofac?
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            services.AddScoped<IUrlHelper, UrlHelper>(serviceProvider =>
+            {
+                var actionContext = serviceProvider.GetService<IActionContextAccessor>().ActionContext;
+                return new UrlHelper(actionContext);
+            });
 
             // Create the container builder.
             var builder = new ContainerBuilder();

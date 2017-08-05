@@ -17,6 +17,10 @@ namespace Api.Models
 
         public bool HasNext => CurrentPage < TotalPages;
 
+        public bool IsFirstPage => CurrentPage == 1;
+
+        public bool IsLastPage => CurrentPage == TotalPages;
+
         public PagedList(List<T> items, int count, int pageNumber, int pageSize)
         {
             TotalCount = count;

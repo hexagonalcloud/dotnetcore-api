@@ -15,11 +15,13 @@ namespace Specs.Products
         [Fact(DisplayName = "Send Single Product response")]
         public async Task Send_Product_Response()
         {
-            var mockData = new Mock<IProductData>();
-            mockData.Setup(data => data.GetById(It.IsAny<int>())).ReturnsAsync(new Product{ Name = "Product One" });
-            var controller = new ProductsController(mockData.Object);
+            var dataMock = new Mock<IProductData>();
+            var urlHelperMock = new Mock<IUrlHelper>();
 
-            var result = await controller.Get(1) as OkObjectResult;
+            dataMock.Setup(data => data.GetById(It.IsAny<int>())).ReturnsAsync(new Product{ Name = "Product One" });
+            var controller = new ProductsController(dataMock.Object, urlHelperMock.Object);
+            
+            var result = await controller.GetById(1) as OkObjectResult;
 
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(200);

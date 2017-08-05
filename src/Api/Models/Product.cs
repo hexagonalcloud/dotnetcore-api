@@ -13,6 +13,7 @@ namespace Api.Models
 
         public string Name { get; set; }
 
+        [JsonIgnore]
         public DateTime ModifiedDate { get; set; }
     }
 }
