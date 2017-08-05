@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
@@ -7,6 +8,8 @@ using Newtonsoft.Json;
 namespace Api.Controllers.Integration
 {
     //[ApiExplorerSettings(IgnoreApi = true)]
+    [ProducesResponseType(401)]
+	[Authorize]
     [Route("api/integration/[controller]")]
     public class CacheController : Controller
     {

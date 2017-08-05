@@ -109,20 +109,28 @@ namespace Swagger
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            public static IList<Product> ApiProductsGet(this IAPIV1 operations)
+            /// <param name='pageNumber'>
+            /// </param>
+            /// <param name='pageSize'>
+            /// </param>
+            public static IList<Product> ApiProductsGet(this IAPIV1 operations, int? pageNumber = default(int?), int? pageSize = default(int?))
             {
-                return operations.ApiProductsGetAsync().GetAwaiter().GetResult();
+                return operations.ApiProductsGetAsync(pageNumber, pageSize).GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
+            /// <param name='pageNumber'>
+            /// </param>
+            /// <param name='pageSize'>
+            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<IList<Product>> ApiProductsGetAsync(this IAPIV1 operations, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IList<Product>> ApiProductsGetAsync(this IAPIV1 operations, int? pageNumber = default(int?), int? pageSize = default(int?), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ApiProductsGetWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.ApiProductsGetWithHttpMessagesAsync(pageNumber, pageSize, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

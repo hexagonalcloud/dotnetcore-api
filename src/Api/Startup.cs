@@ -69,6 +69,7 @@ namespace Api
                     });
 
             })
+                    .AddAuthorization()
                     .AddJsonFormatters()
                     .AddApiExplorer();
 
