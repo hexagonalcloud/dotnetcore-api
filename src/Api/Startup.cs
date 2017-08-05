@@ -4,6 +4,7 @@ using Api.Data;
  using Api.Data.Sql;
  using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,9 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            // make configuration available for DI
+            services.AddSingleton(_ => Configuration);
+
             // Configure Cors Policy
             var cors = Configuration.GetSection("CorsOrigins").GetChildren().Select(o => o.Value).ToArray();
 
@@ -50,33 +54,19 @@ namespace Api
 
             services.AddResponseCaching();
 
-            // Add framework services.
-            services.AddMvcCore(options =>
+            // Allow running without authorization if in a dev environment
+            if (Configuration.GetValue<bool>("DisableAuthorization") && 
+                Configuration.GetValue<string>("ASPNETCORE_ENVIRONMENT").Equals("Development", StringComparison.OrdinalIgnoreCase))
             {
-                //options.ReturnHttpNotAcceptable = true;
-                options.CacheProfiles.Add("Default",
-                    new CacheProfile()
-                    {
-                        Duration = 60,
-                        VaryByHeader = "Accept",
-                        Location = ResponseCacheLocation.Any
-                    });
-                options.CacheProfiles.Add("Never",
-                    new CacheProfile()
-                    {
-                        Location = ResponseCacheLocation.None,
-                        NoStore = true
-                    });
-
-            })
-                    .AddAuthorization()
-                    .AddJsonFormatters()
-                    .AddApiExplorer();
+                AddMvcWithoutAuthorization(services);
+            }
+            else
+            {
+                AddMvcWithAuthorization(services); 
+            }
 
             services.AddRouting(options => options.LowercaseUrls = true);
-
             services.AddSwaggerGen();
-
             services.AddOptions();
 
             services.Configure<ConnectionStrings>(options =>
@@ -165,6 +155,55 @@ namespace Api
 
             app.UseResponseCaching();
 
+        }
+
+        private static void AddMvcWithAuthorization(IServiceCollection services)
+        {
+            // Add framework services.
+            services.AddMvcCore(options =>
+                {
+                    //options.ReturnHttpNotAcceptable = true;
+                    options.CacheProfiles.Add("Default",
+                        new CacheProfile()
+                        {
+                            Duration = 60,
+                            VaryByHeader = "Accept",
+                            Location = ResponseCacheLocation.Any
+                        });
+                    options.CacheProfiles.Add("Never",
+                        new CacheProfile()
+                        {
+                            Location = ResponseCacheLocation.None,
+                            NoStore = true
+                        });
+                })
+                .AddAuthorization()
+                .AddJsonFormatters()
+                .AddApiExplorer();
+        }
+
+        private static void AddMvcWithoutAuthorization(IServiceCollection services)
+        {
+            // Add framework services.
+            services.AddMvcCore(options =>
+                {
+                    //options.ReturnHttpNotAcceptable = true;
+                    options.CacheProfiles.Add("Default",
+                        new CacheProfile()
+                        {
+                            Duration = 60,
+                            VaryByHeader = "Accept",
+                            Location = ResponseCacheLocation.Any
+                        });
+                    options.CacheProfiles.Add("Never",
+                        new CacheProfile()
+                        {
+                            Location = ResponseCacheLocation.None,
+                            NoStore = true
+                        });
+                })
+                .AddJsonFormatters()
+                .AddApiExplorer();
         }
     }
 }
