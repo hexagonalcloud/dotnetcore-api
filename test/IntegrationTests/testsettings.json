@@ -1,6 +1,6 @@
 ﻿{
-  "RestApi": "https://dotnetcore-api.azurewebsites.net/",
-  "IdentityServer": "https://dotnetcore-auth.azurewebsites.net/",
+  "RestApi": "__RestApi__",
+  "IdentityServer": "__IdentityServer__",
   "ClientId": "__ClientId__",
   "ClientSecret": "__ClientSecret__"
 }
