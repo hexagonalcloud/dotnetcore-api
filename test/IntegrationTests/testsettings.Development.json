@@ -1,4 +1,6 @@
 ﻿{
   "RestApi": "http://localhost:5001",
-  "IdentityServer": "http://localhost:5000"
+  "IdentityServer": "http://localhost:5000",
+  "ClientId": "integration",
+  "ClientSecret": "secret-key-for-the-integraton-client"
 }
