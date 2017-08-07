@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceRoot}/RestApi/bin/Debug/netcoreapp1.1/RestApi.dll",
+            "program": "${workspaceRoot}/src/Api/bin/Debug/netcoreapp1.1/Api.dll",
             "args": ["server.urls=http://localhost:5001"],
-            "cwd": "${workspaceRoot}/RestApi",
+            "cwd": "${workspaceRoot}/src/Api",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
