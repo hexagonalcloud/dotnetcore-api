@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Api.Data;
- using Api.Data.Sql;
 using Api.Filters;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -26,17 +23,16 @@ namespace Api
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
 
         public IConfigurationRoot Configuration { get; }
 
-        public IContainer ApplicationContainer { get; private set; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+	    // ConfigureServices is where you register dependencies. This gets
+	    // called by the runtime before the ConfigureContainer method, below.
+        public void ConfigureServices(IServiceCollection services)
         {
             // make configuration available for DI
             services.AddSingleton(_ => Configuration);
@@ -109,8 +105,6 @@ namespace Api
                 });
             }
 
-            // TODO:  verify how to best regster all services: only use autofac for non-framework, or register everything with autofac?
-
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddScoped<IUrlHelper, UrlHelper>(serviceProvider =>
@@ -118,26 +112,22 @@ namespace Api
                 var actionContext = serviceProvider.GetService<IActionContextAccessor>().ActionContext;
                 return new UrlHelper(actionContext);
             });
-
-            // Create the container builder.
-            var builder = new ContainerBuilder();
-
-            // Register dependencies, populate the services from
-            // the collection, and build the container. If you want
-            // to dispose of the container at the end of the app,
-            // be sure to keep a reference to it as a property or field.
-            builder.Populate(services);
-
-            builder.RegisterType<ProductData>().As<IProductData>();
-
-            this.ApplicationContainer = builder.Build();
-
-            // Create the IServiceProvider based on the container.
-            return new AutofacServiceProvider(this.ApplicationContainer);
-
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+	    
+	    // ConfigureContainer is where you can register things directly
+	    // with Autofac. This runs after ConfigureServices so the things
+	    // here will override registrations made in ConfigureServices.
+	    // Don't build the container; that gets done for you. If you
+	    // need a reference to the container, you need to use the
+	    // "Without ConfigureContainer" mechanism shown later.
+	    public void ConfigureContainer(ContainerBuilder builder)
+	    {
+		    builder.RegisterModule(new AutofacModule());
+	    }
+	    
+	    // Configure is where you add middleware. This is called after
+	    // ConfigureContainer. You can use IApplicationBuilder.ApplicationServices
+	    // here if you need to resolve things from the container.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
@@ -153,7 +143,6 @@ namespace Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
 
             // this uses the policy called "default"
             app.UseCors("default");
@@ -178,8 +167,8 @@ namespace Api
 	         
             app.UseResponseCaching();
 
-        }
-
+        }  
+	    
         private static void AddMvcWithAuthorization(IServiceCollection services)
         {
             // Add framework services.

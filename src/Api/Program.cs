@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
@@ -15,6 +16,7 @@ namespace Api
             var host = new WebHostBuilder()
                 .UseConfiguration(config)
                 .UseKestrel()
+	            .ConfigureServices(services => services.AddAutofac())
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
