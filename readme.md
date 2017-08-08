@@ -21,7 +21,7 @@ Prototype .NET Core API implementation (work in progress)
 
 
 ## Deployed API on Azure
-- [Api](https://dotnetcore-api.azurewebsites.net/swagger/ui)
+- [Api](https://dotnetcore-api.azurewebsites.net/swagger)
 
 
 ## Integration tests
@@ -32,7 +32,9 @@ Prototype .NET Core API implementation (work in progress)
 - Adapt __src/Api/appsettings.Development.json__ and __test/IntegrationTests/testsettings.Development.json__ to match you local development environment.
 - To install the sample db, run __db/setup-db.sql__
 - To setup a minimal IdentityServer to match the currently used authorization scheme,  follow the steps in this [quickstart](http://docs.identityserver.io/en/release/quickstarts/1_client_credentials.html), but you can also just disable auhtorization in the config. Do note that if you disable authorization some of the integration tests will fail.
-
+- Make sure the Api runs on port 5001
+    - add "server.urls=http://localhost:5001" to the program args
+    - dotnet run --server.urls=http://localhost:5001
 
 
 

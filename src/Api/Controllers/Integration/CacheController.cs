@@ -7,10 +7,9 @@ using Newtonsoft.Json;
 
 namespace Api.Controllers.Integration
 {
-    //[ApiExplorerSettings(IgnoreApi = true)]
-    [ProducesResponseType(401)]
+	[Produces("application/json")] 
 	[Authorize]
-    [Route("api/integration/[controller]")]
+    [Route("api/integration/[controller]")]	
     public class CacheController : Controller
     {
         private readonly IDistributedCache _distributedCache;

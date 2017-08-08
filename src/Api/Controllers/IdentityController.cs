@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers
 {
     [Authorize]
-    [ProducesResponseType(401)]
 	[Route("api/[controller]")]
     public class IdentityController : Controller
     {

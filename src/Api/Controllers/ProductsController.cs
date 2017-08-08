@@ -8,6 +8,10 @@ using Api.Models;
 
 namespace Api.Controllers
 {
+	// TODO: can this be configured in Startup or should we use a base class to limit the available response types?
+	// if not specified Swagger UI shows text/plain and text/json as well in the response content type dropdown
+	// looks like this might be specific for ObjectResult
+	[Produces("application/json")] 
     [Route("api/[controller]")]
     public class ProductsController : Controller
     {

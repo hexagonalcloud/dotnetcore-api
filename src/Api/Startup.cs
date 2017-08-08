@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Api.Data;
  using Api.Data.Sql;
- using Autofac;
+using Api.Filters;
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.Swagger.Model;
 
 namespace Api
 {
@@ -64,9 +66,26 @@ namespace Api
             {
                 AddMvcWithAuthorization(services); 
             }
-
+ 
             services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddSwaggerGen();
+          
+	        services.AddSwaggerGen(options =>
+	        {
+		        options.AddSecurityDefinition("oauth2", new OAuth2Scheme
+		        {
+			        Type = "oauth2",
+			        Flow = "implicit",
+			        AuthorizationUrl = Configuration.GetValue<string>("IdentityServer") + "/connect/authorize",
+			        TokenUrl = Configuration.GetValue<string>("IdentityServer") + "/connect/token",
+			        Scopes = new Dictionary<string, string>
+			        {
+				        {"api1", "API Access"}
+			        }
+		        });	       
+		        // Assign scope requirements to operations based on AuthorizeAttribute
+	            options.OperationFilter<SecurityRequirementsOperationFilter>();
+	        }); 
+	        
             services.AddOptions();
 
             services.Configure<ConnectionStrings>(options =>
@@ -145,14 +164,18 @@ namespace Api
             {
                 Authority = authority,
                 RequireHttpsMetadata = false,
-
                 ApiName = "api1"
             });
 
             app.UseMvc();
             app.UseSwagger();
-            app.UseSwaggerUi(); //default, available at /swagger/ui
-
+	        app.UseSwaggerUI(options =>
+	        {
+		        options.SwaggerEndpoint("v1/swagger.json", ".NET Core API v1");     
+		        options.ConfigureOAuth2(Configuration.GetValue<string>("SwaggerClientId"), Configuration.GetValue<string>("SwaggerClientSecret"), 
+			        "http://localhost:5001", "Swagger UI");
+	        });
+	         
             app.UseResponseCaching();
 
         }
@@ -204,7 +227,8 @@ namespace Api
                 })
                 .AddJsonFormatters()
                 .AddApiExplorer();
-        }
+        } 
+	    
     }
 }
 
