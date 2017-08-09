@@ -1,6 +1,7 @@
 ﻿using Api.Data;
 using Api.Data.Sql;
 using Autofac;
+using Serilog;
 
 namespace Api
 {
@@ -8,8 +9,12 @@ namespace Api
 	{
 		protected override void Load(ContainerBuilder builder)
 		{
-			builder.RegisterType<ProductData>().As<IProductData>();			
-		}
-		
+			builder.RegisterType<ProductData>().As<IProductData>();
+			
+			builder.Register<ILogger>(_ => new LoggerConfiguration()
+				.MinimumLevel.Information()
+				.WriteTo.Console()
+				.CreateLogger()).SingleInstance();
+		}	
 	}
 }

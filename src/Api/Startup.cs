@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using Swashbuckle.Swagger.Model;
 
 namespace Api
@@ -111,7 +112,8 @@ namespace Api
             {
                 var actionContext = serviceProvider.GetService<IActionContextAccessor>().ActionContext;
                 return new UrlHelper(actionContext);
-            });
+            }); 
+	        
         }
 	    
 	    // ConfigureContainer is where you can register things directly
@@ -128,16 +130,20 @@ namespace Api
 	    // Configure is where you add middleware. This is called after
 	    // ConfigureContainer. You can use IApplicationBuilder.ApplicationServices
 	    // here if you need to resolve things from the container.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+	        
+//	        loggerFactory.AddConsole(Configuration.GetSection("Logging")); 
+//	        loggerFactory.AddDebug();  
+	        
+	        loggerFactory.AddSerilog();
 
             if (!env.IsDevelopment())
             {
                 var options = new RewriteOptions().AddRedirectToHttps();
-                app.UseRewriter(options);
-                app.UseExceptionHandler(); // TODO: custom exception handling middleware with logging?
+                app.UseRewriter(options); 
+	            app.UseExceptionHandler(); // TODO: custom exception handling middleware with logging?
+	            
             }
             else
             {
@@ -166,6 +172,9 @@ namespace Api
 	        });
 	         
             app.UseResponseCaching();
+	        
+	        
+	        appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
 
         }  
 	    
@@ -188,6 +197,7 @@ namespace Api
                             Location = ResponseCacheLocation.None,
                             NoStore = true
                         });
+	                options.Filters.Add(typeof(RequestLogFilter));
                 })
                 .AddAuthorization()
                 .AddJsonFormatters()
@@ -213,11 +223,11 @@ namespace Api
                             Location = ResponseCacheLocation.None,
                             NoStore = true
                         });
+	                options.Filters.Add(typeof(RequestLogFilter));
                 })
                 .AddJsonFormatters()
                 .AddApiExplorer();
-        } 
-	    
+        }  
     }
 }
 
