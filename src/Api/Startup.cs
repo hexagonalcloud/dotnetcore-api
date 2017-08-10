@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Api.Filters;
 using Autofac;
@@ -18,7 +17,10 @@ using Swashbuckle.Swagger.Model;
 namespace Api
 {
     public class Startup
-    {
+    { 
+	    private IConfigurationRoot Configuration { get; }
+	    private IHostingEnvironment Environment { get; }
+	    
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -27,10 +29,9 @@ namespace Api
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+	        Environment = env;
         }
-
-        public IConfigurationRoot Configuration { get; }
-
+   
 	    // ConfigureServices is where you register dependencies. This gets
 	    // called by the runtime before the ConfigureContainer method, below.
         public void ConfigureServices(IServiceCollection services)
@@ -52,10 +53,9 @@ namespace Api
            });
 
             services.AddResponseCaching();
-
+	        
             // Allow running without authorization if in a dev environment
-            if (Configuration.GetValue<bool>("DisableAuthorization") && 
-                Configuration.GetValue<string>("ASPNETCORE_ENVIRONMENT").Equals("Development", StringComparison.OrdinalIgnoreCase))
+            if (Configuration.GetValue<bool>("DisableAuthorization") && Environment.IsDevelopment())
             {
                 AddMvcWithoutAuthorization(services);
             }
@@ -124,7 +124,7 @@ namespace Api
 	    // "Without ConfigureContainer" mechanism shown later.
 	    public void ConfigureContainer(ContainerBuilder builder)
 	    {
-		    builder.RegisterModule(new AutofacModule());
+		    builder.RegisterModule(new AutofacModule(Environment, Configuration));
 	    }
 	    
 	    // Configure is where you add middleware. This is called after
@@ -181,52 +181,52 @@ namespace Api
         private static void AddMvcWithAuthorization(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvcCore(options =>
-                {
-                    //options.ReturnHttpNotAcceptable = true;
-                    options.CacheProfiles.Add("Default",
-                        new CacheProfile()
-                        {
-                            Duration = 60,
-                            VaryByHeader = "Accept",
-                            Location = ResponseCacheLocation.Any
-                        });
-                    options.CacheProfiles.Add("Never",
-                        new CacheProfile()
-                        {
-                            Location = ResponseCacheLocation.None,
-                            NoStore = true
-                        });
-	                options.Filters.Add(typeof(RequestLogFilter));
-                })
-                .AddAuthorization()
-                .AddJsonFormatters()
-                .AddApiExplorer();
+	        services.AddMvcCore(options =>
+		        {
+			        //options.ReturnHttpNotAcceptable = true;
+			        options.CacheProfiles.Add("Default",
+				        new CacheProfile()
+				        {
+					        Duration = 60,
+					        VaryByHeader = "Accept",
+					        Location = ResponseCacheLocation.Any
+				        });
+			        options.CacheProfiles.Add("Never",
+				        new CacheProfile()
+				        {
+					        Location = ResponseCacheLocation.None,
+					        NoStore = true
+				        });
+			        options.Filters.Add(typeof(RequestLogFilter));
+		        })
+		        .AddAuthorization()
+		        .AddJsonFormatters()
+		        .AddApiExplorer();
         }
 
         private static void AddMvcWithoutAuthorization(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvcCore(options =>
-                {
-                    //options.ReturnHttpNotAcceptable = true;
-                    options.CacheProfiles.Add("Default",
-                        new CacheProfile()
-                        {
-                            Duration = 60,
-                            VaryByHeader = "Accept",
-                            Location = ResponseCacheLocation.Any
-                        });
-                    options.CacheProfiles.Add("Never",
-                        new CacheProfile()
-                        {
-                            Location = ResponseCacheLocation.None,
-                            NoStore = true
-                        });
-	                options.Filters.Add(typeof(RequestLogFilter));
-                })
-                .AddJsonFormatters()
-                .AddApiExplorer();
+	        services.AddMvcCore(options =>
+		        {
+			        //options.ReturnHttpNotAcceptable = true;
+			        options.CacheProfiles.Add("Default",
+				        new CacheProfile()
+				        {
+					        Duration = 60,
+					        VaryByHeader = "Accept",
+					        Location = ResponseCacheLocation.Any
+				        });
+			        options.CacheProfiles.Add("Never",
+				        new CacheProfile()
+				        {
+					        Location = ResponseCacheLocation.None,
+					        NoStore = true
+				        });
+			        options.Filters.Add(typeof(RequestLogFilter));
+		        })
+		        .AddJsonFormatters()
+		        .AddApiExplorer();
         }  
     }
 }
