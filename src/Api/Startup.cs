@@ -39,7 +39,6 @@ namespace Api
             // make configuration available for DI
             services.AddSingleton(_ => Configuration);
 
-            // Configure Cors Policy
             var cors = Configuration.GetSection("CorsOrigins").GetChildren().Select(o => o.Value).ToArray();
 
             services.AddCors(options =>
@@ -141,8 +140,8 @@ namespace Api
             if (!env.IsDevelopment())
             {
                 var options = new RewriteOptions().AddRedirectToHttps();
-                app.UseRewriter(options); 
-	            app.UseExceptionHandler(); // TODO: custom exception handling middleware with logging?
+                app.UseRewriter(options);
+	            app.UseExceptionHandler();
 	            
             }
             else
@@ -150,7 +149,6 @@ namespace Api
                 app.UseDeveloperExceptionPage();
             }
 
-            // this uses the policy called "default"
             app.UseCors("default");
 
             var authority = Configuration.GetValue<string>("IdentityServer");
@@ -197,6 +195,7 @@ namespace Api
 					        Location = ResponseCacheLocation.None,
 					        NoStore = true
 				        });
+			        options.Filters.Add(typeof(ExceptionLogFilter));
 			        options.Filters.Add(typeof(RequestLogFilter));
 		        })
 		        .AddAuthorization()
@@ -223,6 +222,7 @@ namespace Api
 					        Location = ResponseCacheLocation.None,
 					        NoStore = true
 				        });
+			        options.Filters.Add(typeof(ExceptionLogFilter));
 			        options.Filters.Add(typeof(RequestLogFilter));
 		        })
 		        .AddJsonFormatters()
