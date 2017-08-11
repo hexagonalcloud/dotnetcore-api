@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace Api.Models
 {
     [Table("[SalesLT].[Product]")]
-    public class Product: IWeakEntityTag
+    public class Product : IWeakEntityTag
     {
         // ReSharper disable once InconsistentNaming
         [Key]

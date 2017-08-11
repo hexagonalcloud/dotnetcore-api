@@ -16,7 +16,7 @@ namespace Api
             var host = new WebHostBuilder()
                 .UseConfiguration(config)
                 .UseKestrel()
-	            .ConfigureServices(services => services.AddAutofac())
+                .ConfigureServices(services => services.AddAutofac())
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()

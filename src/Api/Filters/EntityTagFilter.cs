@@ -1,7 +1,7 @@
 ﻿using System;
+using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Api.Models;
 
 namespace Api.Filters
 {
@@ -15,7 +15,7 @@ namespace Api.Filters
         {
             if (context.HttpContext.Request.Method == "GET")
             {
-                if (context.HttpContext.Response.StatusCode ==200)
+                if (context.HttpContext.Response.StatusCode == 200)
                 {
                     var result = context.Result as ObjectResult;
                     if (result == null)
@@ -38,7 +38,7 @@ namespace Api.Filters
 
                         context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, must-revalidate");
                         context.HttpContext.Response.Headers.Add("ETag", new[] { eTag });
-                        context.HttpContext.Response.Headers.Add("Last-Modified", modifiedDate.ToString("R")); 
+                        context.HttpContext.Response.Headers.Add("Last-Modified", modifiedDate.ToString("R"));
                     }
                 }
             }

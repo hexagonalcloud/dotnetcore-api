@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Override Rules" Description="Override Rules for the project." ToolsVersion="14.0">
+    <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+        <!--Enable XML documentation output-->
+        <Rule Id="SA1652" Action="None" />
+        <!--Prefix local calls with this-->
+        <Rule Id="SA1101" Action="None" />
+        <!--Using directive must appear within a namespace declaration-->
+        <Rule Id="SA1200" Action="None" />
+        <!--The file header is missing or not located at the top of the file-->
+        <Rule Id="SA1633" Action="None" />
+        <!--Field must not begin with an underscore-->
+        <Rule Id="SA1309" Action="None" />
+        <!--The parameter spans multiple lines-->
+        <Rule Id="SA1118" Action="None" />
+    </Rules>
+</RuleSet>

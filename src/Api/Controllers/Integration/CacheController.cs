@@ -7,9 +7,9 @@ using Newtonsoft.Json;
 
 namespace Api.Controllers.Integration
 {
-	[Produces("application/json")] 
-	[Authorize]
-    [Route("api/integration/[controller]")]	
+    [Produces("application/json")]
+    [Authorize]
+    [Route("api/integration/[controller]")]
     public class CacheController : Controller
     {
         private readonly IDistributedCache _distributedCache;
@@ -22,13 +22,14 @@ namespace Api.Controllers.Integration
         [ProducesResponseType(404)]
         [ProducesResponseType(typeof(Product), 200)]
         [HttpGet("{id}")]
-        public async Task <IActionResult> Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
             var result = await GetAsync<Product>(id);
             if (result == null)
             {
                 return NotFound();
             }
+
             return Ok(result);
         }
 
@@ -37,7 +38,7 @@ namespace Api.Controllers.Integration
         public async Task<IActionResult> Post([FromBody]Product product)
         {
             await SetAsync(product.ProductID.ToString(), product);
-            //TODO: return Created()
+            // TODO: return Created()
             return Ok();
         }
 
@@ -66,6 +67,7 @@ namespace Api.Controllers.Integration
             {
                 return JsonConvert.DeserializeObject<T>(json);
             }
+
             return default(T);
         }
     }

@@ -3,8 +3,17 @@ using System.Collections.Generic;
 
 namespace Api.Models
 {
-    public class PagedList<T>: List<T> 
+    public class PagedList<T> : List<T>
     {
+        public PagedList(List<T> items, int count, int pageNumber, int pageSize)
+        {
+            TotalCount = count;
+            PageSize = pageSize;
+            CurrentPage = pageNumber;
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            AddRange(items);
+        }
+
         public int CurrentPage { get; }
 
         public int TotalPages { get; }
@@ -20,14 +29,5 @@ namespace Api.Models
         public bool IsFirstPage => CurrentPage == 1;
 
         public bool IsLastPage => CurrentPage == TotalPages;
-
-        public PagedList(List<T> items, int count, int pageNumber, int pageSize)
-        {
-            TotalCount = count;
-            PageSize = pageSize;
-            CurrentPage = pageNumber;
-            TotalPages = (int) Math.Ceiling(count / (double)pageSize);
-            AddRange(items);
-        }
     }
 }

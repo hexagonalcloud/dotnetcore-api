@@ -34,10 +34,10 @@ namespace Api.Data.Sql
                     return result;
                 };
 
-               var response = await db.QueryAsync<Product, int, Product>(query, map, splitOn:"TotalCount");
+               var response = await db.QueryAsync<Product, int, Product>(query, map, splitOn: "TotalCount");
                var pagedResult = new PagedList<Product>(response.ToList(), totalCount, pageNumber, pageSize);
                 return pagedResult;
-            } 
+            }
         }
 
         public async Task<Product> GetById(int id)
