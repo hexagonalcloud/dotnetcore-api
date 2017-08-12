@@ -2,17 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.Data;
-using Api.Filters;
 using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers
+namespace Api.Controllers.Public
 {
-    // TODO: can this be configured in Startup or should we use a base class to limit the available response types?
-    // if not specified Swagger UI shows text/plain and text/json as well in the response content type dropdown
-    // looks like this might be specific for ObjectResult
-    [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/public/[controller]")]
     public class ProductsController : Controller
     {
         private const int MaxPageSize = 20;
@@ -46,9 +41,8 @@ namespace Api.Controllers
             return Ok(pagedList);
         }
 
-        [EntityTagFilter]
+        [ResponseCache(CacheProfileName = "Default")]
         [ProducesResponseType(typeof(Product), 200)]
-        [ProducesResponseType(304)]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetById(int id)

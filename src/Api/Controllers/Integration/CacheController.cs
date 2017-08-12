@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 
 namespace Api.Controllers.Integration
 {
-    [Produces("application/json")]
     [Authorize]
     [Route("api/integration/[controller]")]
     public class CacheController : Controller

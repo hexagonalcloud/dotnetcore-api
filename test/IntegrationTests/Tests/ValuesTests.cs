@@ -12,9 +12,9 @@ namespace IntegrationTests.Tests
         [Fact]
         public async Task GetValues()
         {
-            var client = new Swagger.APIV1(TestConfiguration.ApiUri);
-            
-            var result = await client.ApiValuesGetWithHttpMessagesAsync();
+            var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
+
+            var result = await client.ApiPublicValuesGetWithHttpMessagesAsync();
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Body.Should().NotBeNullOrEmpty();
         }

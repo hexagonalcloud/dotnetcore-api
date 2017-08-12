@@ -13,8 +13,8 @@ namespace IntegrationTests.Tests
         [Fact]
         public async Task Run()
         {
-            var client = new Swagger.APIV1(TestConfiguration.ApiUri);
-            var getResult = await client.ApiProductsGetWithHttpMessagesAsync();
+            var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
+            var getResult = await client.ApiPublicProductsGetWithHttpMessagesAsync();
             getResult.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             string getContent = await getResult.Response.Content.ReadAsStringAsync();
             var products = JsonConvert.DeserializeObject<IEnumerable<Swagger.Models.Product>>(getContent);
@@ -23,23 +23,24 @@ namespace IntegrationTests.Tests
             // pick one of the products to get by id
 
             var selectedProduct = products.FirstOrDefault();
-            var getByIdResult = await client.ApiProductsByIdGetWithHttpMessagesAsync(selectedProduct.ProductID.GetValueOrDefault());
+            var getByIdResult = await client.ApiPublicProductsByIdGetWithHttpMessagesAsync(selectedProduct.ProductID.GetValueOrDefault());
             getByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             string getByIdContent = await getByIdResult.Response.Content.ReadAsStringAsync();
             var product = JsonConvert.DeserializeObject<Swagger.Models.Product>(getByIdContent);
             product.Should().NotBeNull();
 
-            var eTagHeader = getByIdResult.Response.Headers.ETag;
-            eTagHeader.IsWeak.Should().BeTrue();
+            // TDOO:  no longer applied to public endpoint, add this to an admin integration test
+//            var eTagHeader = getByIdResult.Response.Headers.ETag;
+//            eTagHeader.IsWeak.Should().BeTrue();
 
             // now make another request with the etag
             // we expect the result to be empty and the status code to be 304
-            client.HttpClient.DefaultRequestHeaders.IfNoneMatch.Add(eTagHeader);
-
-            var getUnmodifiedByIdResult = await client.ApiProductsByIdGetWithHttpMessagesAsync(selectedProduct.ProductID.GetValueOrDefault());
-            getUnmodifiedByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.NotModified);
-            string unmodifiedResult = await getUnmodifiedByIdResult.Response.Content.ReadAsStringAsync();
-            unmodifiedResult.Should().BeNullOrWhiteSpace();
+//            client.HttpClient.DefaultRequestHeaders.IfNoneMatch.Add(eTagHeader);
+//
+//            var getUnmodifiedByIdResult = await client.ApiPublicProductsByIdGetWithHttpMessagesAsync(selectedProduct.ProductID.GetValueOrDefault());
+//            getUnmodifiedByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.NotModified);
+//            string unmodifiedResult = await getUnmodifiedByIdResult.Response.Content.ReadAsStringAsync();
+//            unmodifiedResult.Should().BeNullOrWhiteSpace();
         }
     }
 }

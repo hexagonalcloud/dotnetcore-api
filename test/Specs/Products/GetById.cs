@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Api.Controllers;
+using Api.Controllers.Public;
 using Api.Data;
 using Api.Models;
 using FluentAssertions;

@@ -206,6 +206,7 @@ namespace Api
                         });
                     options.Filters.Add(typeof(ExceptionLogFilter));
                     options.Filters.Add(typeof(RequestLogFilter));
+                    options.Filters.Add(new ProducesAttribute("application/json"));
                 })
                 .AddAuthorization()
                 .AddJsonFormatters()
@@ -235,6 +236,7 @@ namespace Api
                         });
                     options.Filters.Add(typeof(ExceptionLogFilter));
                     options.Filters.Add(typeof(RequestLogFilter));
+                    options.Filters.Add(new ProducesAttribute("application/json"));
                 })
                 .AddJsonFormatters()
                 .AddApiExplorer();

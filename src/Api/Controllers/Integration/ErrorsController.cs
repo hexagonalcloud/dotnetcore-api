@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.Integration
 {
-    [Produces("application/json")]
     [Authorize]
     [Route("api/integration/[controller]")]
     public class ErrorsController : Controller

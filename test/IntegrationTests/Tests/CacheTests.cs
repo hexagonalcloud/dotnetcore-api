@@ -13,7 +13,7 @@ namespace IntegrationTests.Tests
         [Fact]
         public async Task Run()
         {
-            var client = new Swagger.APIV1(TestConfiguration.ApiUri);
+            var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
 
             var disco = await DiscoveryClient.GetAsync(TestConfiguration.IdentityServerUrl);
             // request token
@@ -50,7 +50,7 @@ namespace IntegrationTests.Tests
         [Fact]
         public async Task RunUnauthorized()
         {
-            var client = new Swagger.APIV1(TestConfiguration.ApiUri);
+            var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
 
             var product = new Product();
             product.ProductID = 100;

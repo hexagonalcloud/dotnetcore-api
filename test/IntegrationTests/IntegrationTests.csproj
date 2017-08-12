@@ -23,7 +23,7 @@
     <Content Include="testsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-     <Content Include="testsettings.Development.json">
+    <Content Include="testsettings.Development.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
