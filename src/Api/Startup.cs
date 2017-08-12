@@ -68,6 +68,12 @@ namespace Api
 
             services.AddSwaggerGen(options =>
             {
+                options.SingleApiVersion(new Info()
+                {
+                    Title = "dotnetcore-api v1",
+                    Version = "v1",
+                    Description = "Prototype .NET Core API"
+                });
                 options.AddSecurityDefinition("oauth2", new OAuth2Scheme
                 {
                     Type = "oauth2",
@@ -79,9 +85,9 @@ namespace Api
                         { "api1", "API Access" }
                     }
                 });
-
-                // Assign scope requirements to operations based on AuthorizeAttribute
-                options.OperationFilter<SecurityRequirementsOperationFilter>();
+                options.OperationFilter<AuthrorizationOperationFilter>();
+                options.GroupActionsBy(apidesc => apidesc.FormatForSwaggerActionGroup());
+                options.DocumentFilter<LowercaseDocumentFilter>();
             });
 
             services.AddOptions();
@@ -163,12 +169,13 @@ namespace Api
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("v1/swagger.json", ".NET Core API v1");
+                options.SwaggerEndpoint("v1/swagger.json", "dotnetcore-api v1");
                 options.ConfigureOAuth2(
                     Configuration.GetValue<string>("SwaggerClientId"),
                     Configuration.GetValue<string>("SwaggerClientSecret"),
                     "http://localhost:5001",
                     "Swagger UI");
+                options.ShowRequestHeaders();
             });
 
             app.UseResponseCaching();

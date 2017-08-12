@@ -8,11 +8,11 @@ using Swashbuckle.SwaggerGen.Generator;
 
 namespace Api.Filters
 {
-    public class SecurityRequirementsOperationFilter : IOperationFilter
+    public class AuthrorizationOperationFilter : IOperationFilter
     {
         private readonly IOptions<AuthorizationOptions> authorizationOptions;
 
-        public SecurityRequirementsOperationFilter(IOptions<AuthorizationOptions> authorizationOptions)
+        public AuthrorizationOperationFilter(IOptions<AuthorizationOptions> authorizationOptions)
         {
             this.authorizationOptions = authorizationOptions;
         }
