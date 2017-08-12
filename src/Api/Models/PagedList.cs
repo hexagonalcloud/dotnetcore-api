@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Api.Models
 {
-    public class PagedList<T> : List<T>
+    public class PagedList<T> : List<T>, IWeakEntityTag
+        where T : IWeakEntityTag
     {
         public PagedList(List<T> items, int count, int pageNumber, int pageSize)
         {
@@ -11,7 +13,11 @@ namespace Api.Models
             PageSize = pageSize;
             CurrentPage = pageNumber;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-            AddRange(items);
+            if (items.Any())
+            {
+                ModifiedDate = items.OrderByDescending(x => x.ModifiedDate).First().ModifiedDate;
+                AddRange(items);
+            }
         }
 
         public int CurrentPage { get; }
@@ -29,5 +35,7 @@ namespace Api.Models
         public bool IsFirstPage => CurrentPage == 1;
 
         public bool IsLastPage => CurrentPage == TotalPages;
+
+        public DateTime ModifiedDate { get; }
     }
 }

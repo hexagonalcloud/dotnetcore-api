@@ -4,6 +4,6 @@ namespace Api.Models
 {
     public interface IWeakEntityTag
     {
-        DateTime ModifiedDate { get; set; }
+        DateTime ModifiedDate { get; }
     }
 }
