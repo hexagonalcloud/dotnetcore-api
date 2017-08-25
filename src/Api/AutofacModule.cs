@@ -22,19 +22,25 @@ namespace Api
         {
             builder.RegisterType<ProductData>().As<IProductData>();
 
+            var fileLog = _configurationRoot.GetValue<string>("FileLogLocation");
+
             if (_environment.IsDevelopment())
             {
                 builder.Register<ILogger>(_ => new LoggerConfiguration()
                     .MinimumLevel.Information()
+                    .WriteTo.File(fileLog, fileSizeLimitBytes: 31457280)
                     .WriteTo.Console()
                     .CreateLogger()).SingleInstance();
             }
             else
             {
-                builder.Register<ILogger>(_ => new LoggerConfiguration()
-                    .MinimumLevel.Information()
-                    .WriteTo.MongoDBCapped(_configurationRoot.GetConnectionString("MongoDb"), cappedMaxSizeMb: 50, cappedMaxDocuments: 1000)
-                    .CreateLogger()).SingleInstance();
+                if (!string.IsNullOrWhiteSpace(fileLog))
+                {
+                    builder.Register<ILogger>(_ => new LoggerConfiguration()
+                        .MinimumLevel.Information()
+                        .WriteTo.File(fileLog, fileSizeLimitBytes: 31457280)
+                        .CreateLogger()).SingleInstance();
+                }
             }
         }
     }
