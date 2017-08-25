@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Api.Filters;
 using Autofac;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using Swashbuckle.Swagger.Model;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Api
 {
@@ -68,12 +68,13 @@ namespace Api
 
             services.AddSwaggerGen(options =>
             {
-                options.SingleApiVersion(new Info()
+                options.SwaggerDoc("v1", new Info()
                 {
                     Title = "dotnetcore-api v1",
                     Version = "v1",
                     Description = "Prototype .NET Core API"
                 });
+
                 options.AddSecurityDefinition("oauth2", new OAuth2Scheme
                 {
                     Type = "oauth2",
@@ -85,8 +86,9 @@ namespace Api
                         { "api1", "API Access" }
                     }
                 });
+
                 options.OperationFilter<AuthrorizationOperationFilter>();
-                options.GroupActionsBy(apidesc => apidesc.FormatForSwaggerActionGroup());
+                options.TagActionsBy(apidesc => apidesc.FormatForSwaggerActionGroup());
                 options.DocumentFilter<LowercaseDocumentFilter>();
             });
 

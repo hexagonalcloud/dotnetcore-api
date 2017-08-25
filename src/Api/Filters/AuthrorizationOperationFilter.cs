@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.Extensions.Options;
-using Swashbuckle.Swagger.Model;
-using Swashbuckle.SwaggerGen.Generator;
+using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Api.Filters
 {
@@ -19,10 +19,9 @@ namespace Api.Filters
 
         public void Apply(Operation operation, OperationFilterContext context)
         {
-            var controllerPolicies = context.ApiDescription.GetControllerAttributes()
-                .OfType<AuthorizeAttribute>();
-            var actionPolicies = context.ApiDescription.GetActionAttributes()
-                .OfType<AuthorizeAttribute>();
+            var controllerPolicies = context.ApiDescription.ControllerAttributes().OfType<AuthorizeAttribute>();
+            var actionPolicies = context.ApiDescription.ActionAttributes().OfType<AuthorizeAttribute>();
+
             var policies = controllerPolicies.Union(actionPolicies).Distinct();
 
             if (policies.Any())
@@ -35,11 +34,12 @@ namespace Api.Filters
                 operation.Security.Add(
                     new Dictionary<string, IEnumerable<string>>
                     {
-                        // add the scope to let it show up in the Swagger UI.
-                        // If using claims this is where we can add them to show up in the UI
-                        { "oauth2", new List<string>() { "api1" } }
+                            // add the scope to let it show up in the Swagger UI.
+                            // If using claims this is where we can add them to show up in the UI
+                            { "oauth2", new List<string>() { "api1" } }
                     });
             }
+
         }
     }
 }

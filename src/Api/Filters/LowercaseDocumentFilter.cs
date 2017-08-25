@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Swashbuckle.Swagger.Model;
-using Swashbuckle.SwaggerGen.Generator;
+using System.Collections.Generic;
+using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Api.Filters
 {
