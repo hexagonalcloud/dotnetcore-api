@@ -4,7 +4,7 @@ Prototype .NET Core API implementation (work in progress)
 
 ## Prerequisites
 
-- .[NET Core 1.1](https://www.microsoft.com/net/download/core)
+- .[NET Core 2.0](https://www.microsoft.com/net/download/core)
 - [Autorest](https://github.com/Azure/autorest) if you want to regenerate the integration test client.
 - [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) if you want to run the db locally. The db is the AdventureWorks sample that is available when you set up a SQL Azure database, more details [here](https://blogs.msdn.microsoft.com/kaevans/2015/03/06/adventure-works-for-azure-sql-database/).
 - [Redis](https://redis.io/) if you want to run a Redis cache locally, but you can also just use the in-memory cache.
@@ -44,4 +44,3 @@ Prototype .NET Core API implementation (work in progress)
 
 
 
-    
