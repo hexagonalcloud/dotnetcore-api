@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Api.Filters;
 using Autofac;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,58 +12,69 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Api
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
-            Environment = env;
+            Configuration = configuration;
         }
 
-        private IConfigurationRoot Configuration { get; }
+        private IConfiguration Configuration { get; }
 
-        private IHostingEnvironment Environment { get; }
-
-        // ConfigureServices is where you register dependencies. This gets
-        // called by the runtime before the ConfigureContainer method, below.
         public void ConfigureServices(IServiceCollection services)
         {
-            // make configuration available for DI
-            services.AddSingleton(_ => Configuration);
-
-            var cors = Configuration.GetSection("CorsOrigins").GetChildren().Select(o => o.Value).ToArray();
-
-            services.AddCors(options =>
-           {
-               options.AddPolicy("default", policy =>
-              {
-                  policy.WithOrigins(cors)
-                      .AllowAnyHeader()
-                      .AllowAnyMethod();
-              });
-           });
-
+            services.AddSingleton(Configuration);
+            services.AddCors();
             services.AddResponseCaching();
 
-            // Allow running without authorization if in a dev environment
-            if (Configuration.GetValue<bool>("DisableAuthorization") && Environment.IsDevelopment())
+            services.AddMvcCore(options =>
+                {
+                    options.CacheProfiles.Add(
+                        "Default",
+                        new CacheProfile()
+                        {
+                            Duration = 60,
+                            VaryByHeader = "Accept",
+                            Location = ResponseCacheLocation.Any
+                        });
+                    options.CacheProfiles.Add(
+                        "Never",
+                        new CacheProfile()
+                        {
+                            Location = ResponseCacheLocation.None,
+                            NoStore = true
+                        });
+                    options.Filters.Add(typeof(RequestLogFilter));
+                    options.Filters.Add(typeof(ExceptionLogFilter));
+                    options.Filters.Add(new ProducesAttribute("application/json"));
+                })
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                })
+                .AddAuthorization()
+                .AddJsonFormatters()
+                .AddApiExplorer();
+
+            var authority = Configuration.GetValue<string>("IdentityServer");
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Audience = "api1"; 
+                    options.Authority = authority;
+                    options.RequireHttpsMetadata = false;
+                });
+
+            services.AddAuthorization(options =>
             {
-                AddMvcWithoutAuthorization(services);
-            }
-            else
-            {
-                AddMvcWithAuthorization(services);
-            }
+                options.AddPolicy(
+                    "Default", policy => policy.RequireAuthenticatedUser());
+            });
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -124,27 +136,13 @@ namespace Api
             });
         }
 
-        // ConfigureContainer is where you can register things directly
-        // with Autofac. This runs after ConfigureServices so the things
-        // here will override registrations made in ConfigureServices.
-        // Don't build the container; that gets done for you. If you
-        // need a reference to the container, you need to use the
-        // "Without ConfigureContainer" mechanism shown later.
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.RegisterModule(new AutofacModule(Environment, Configuration));
+            builder.RegisterModule(new AutofacModule(Configuration));
         }
 
-        // Configure is where you add middleware. This is called after
-        // ConfigureContainer. You can use IApplicationBuilder.ApplicationServices
-        // here if you need to resolve things from the container.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
-//            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-//            loggerFactory.AddDebug();
-
-            loggerFactory.AddSerilog();
-
             if (!env.IsDevelopment())
             {
                 var options = new RewriteOptions().AddRedirectToHttps();
@@ -156,17 +154,11 @@ namespace Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors("default");
+            var origins = Configuration.GetSection("CorsOrigins").GetChildren().Select(o => o.Value).ToArray();
+            app.UseCors(builder => builder.WithOrigins(origins)
+                .AllowAnyHeader());
 
-            var authority = Configuration.GetValue<string>("IdentityServer");
-
-            app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
-            {
-                Authority = authority,
-                RequireHttpsMetadata = false,
-                ApiName = "api1"
-            });
-
+            app.UseAuthentication();
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(options =>
@@ -175,73 +167,12 @@ namespace Api
                 options.ConfigureOAuth2(
                     Configuration.GetValue<string>("SwaggerClientId"),
                     Configuration.GetValue<string>("SwaggerClientSecret"),
-                    "http://localhost:5001",
+                    "http://localhost:5001", // TODO: not the correct realm for deployed app...
                     "Swagger UI");
                 options.ShowRequestHeaders();
             });
 
             app.UseResponseCaching();
-
-            appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
-        }
-
-        private static void AddMvcWithAuthorization(IServiceCollection services)
-        {
-            // Add framework services.
-            services.AddMvcCore(options =>
-                {
-                    // options.ReturnHttpNotAcceptable = true;
-                    options.CacheProfiles.Add(
-                        "Default",
-                        new CacheProfile()
-                        {
-                            Duration = 60,
-                            VaryByHeader = "Accept",
-                            Location = ResponseCacheLocation.Any
-                        });
-                    options.CacheProfiles.Add(
-                        "Never",
-                        new CacheProfile()
-                        {
-                            Location = ResponseCacheLocation.None,
-                            NoStore = true
-                        });
-                    options.Filters.Add(typeof(ExceptionLogFilter));
-                    options.Filters.Add(typeof(RequestLogFilter));
-                    options.Filters.Add(new ProducesAttribute("application/json"));
-                })
-                .AddAuthorization()
-                .AddJsonFormatters()
-                .AddApiExplorer();
-        }
-
-        private static void AddMvcWithoutAuthorization(IServiceCollection services)
-        {
-            // Add framework services.
-            services.AddMvcCore(options =>
-                {
-                    // options.ReturnHttpNotAcceptable = true;
-                    options.CacheProfiles.Add(
-                        "Default",
-                        new CacheProfile()
-                        {
-                            Duration = 60,
-                            VaryByHeader = "Accept",
-                            Location = ResponseCacheLocation.Any
-                        });
-                    options.CacheProfiles.Add(
-                        "Never",
-                        new CacheProfile()
-                        {
-                            Location = ResponseCacheLocation.None,
-                            NoStore = true
-                        });
-                    options.Filters.Add(typeof(ExceptionLogFilter));
-                    options.Filters.Add(typeof(RequestLogFilter));
-                    options.Filters.Add(new ProducesAttribute("application/json"));
-                })
-                .AddJsonFormatters()
-                .AddApiExplorer();
         }
     }
 }
