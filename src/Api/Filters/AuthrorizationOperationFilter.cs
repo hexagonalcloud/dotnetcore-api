@@ -39,7 +39,6 @@ namespace Api.Filters
                             { "oauth2", new List<string>() { "api1" } }
                     });
             }
-
         }
     }
 }
