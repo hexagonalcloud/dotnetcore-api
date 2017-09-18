@@ -1,9 +1,9 @@
 using Api.Data;
 using Api.Data.Sql;
+using Api.Services;
 using Autofac;
 using AutofacSerilogIntegration;
 using Microsoft.Extensions.Configuration;
-using Serilog;
 
 namespace Api
 {
@@ -19,6 +19,7 @@ namespace Api
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterLogger();
+            builder.RegisterType<UrlService>().As<IUrlService>().SingleInstance();
             builder.RegisterType<ProductData>().As<IProductData>();
         }
     }

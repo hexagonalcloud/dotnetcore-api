@@ -15,5 +15,7 @@ namespace Api.Models
 
         [JsonIgnore]
         public DateTime ModifiedDate { get; set; }
+
+        public string Color { get; set; }
     }
 }

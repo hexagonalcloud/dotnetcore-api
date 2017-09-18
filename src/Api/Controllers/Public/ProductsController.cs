@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Api.Data;
 using Api.Models;
+using Api.Parameters;
+using Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.Public
@@ -10,26 +11,22 @@ namespace Api.Controllers.Public
     [Route("api/public/[controller]")]
     public class ProductsController : Controller
     {
-        private const int MaxPageSize = 20;
         private readonly IProductData _data;
-        private readonly IUrlHelper _urlHelper;
+        private readonly IUrlService _urlService;
 
-        public ProductsController(IProductData data, IUrlHelper urlHelper)
+        public ProductsController(IProductData data, IUrlService urlService)
         {
             _data = data;
-            _urlHelper = urlHelper;
+            _urlService = urlService;
         }
 
-        [ResponseCache(CacheProfileName = "Default")]
+        [ResponseCache(CacheProfileName = "Default", VaryByQueryKeys = new[] { "PageNumber", "PageSize", "Color"})]
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         [HttpGet(Name = "GetProducts")]
-        public async Task<IActionResult> Get([FromQuery]int? pageNumber, [FromQuery]int? pageSize)
+        public async Task<IActionResult> Get([FromQuery] PagingParameters pagingParameters, [FromQuery] FilterParameters filterParameters)
         {
-            var page = pageNumber.HasValue && pageNumber.Value > 0 ? pageNumber.Value : 1;
-            var size = pageSize.HasValue && pageSize.Value < MaxPageSize ? pageSize.Value : MaxPageSize;
-
-            var pagedList = await _data.Get(page, size);
-            var linkHeader = CreateLinkHeader(pagedList);
+            var pagedList = await _data.Get(pagingParameters, filterParameters);
+            var linkHeader = _urlService.CreateLinkHeader("GetProducts", pagedList);
 
             // TODO: possible additional headers?
             // max-pagesize?
@@ -37,7 +34,7 @@ namespace Api.Controllers.Public
             // only include the pagesize if the pagesize is not the default pagesize, or if the pagezsize was specified? Probably.
             // add sorting once that is implemented to the links, same as page size, only add to the links if it there is a param and it is valid.
 
-            Response.Headers.Add("Link", string.Join(", ", linkHeader.ToArray()));
+            Response.Headers.Add("Link", linkHeader);
             return Ok(pagedList);
         }
 
@@ -48,39 +45,6 @@ namespace Api.Controllers.Public
         public async Task<IActionResult> GetById(int id)
         {
             return Ok(await _data.GetById(id));
-        }
-
-        private IEnumerable<string> CreateLinkHeader(PagedList<Product> pagedList)
-        {
-            // for now based on https://developer.github.com/v3/#pagination
-            // TODO: do not add page size if the query param is null
-            var linkHeaders = new List<string>();
-
-            if (pagedList.HasNext)
-            {
-                var linkHeader = "<" + _urlHelper.Link("GetProducts", new { pageNumber = pagedList.CurrentPage + 1, pageSize = pagedList.PageSize }).ToLowerInvariant() + ">; rel=next";
-                linkHeaders.Add(linkHeader);
-            }
-
-            if (!pagedList.IsLastPage)
-            {
-                var linkHeader = "<" + _urlHelper.Link("GetProducts", new { pageNumber = pagedList.TotalPages, pageSize = pagedList.PageSize }).ToLowerInvariant() + ">; rel=last";
-                linkHeaders.Add(linkHeader);
-            }
-
-            if (!pagedList.IsFirstPage)
-            {
-                var linkHeader = "<" + _urlHelper.Link("GetProducts", new { pageNumber = 1, pageSize = pagedList.PageSize }).ToLowerInvariant() + ">; rel=first";
-                linkHeaders.Add(linkHeader);
-            }
-
-            if (pagedList.HasPrevious)
-            {
-                var linkHeader = "<" + _urlHelper.Link("GetProducts", new { pageNumber = pagedList.CurrentPage - 1, pageSize = pagedList.PageSize }).ToLowerInvariant() + ">; rel=prev";
-                linkHeaders.Add(linkHeader);
-            }
-
-            return linkHeaders;
         }
     }
 }
