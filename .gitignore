@@ -46,3 +46,4 @@ node_modules/
 .idea/dictionaries
 .vs/
 
+/src/Api/Properties/PublishProfiles
