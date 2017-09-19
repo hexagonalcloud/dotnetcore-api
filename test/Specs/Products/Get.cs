@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Api.Controllers;
 using Api.Controllers.Public;
 using Api.Data;
 using Api.Models;
@@ -9,18 +7,12 @@ using Api.Parameters;
 using Api.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 
 namespace Specs.Products
 {
-    //- Given a resource Products
-    //- When a Client sends a GET request (or API receives a request, pbb makes more sense?)
-    //- Then the API sends a Products responseB
-
     [Trait("Get Products", "")]
     public class Get
     {
