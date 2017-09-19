@@ -6,6 +6,7 @@ using Api.Controllers.Public;
 using Api.Data;
 using Api.Models;
 using Api.Parameters;
+using Api.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
@@ -27,25 +28,26 @@ namespace Specs.Products
         public async Task Send_Products_Response()
         {
             var dataMock = new Mock<IProductData>();
-            var urlHelperMock = new Mock<IUrlHelper>();
+            var urlServiceMock = new Mock<IUrlService>();
             var httpContextMock = new Mock<HttpContext>();
 
-            var pagedList = new PagedList<Product>(new List<Product>() { new Product() { Name = "Product One" } }, 1, new PagingParameters(), new FilterParameters());
-            dataMock.Setup(data => data.Get(new PagingParameters(), new FilterParameters())).ReturnsAsync(pagedList);
+            var parameters = new ProductQueryParameters();
+            var pagedList = new PagedList<Product>(new List<Product>() { new Product() { Name = "Product One", Color = "Black" } }, 1, parameters);
 
+            dataMock.Setup(data => data.Get(parameters)).ReturnsAsync(pagedList);
             httpContextMock.Setup(context => context.Response.Headers).Returns(new HeaderDictionary());
 
-            //var controller = new ProductsController(dataMock.Object, urlHelperMock.Object);
-            //controller.ControllerContext = new ControllerContext();
-            //controller.ControllerContext.HttpContext = httpContextMock.Object;
+            var controller = new ProductsController(dataMock.Object, urlServiceMock.Object);
+            controller.ControllerContext = new ControllerContext();
+            controller.ControllerContext.HttpContext = httpContextMock.Object;
 
-            //var result = await controller.Get(new PagingParameters(), new FilterParameters()) as ObjectResult;
+            var result = await controller.Get(parameters) as ObjectResult;
 
-            //result.Should().NotBeNull();
-            //result.StatusCode.Should().Be(200);
+            result.Should().NotBeNull();
+            result.StatusCode.Should().Be(200);
 
-            //var products = result.Value as IEnumerable<Product>;
-            //products.Should().NotBeNullOrEmpty();
+            var products = result.Value as IEnumerable<Product>;
+            products.Should().NotBeNullOrEmpty();
         }
     }
 }

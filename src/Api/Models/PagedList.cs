@@ -8,15 +8,14 @@ namespace Api.Models
     public class PagedList<T> : List<T>, IWeakEntityTag, IPagedList
         where T : IWeakEntityTag
     {
-        public PagedList(List<T> items, int count, PagingParameters pagingParameters, FilterParameters filterParameters)
+        public PagedList(List<T> items, int count, PagingParameters pagingParameters)
         {
             PagingParameters = pagingParameters;
-            FilterParameters = filterParameters;
 
             TotalCount = count;
             PageSize = pagingParameters.PageSize;
             CurrentPage = pagingParameters.PageNumber;
-            TotalPages = (int)Math.Ceiling(count / (double)pagingParameters.PageNumber);
+            TotalPages = (int)Math.Ceiling(count / (double)pagingParameters.PageSize);
             if (items.Any())
             {
                 ModifiedDate = items.OrderByDescending(x => x.ModifiedDate).First().ModifiedDate;
@@ -43,7 +42,5 @@ namespace Api.Models
         public DateTime ModifiedDate { get; }
 
         public PagingParameters PagingParameters { get; }
-
-        public FilterParameters FilterParameters { get; }
     }
 }

@@ -3,7 +3,9 @@ using Api.Controllers;
 using Api.Controllers.Public;
 using Api.Data;
 using Api.Models;
+using Api.Services;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -17,18 +19,18 @@ namespace Specs.Products
         public async Task Send_Product_Response()
         {
             var dataMock = new Mock<IProductData>();
-            var urlHelperMock = new Mock<IUrlHelper>();
+            var urlServiceMock = new Mock<IUrlService>();
 
-            //dataMock.Setup(data => data.GetById(It.IsAny<int>())).ReturnsAsync(new Product{ Name = "Product One" });
-            //var controller = new ProductsController(dataMock.Object, urlHelperMock.Object);
-            
-            //var result = await controller.GetById(1) as OkObjectResult;
+            dataMock.Setup(data => data.GetById(It.IsAny<int>())).ReturnsAsync(new Product { Name = "Product One" });
+            var controller = new ProductsController(dataMock.Object, urlServiceMock.Object);
 
-            //result.Should().NotBeNull();
-            //result.StatusCode.Should().Be(200);
+            var result = await controller.GetById(1) as OkObjectResult;
 
-            //var products = result.Value as Product;
-            //products.Should().NotBeNull();
+            result.Should().NotBeNull();
+            result.StatusCode.Should().Be(200);
+
+            var products = result.Value as Product;
+            products.Should().NotBeNull();
         }
     }
 }

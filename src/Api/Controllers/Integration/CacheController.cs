@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +37,7 @@ namespace Api.Controllers.Integration
         public async Task<IActionResult> Post([FromBody]Product product)
         {
             await SetAsync(product.ProductID.ToString(), product);
+
             // TODO: return Created()
             return Ok();
         }
@@ -53,10 +54,11 @@ namespace Api.Controllers.Integration
         {
             var json = JsonConvert.SerializeObject(item);
             await _distributedCache.SetStringAsync(key, json);
-            //await _distributedCache.SetStringAsync(key, json, new DistributedCacheEntryOptions
-            //{
+
+            // await _distributedCache.SetStringAsync(key, json, new DistributedCacheEntryOptions
+            // {
             //    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours()
-            //});
+            // });
         }
 
         public async Task<T> GetAsync<T>(string key)

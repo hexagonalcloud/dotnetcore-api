@@ -13,33 +13,42 @@ namespace Api.Services
             _urlHelper = urlHelper;
         }
 
-        public string CreateLinkHeader(string routeName, IPagedList pagedList)
+        public string GetLinkHeader(string routeName, IPagedList pagedList)
         {
             // for now based on https://developer.github.com/v3/#pagination
-            // TODO: do not add page size if the query param is null?
+            if (pagedList.TotalCount == 0)
+            {
+                return string.Empty;
+            }
+
             var linkHeaders = new List<string>();
+            dynamic parameters = pagedList.PagingParameters.GetParameters();
 
             if (pagedList.HasNext)
             {
-                var linkHeader = "<" + _urlHelper.Link(routeName, new { pageNumber = pagedList.CurrentPage + 1, pageSize = pagedList.PageSize, color = pagedList.FilterParameters.Color }).ToLowerInvariant() + ">; rel=next";
+                parameters.PageNumber = pagedList.CurrentPage + 1;
+                var linkHeader = "<" + _urlHelper.Link(routeName, parameters).ToLowerInvariant() + ">; rel=next";
                 linkHeaders.Add(linkHeader);
             }
 
             if (!pagedList.IsLastPage)
             {
-                var linkHeader = "<" + _urlHelper.Link(routeName, new { pageNumber = pagedList.TotalPages, pageSize = pagedList.PageSize, color = pagedList.FilterParameters.Color }).ToLowerInvariant() + ">; rel=last";
+                parameters.PageNumber = pagedList.TotalPages;
+                var linkHeader = "<" + _urlHelper.Link(routeName, parameters).ToLowerInvariant() + ">; rel=last";
                 linkHeaders.Add(linkHeader);
             }
 
             if (!pagedList.IsFirstPage)
             {
-                var linkHeader = "<" + _urlHelper.Link(routeName, new { pageNumber = 1, pageSize = pagedList.PageSize, color = pagedList.FilterParameters.Color }).ToLowerInvariant() + ">; rel=first";
+                parameters.PageNumber = 1;
+                var linkHeader = "<" + _urlHelper.Link(routeName, parameters).ToLowerInvariant() + ">; rel=first";
                 linkHeaders.Add(linkHeader);
             }
 
             if (pagedList.HasPrevious)
             {
-                var linkHeader = "<" + _urlHelper.Link(routeName, new { pageNumber = pagedList.CurrentPage - 1, pageSize = pagedList.PageSize, color = pagedList.FilterParameters.Color }).ToLowerInvariant() + ">; rel=prev";
+                parameters.PageNumber = pagedList.CurrentPage - 1;
+                var linkHeader = "<" + _urlHelper.Link(routeName, parameters).ToLowerInvariant() + ">; rel=prev";
                 linkHeaders.Add(linkHeader);
             }
 

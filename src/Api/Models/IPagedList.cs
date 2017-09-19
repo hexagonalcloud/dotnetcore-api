@@ -23,8 +23,6 @@ namespace Api.Models
 
         DateTime ModifiedDate { get; }
 
-        FilterParameters FilterParameters { get; }
-
         PagingParameters PagingParameters { get; }
     }
 }

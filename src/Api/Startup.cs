@@ -89,7 +89,6 @@ namespace Api
                     "Swagger UI");
                 options.ShowRequestHeaders();
             });
-
         }
 
         private void ConfigureCache(IServiceCollection services)

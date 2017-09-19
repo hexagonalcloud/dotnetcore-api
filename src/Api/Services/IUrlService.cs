@@ -4,6 +4,6 @@ namespace Api.Services
 {
     public interface IUrlService
     {
-        string CreateLinkHeader(string routeName, IPagedList pagedList);
+        string GetLinkHeader(string routeName, IPagedList pagedList);
     }
 }

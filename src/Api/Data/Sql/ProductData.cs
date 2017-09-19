@@ -20,22 +20,33 @@ namespace Api.Data.Sql
             _connectionStrings = options.Value;
         }
 
-        public async Task<PagedList<Product>> Get(PagingParameters pagingParameters, FilterParameters filterParameters)
+        public async Task<PagedList<Product>> Get(ProductQueryParameters queryParameters)
         {
             using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
             {
-                var offset = (pagingParameters.PageNumber - 1) * pagingParameters.PageSize;
+                var offset = (queryParameters.PageNumber - 1) * queryParameters.PageSize;
                 int totalCount = 0;
-                string query;
+                string whereClause;
 
-                if (string.IsNullOrWhiteSpace(filterParameters.Color))
+                if (!string.IsNullOrWhiteSpace(queryParameters.SearchQuery) && !string.IsNullOrWhiteSpace(queryParameters.Color))
                 {
-                    query = $"SELECT *, COUNT(*) OVER () as TotalCount FROM [SalesLT].[Product] ORDER BY [ProductID] OFFSET {offset} ROWS FETCH NEXT {pagingParameters.PageSize} ROWS ONLY";
+                    whereClause =
+                        $"WHERE [Name] LIKE '%{queryParameters.SearchQuery}%' AND [Color] = '{queryParameters.Color}'";
+                }
+                else if (!string.IsNullOrWhiteSpace(queryParameters.SearchQuery))
+                {
+                    whereClause = $"WHERE [Name] LIKE '%{queryParameters.SearchQuery}%'";
+                }
+                else if (!string.IsNullOrWhiteSpace(queryParameters.Color))
+                {
+                    whereClause = $"WHERE [Color] = '{queryParameters.Color}'";
                 }
                 else
                 {
-                    query = $"SELECT *, COUNT(*) OVER () as TotalCount FROM [SalesLT].[Product] WHERE [Color] = '{filterParameters.Color}' ORDER BY [ProductID] OFFSET {offset} ROWS FETCH NEXT {pagingParameters.PageSize} ROWS ONLY";
+                    whereClause = string.Empty;
                 }
+
+                 var query = $"SELECT *, COUNT(*) OVER () as TotalCount FROM [SalesLT].[Product] {whereClause} ORDER BY [ProductID] OFFSET {offset} ROWS FETCH NEXT {queryParameters.PageSize} ROWS ONLY";
 
                 Func<Product, int, Product> map = (result, count) =>
                 {
@@ -44,7 +55,7 @@ namespace Api.Data.Sql
                 };
 
                var response = await db.QueryAsync<Product, int, Product>(query, map, splitOn: "TotalCount");
-               var pagedResult = new PagedList<Product>(response.ToList(), totalCount, pagingParameters, filterParameters);
+               var pagedResult = new PagedList<Product>(response.ToList(), totalCount,  queryParameters);
                 return pagedResult;
             }
         }

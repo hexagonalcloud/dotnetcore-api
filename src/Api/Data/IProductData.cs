@@ -6,7 +6,7 @@ namespace Api.Data
 {
     public interface IProductData
     {
-        Task<PagedList<Product>> Get(PagingParameters pagingParameters, FilterParameters filterParameters);
+        Task<PagedList<Product>> Get(ProductQueryParameters queryParameters);
 
         Task<Product> GetById(int id);
     }
