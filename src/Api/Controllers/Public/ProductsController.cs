@@ -20,7 +20,7 @@ namespace Api.Controllers.Public
             _urlService = urlService;
         }
 
-        [ResponseCache(CacheProfileName = "Default", VaryByQueryKeys = new[] { "PageNumber", "PageSize", "SearchQuery", "Color" })]
+        [ResponseCache(CacheProfileName = "Default", VaryByQueryKeys = new[] { "PageNumber", "PageSize", "SearchQuery", "Color", "OrderBy" })]
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         [HttpGet(Name = "GetProducts")]
         public async Task<IActionResult> Get([FromQuery] ProductQueryParameters queryParameters)

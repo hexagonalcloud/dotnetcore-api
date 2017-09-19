@@ -22,13 +22,15 @@ namespace Swagger
             /// </param>
             /// <param name='color'>
             /// </param>
+            /// <param name='orderBy'>
+            /// </param>
             /// <param name='pageNumber'>
             /// </param>
             /// <param name='pageSize'>
             /// </param>
-            public static IList<Product> ApiAdminProductsGet(this IDotnetcoreApiv1 operations, string searchQuery = default(string), string color = default(string), int? pageNumber = default(int?), int? pageSize = default(int?))
+            public static IList<Product> ApiAdminProductsGet(this IDotnetcoreApiv1 operations, string searchQuery = default(string), string color = default(string), string orderBy = default(string), int? pageNumber = default(int?), int? pageSize = default(int?))
             {
-                return operations.ApiAdminProductsGetAsync(searchQuery, color, pageNumber, pageSize).GetAwaiter().GetResult();
+                return operations.ApiAdminProductsGetAsync(searchQuery, color, orderBy, pageNumber, pageSize).GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
@@ -38,6 +40,8 @@ namespace Swagger
             /// </param>
             /// <param name='color'>
             /// </param>
+            /// <param name='orderBy'>
+            /// </param>
             /// <param name='pageNumber'>
             /// </param>
             /// <param name='pageSize'>
@@ -45,9 +49,9 @@ namespace Swagger
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<IList<Product>> ApiAdminProductsGetAsync(this IDotnetcoreApiv1 operations, string searchQuery = default(string), string color = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IList<Product>> ApiAdminProductsGetAsync(this IDotnetcoreApiv1 operations, string searchQuery = default(string), string color = default(string), string orderBy = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ApiAdminProductsGetWithHttpMessagesAsync(searchQuery, color, pageNumber, pageSize, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.ApiAdminProductsGetWithHttpMessagesAsync(searchQuery, color, orderBy, pageNumber, pageSize, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
@@ -199,13 +203,15 @@ namespace Swagger
             /// </param>
             /// <param name='color'>
             /// </param>
+            /// <param name='orderBy'>
+            /// </param>
             /// <param name='pageNumber'>
             /// </param>
             /// <param name='pageSize'>
             /// </param>
-            public static IList<Product> ApiPublicProductsGet(this IDotnetcoreApiv1 operations, string searchQuery = default(string), string color = default(string), int? pageNumber = default(int?), int? pageSize = default(int?))
+            public static IList<Product> ApiPublicProductsGet(this IDotnetcoreApiv1 operations, string searchQuery = default(string), string color = default(string), string orderBy = default(string), int? pageNumber = default(int?), int? pageSize = default(int?))
             {
-                return operations.ApiPublicProductsGetAsync(searchQuery, color, pageNumber, pageSize).GetAwaiter().GetResult();
+                return operations.ApiPublicProductsGetAsync(searchQuery, color, orderBy, pageNumber, pageSize).GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
@@ -215,6 +221,8 @@ namespace Swagger
             /// </param>
             /// <param name='color'>
             /// </param>
+            /// <param name='orderBy'>
+            /// </param>
             /// <param name='pageNumber'>
             /// </param>
             /// <param name='pageSize'>
@@ -222,9 +230,9 @@ namespace Swagger
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<IList<Product>> ApiPublicProductsGetAsync(this IDotnetcoreApiv1 operations, string searchQuery = default(string), string color = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IList<Product>> ApiPublicProductsGetAsync(this IDotnetcoreApiv1 operations, string searchQuery = default(string), string color = default(string), string orderBy = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ApiPublicProductsGetWithHttpMessagesAsync(searchQuery, color, pageNumber, pageSize, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.ApiPublicProductsGetWithHttpMessagesAsync(searchQuery, color, orderBy, pageNumber, pageSize, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

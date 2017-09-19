@@ -37,6 +37,8 @@ namespace Swagger
         /// </param>
         /// <param name='color'>
         /// </param>
+        /// <param name='orderBy'>
+        /// </param>
         /// <param name='pageNumber'>
         /// </param>
         /// <param name='pageSize'>
@@ -47,7 +49,7 @@ namespace Swagger
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<IList<Product>>> ApiAdminProductsGetWithHttpMessagesAsync(string searchQuery = default(string), string color = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<IList<Product>>> ApiAdminProductsGetWithHttpMessagesAsync(string searchQuery = default(string), string color = default(string), string orderBy = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='id'>
         /// </param>
@@ -109,6 +111,8 @@ namespace Swagger
         /// </param>
         /// <param name='color'>
         /// </param>
+        /// <param name='orderBy'>
+        /// </param>
         /// <param name='pageNumber'>
         /// </param>
         /// <param name='pageSize'>
@@ -119,7 +123,7 @@ namespace Swagger
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<IList<Product>>> ApiPublicProductsGetWithHttpMessagesAsync(string searchQuery = default(string), string color = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<IList<Product>>> ApiPublicProductsGetWithHttpMessagesAsync(string searchQuery = default(string), string color = default(string), string orderBy = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='id'>
         /// </param>

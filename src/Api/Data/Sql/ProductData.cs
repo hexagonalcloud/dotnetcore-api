@@ -28,25 +28,33 @@ namespace Api.Data.Sql
                 int totalCount = 0;
                 string whereClause;
 
+                var parameters = new DynamicParameters();
+
                 if (!string.IsNullOrWhiteSpace(queryParameters.SearchQuery) && !string.IsNullOrWhiteSpace(queryParameters.Color))
                 {
                     whereClause =
-                        $"WHERE [Name] LIKE '%{queryParameters.SearchQuery}%' AND [Color] = '{queryParameters.Color}'";
+                        "WHERE [Name] LIKE @Name AND [Color] = @Color";
+                    parameters.Add("@Name", "%" + queryParameters.SearchQuery + "%");
+                    parameters.Add("@Color", queryParameters.Color);
                 }
                 else if (!string.IsNullOrWhiteSpace(queryParameters.SearchQuery))
                 {
-                    whereClause = $"WHERE [Name] LIKE '%{queryParameters.SearchQuery}%'";
+                    whereClause = $"WHERE [Name] LIKE @Name";
+                    parameters.Add("@Name", "%" + queryParameters.SearchQuery + "%");
                 }
                 else if (!string.IsNullOrWhiteSpace(queryParameters.Color))
                 {
-                    whereClause = $"WHERE [Color] = '{queryParameters.Color}'";
+                    whereClause = $"WHERE [Color] = @Color";
+                    parameters.Add("@Color", queryParameters.Color);
                 }
                 else
                 {
                     whereClause = string.Empty;
                 }
 
-                 var query = $"SELECT *, COUNT(*) OVER () as TotalCount FROM [SalesLT].[Product] {whereClause} ORDER BY [ProductID] OFFSET {offset} ROWS FETCH NEXT {queryParameters.PageSize} ROWS ONLY";
+                var orderByClause = !string.IsNullOrWhiteSpace(queryParameters.OrderBy) ? $"ORDER BY {queryParameters.OrderBy}" : "ORDER BY ProductID";
+
+                var query = $"SELECT *, COUNT(*) OVER () as TotalCount FROM [SalesLT].[Product] {whereClause} {orderByClause} OFFSET {offset} ROWS FETCH NEXT {queryParameters.PageSize} ROWS ONLY";
 
                 Func<Product, int, Product> map = (result, count) =>
                 {
@@ -54,7 +62,7 @@ namespace Api.Data.Sql
                     return result;
                 };
 
-               var response = await db.QueryAsync<Product, int, Product>(query, map, splitOn: "TotalCount");
+               var response = await db.QueryAsync<Product, int, Product>(query, map, splitOn: "TotalCount", param: parameters);
                var pagedResult = new PagedList<Product>(response.ToList(), totalCount,  queryParameters);
                 return pagedResult;
             }
