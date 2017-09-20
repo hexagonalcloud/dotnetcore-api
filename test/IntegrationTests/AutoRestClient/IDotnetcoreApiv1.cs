@@ -59,7 +59,7 @@ namespace Swagger
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<IDictionary<string, ModelStateEntry>>> ApiAdminProductsPostWithHttpMessagesAsync(CreateProduct product = default(CreateProduct), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<object>> ApiAdminProductsPostWithHttpMessagesAsync(CreateProduct product = default(CreateProduct), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='id'>
         /// </param>
@@ -70,6 +70,16 @@ namespace Swagger
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse<AdminProduct>> ApiAdminProductsByIdGetWithHttpMessagesAsync(System.Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='id'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> ApiAdminProductsByIdDeleteWithHttpMessagesAsync(System.Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='id'>
         /// </param>

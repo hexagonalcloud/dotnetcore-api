@@ -66,6 +66,25 @@ namespace IntegrationTests.Tests.Admin
 
             var createResult = await client.ApiAdminProductsPostWithHttpMessagesAsync(newProduct);
             createResult.Response.StatusCode.Should().Be(HttpStatusCode.Created);
+            string createContent = await createResult.Response.Content.ReadAsStringAsync();
+            var created = JsonConvert.DeserializeObject<Swagger.Models.CreateProduct>(getByIdContent);
+            created.Should().NotBeNull();
+
+            //Location = {
+            //    http://localhost:5001/api/admin/products?id=82397ebe-5b70-4643-9cae-c8470c575179}
+
+            var getUrl = createResult.Response.Headers.Location;
+            var getId = getUrl.Query.Substring(getUrl.Query.IndexOf('=') + 1);
+            Guid createdId = new Guid(getId);
+
+            var getCreated = await client.ApiAdminProductsByIdGetWithHttpMessagesAsync(createdId);
+            getCreated.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var delete = await client.ApiAdminProductsByIdDeleteWithHttpMessagesAsync(createdId);
+            delete.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            delete = await client.ApiAdminProductsByIdDeleteWithHttpMessagesAsync(createdId);
+            delete.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Fact]

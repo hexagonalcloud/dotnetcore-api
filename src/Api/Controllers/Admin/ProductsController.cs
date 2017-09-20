@@ -57,7 +57,7 @@ namespace Api.Controllers.Admin
 
         [ProducesResponseType(400)]
         [ProducesResponseType(typeof(ModelStateDictionary), 422)]
-        [ProducesResponseType(201)]
+        [ProducesResponseType(typeof(CreateProduct), 201)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateProduct product)
         {
@@ -75,6 +75,21 @@ namespace Api.Controllers.Admin
             var invalidResult = new ObjectResult(ModelState); // TODO: return validation errors
             invalidResult.StatusCode = StatusCodes.Status422UnprocessableEntity;
             return invalidResult;
+        }
+
+        [ProducesResponseType(404)]
+        [ProducesResponseType(200)]
+        [Route("{id}")]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _data.Delete(id);
+            if (result)
+            {
+                return Ok();
+            }
+
+            return NotFound();
         }
     }
 }

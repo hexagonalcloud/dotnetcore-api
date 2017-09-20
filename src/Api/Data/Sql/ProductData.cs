@@ -36,8 +36,8 @@ namespace Api.Data.Sql
 
             using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
             {
-               var response = await db.QueryAsync<Product, int, Product>(createQuery.query, map, splitOn: "TotalCount", param: createQuery.parameters);
-               var pagedResult = new PagedList<Product>(response.ToList(), totalCount,  queryParameters);
+                var response = await db.QueryAsync<Product, int, Product>(createQuery.query, map, splitOn: "TotalCount", param: createQuery.parameters);
+                var pagedResult = new PagedList<Product>(response.ToList(), totalCount, queryParameters);
                 return pagedResult;
             }
         }
@@ -69,21 +69,22 @@ namespace Api.Data.Sql
 
             using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
             {
-                try
-                {
-                    var createResult = await db.InsertAsync(product);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                await db.InsertAsync(product);
             }
 
             return product.RowGuid;
         }
 
-        private static(string query, DynamicParameters parameters) CreateGetProductsQuery(ProductQueryParameters queryParameters, int offset)
+        public async Task<bool> Delete(Guid id)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
+            {
+                var result = await db.DeleteAsync(new AdminProduct { RowGuid = id });
+                return result;
+            }
+        }
+
+        private static (string query, DynamicParameters parameters) CreateGetProductsQuery(ProductQueryParameters queryParameters, int offset)
         {
             string whereClause;
 

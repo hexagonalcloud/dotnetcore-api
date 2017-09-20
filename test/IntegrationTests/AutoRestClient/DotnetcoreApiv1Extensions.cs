@@ -62,7 +62,7 @@ namespace Swagger
             /// </param>
             /// <param name='product'>
             /// </param>
-            public static IDictionary<string, ModelStateEntry> ApiAdminProductsPost(this IDotnetcoreApiv1 operations, CreateProduct product = default(CreateProduct))
+            public static object ApiAdminProductsPost(this IDotnetcoreApiv1 operations, CreateProduct product = default(CreateProduct))
             {
                 return operations.ApiAdminProductsPostAsync(product).GetAwaiter().GetResult();
             }
@@ -75,7 +75,7 @@ namespace Swagger
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<IDictionary<string, ModelStateEntry>> ApiAdminProductsPostAsync(this IDotnetcoreApiv1 operations, CreateProduct product = default(CreateProduct), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<object> ApiAdminProductsPostAsync(this IDotnetcoreApiv1 operations, CreateProduct product = default(CreateProduct), CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.ApiAdminProductsPostWithHttpMessagesAsync(product, null, cancellationToken).ConfigureAwait(false))
                 {
@@ -107,6 +107,29 @@ namespace Swagger
                 {
                     return _result.Body;
                 }
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            public static void ApiAdminProductsByIdDelete(this IDotnetcoreApiv1 operations, System.Guid id)
+            {
+                operations.ApiAdminProductsByIdDeleteAsync(id).GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task ApiAdminProductsByIdDeleteAsync(this IDotnetcoreApiv1 operations, System.Guid id, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.ApiAdminProductsByIdDeleteWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
             /// <param name='operations'>
