@@ -5,8 +5,8 @@ namespace Api.Parameters
 {
     public class ProductQueryParameters : PagingParameters
     {
-        private readonly string[] _allowedOrdering = { "ProductID", "ProductID desc", "ProductID asc", "Color", "Color desc", "Color asc", "Name", "Name asc", "Name desc" };
-        private string _orderBy = "ProductID";
+        private readonly string[] _allowedOrdering = { "Color", "Color desc", "Color asc", "Name", "Name asc", "Name desc" };
+        private string _orderBy = "Name";
 
         public string SearchQuery { get; set; }
 
@@ -18,7 +18,7 @@ namespace Api.Parameters
 
             set
             {
-                _orderBy = _allowedOrdering.Any(s => s.Equals(value, StringComparison.OrdinalIgnoreCase)) ? value : "ProductID";
+                _orderBy = _allowedOrdering.Any(s => s.Equals(value, StringComparison.OrdinalIgnoreCase)) ? value : "Name";
             }
         }
     }

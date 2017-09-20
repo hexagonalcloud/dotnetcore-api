@@ -23,7 +23,7 @@ namespace IntegrationTests.Tests
             // pick one of the products to get by id
 
             var selectedProduct = products.FirstOrDefault();
-            var getByIdResult = await client.ApiPublicProductsByIdGetWithHttpMessagesAsync(selectedProduct.ProductID.GetValueOrDefault());
+            var getByIdResult = await client.ApiPublicProductsByIdGetWithHttpMessagesAsync(selectedProduct.Id.GetValueOrDefault());
             getByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             string getByIdContent = await getByIdResult.Response.Content.ReadAsStringAsync();
             var product = JsonConvert.DeserializeObject<Swagger.Models.Product>(getByIdContent);

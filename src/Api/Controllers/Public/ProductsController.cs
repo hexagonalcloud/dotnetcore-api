@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Api.Data;
@@ -35,7 +36,7 @@ namespace Api.Controllers.Public
         [ProducesResponseType(typeof(Product), 200)]
         [Route("{id}")]
         [HttpGet]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             return Ok(await _data.GetById(id));
         }

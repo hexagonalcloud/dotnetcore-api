@@ -1,8 +1,8 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers
+namespace Api.Controllers.Integration
 {
     [Authorize]
     [Route("api/integration/[controller]")]

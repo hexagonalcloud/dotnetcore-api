@@ -38,7 +38,7 @@ namespace Specs.Products
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(200);
 
-            var products = result.Value as IEnumerable<Product>;
+            var products = result.Value as IEnumerable<BaseProduct>;
             products.Should().NotBeNullOrEmpty();
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Api.Data;
@@ -23,7 +24,7 @@ namespace Api.Controllers.Admin
             _urlService = urlService;
         }
 
-        [EntityTagFilter]
+        // [EntityTagFilter]
         [ProducesResponseType(304)]
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         [HttpGet(Name = "GetAdminProducts")]
@@ -35,14 +36,26 @@ namespace Api.Controllers.Admin
             return Ok(pagedList);
         }
 
-        [EntityTagFilter]
-        [ProducesResponseType(typeof(Product), 200)]
+        // [EntityTagFilter]
+        [ProducesResponseType(typeof(AdminProduct), 200)]
         [ProducesResponseType(304)]
         [Route("{id}")]
         [HttpGet]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
-            return Ok(await _data.GetById(id));
+            return Ok(await _data.GetAdminProductById(id));
+        }
+
+        [ProducesResponseType(201)]
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] AdminProduct product)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _data.Create(product);
+            }
+
+            return new CreatedResult(string.Empty, null);
         }
     }
 }

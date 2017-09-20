@@ -60,9 +60,32 @@ namespace Swagger
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
+            /// <param name='product'>
+            /// </param>
+            public static void ApiAdminProductsPost(this IDotnetcoreApiv1 operations, AdminProduct product = default(AdminProduct))
+            {
+                operations.ApiAdminProductsPostAsync(product).GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='product'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task ApiAdminProductsPostAsync(this IDotnetcoreApiv1 operations, AdminProduct product = default(AdminProduct), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.ApiAdminProductsPostWithHttpMessagesAsync(product, null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
             /// <param name='id'>
             /// </param>
-            public static Product ApiAdminProductsByIdGet(this IDotnetcoreApiv1 operations, int id)
+            public static AdminProduct ApiAdminProductsByIdGet(this IDotnetcoreApiv1 operations, System.Guid id)
             {
                 return operations.ApiAdminProductsByIdGetAsync(id).GetAwaiter().GetResult();
             }
@@ -75,7 +98,7 @@ namespace Swagger
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<Product> ApiAdminProductsByIdGetAsync(this IDotnetcoreApiv1 operations, int id, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<AdminProduct> ApiAdminProductsByIdGetAsync(this IDotnetcoreApiv1 operations, System.Guid id, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.ApiAdminProductsByIdGetWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false))
                 {
@@ -243,7 +266,7 @@ namespace Swagger
             /// </param>
             /// <param name='id'>
             /// </param>
-            public static Product ApiPublicProductsByIdGet(this IDotnetcoreApiv1 operations, int id)
+            public static Product ApiPublicProductsByIdGet(this IDotnetcoreApiv1 operations, System.Guid id)
             {
                 return operations.ApiPublicProductsByIdGetAsync(id).GetAwaiter().GetResult();
             }
@@ -256,7 +279,7 @@ namespace Swagger
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<Product> ApiPublicProductsByIdGetAsync(this IDotnetcoreApiv1 operations, int id, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<Product> ApiPublicProductsByIdGetAsync(this IDotnetcoreApiv1 operations, System.Guid id, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.ApiPublicProductsByIdGetWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false))
                 {

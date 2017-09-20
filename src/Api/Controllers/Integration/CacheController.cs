@@ -36,7 +36,7 @@ namespace Api.Controllers.Integration
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Product product)
         {
-            await SetAsync(product.ProductID.ToString(), product);
+            await SetAsync(product.RowGuid.ToString(), product);
 
             // TODO: return Created()
             return Ok();

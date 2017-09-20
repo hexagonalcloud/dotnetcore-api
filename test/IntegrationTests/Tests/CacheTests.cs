@@ -1,4 +1,5 @@
-﻿using System.Net;
+using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -23,26 +24,26 @@ namespace IntegrationTests.Tests
             client.HttpClient.SetBearerToken(tokenResponse.AccessToken);
 
             var product = new Product();
-            product.ProductID = 100;
+            product.Id = Guid.NewGuid();
             product.Name = "Top top product";
 
             var postRequest = await client.ApiIntegrationCachePostWithHttpMessagesAsync(product);
 
             postRequest.Response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var getRequest = await client.ApiIntegrationCacheByIdGetWithHttpMessagesAsync(product.ProductID.ToString());
+            var getRequest = await client.ApiIntegrationCacheByIdGetWithHttpMessagesAsync(product.Id.ToString());
 
             getRequest.Response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             // TODO: check response content
 
             var deleteRequest =
-                await client.ApiIntegrationCacheByIdDeleteWithHttpMessagesAsync(product.ProductID.ToString());
+                await client.ApiIntegrationCacheByIdDeleteWithHttpMessagesAsync(product.Id.ToString());
 
             deleteRequest.Response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var validateRequest =
-                await client.ApiIntegrationCacheByIdGetWithHttpMessagesAsync(product.ProductID.ToString());
+                await client.ApiIntegrationCacheByIdGetWithHttpMessagesAsync(product.Id.ToString());
 
             validateRequest.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -53,7 +54,7 @@ namespace IntegrationTests.Tests
             var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
 
             var product = new Product();
-            product.ProductID = 100;
+            product.Id = Guid.NewGuid();
             product.Name = "Top top product";
 
             var postRequest = await client.ApiIntegrationCachePostWithHttpMessagesAsync(product);
@@ -61,14 +62,14 @@ namespace IntegrationTests.Tests
             postRequest.Response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 
             var getRequest =
-                await client.ApiIntegrationCacheByIdGetWithHttpMessagesAsync(product.ProductID.ToString());
+                await client.ApiIntegrationCacheByIdGetWithHttpMessagesAsync(product.Id.ToString());
 
             getRequest.Response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 
             // TODO: check response content
 
             var deleteRequest =
-                await client.ApiIntegrationCacheByIdDeleteWithHttpMessagesAsync(product.ProductID.ToString());
+                await client.ApiIntegrationCacheByIdDeleteWithHttpMessagesAsync(product.Id.ToString());
 
             deleteRequest.Response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }

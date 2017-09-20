@@ -20,11 +20,18 @@ namespace Swagger.Models
         /// <summary>
         /// Initializes a new instance of the Product class.
         /// </summary>
-        public Product(int? productID = default(int?), string name = default(string), string color = default(string))
+        public Product(System.Guid? id = default(System.Guid?), string name = default(string), string color = default(string), double? listPrice = default(double?), string productNumber = default(string), string size = default(string), double? weight = default(double?), int? productCategoryId = default(int?), int? productModelId = default(int?), byte[] thumbNailPhoto = default(byte[]))
         {
-            ProductID = productID;
+            Id = id;
             Name = name;
             Color = color;
+            ListPrice = listPrice;
+            ProductNumber = productNumber;
+            Size = size;
+            Weight = weight;
+            ProductCategoryId = productCategoryId;
+            ProductModelId = productModelId;
+            ThumbNailPhoto = thumbNailPhoto;
             CustomInit();
         }
 
@@ -35,8 +42,8 @@ namespace Swagger.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "productID")]
-        public int? ProductID { get; set; }
+        [JsonProperty(PropertyName = "Id")]
+        public System.Guid? Id { get; set; }
 
         /// <summary>
         /// </summary>
@@ -47,6 +54,41 @@ namespace Swagger.Models
         /// </summary>
         [JsonProperty(PropertyName = "color")]
         public string Color { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "listPrice")]
+        public double? ListPrice { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "productNumber")]
+        public string ProductNumber { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "size")]
+        public string Size { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "weight")]
+        public double? Weight { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "productCategoryId")]
+        public int? ProductCategoryId { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "productModelId")]
+        public int? ProductModelId { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "thumbNailPhoto")]
+        public byte[] ThumbNailPhoto { get; set; }
 
     }
 }
