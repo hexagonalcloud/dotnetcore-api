@@ -13,6 +13,6 @@ namespace Api.Data
 
         Task<AdminProduct> GetAdminProductById(Guid id);
 
-        Task<Guid> Create(AdminProduct product);
+        Task<Guid> Create(CreateProduct product);
     }
 }

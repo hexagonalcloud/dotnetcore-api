@@ -32,13 +32,20 @@ namespace Api.Controllers.Public
             return Ok(pagedList);
         }
 
+        [ProducesResponseType(404)]
         [ResponseCache(CacheProfileName = "Default")]
         [ProducesResponseType(typeof(Product), 200)]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetById(Guid id)
         {
-            return Ok(await _data.GetById(id));
+            var result = await _data.GetById(id);
+            if (result == null)
+            {
+                return new NotFoundResult();
+            }
+
+            return Ok(result);
         }
     }
 }

@@ -1,11 +1,9 @@
-using System;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Xunit;
 
-namespace IntegrationTests.Tests
+namespace IntegrationTests.Tests.Public
 {
     public class ValuesTests
     {

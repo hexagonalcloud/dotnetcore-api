@@ -59,7 +59,7 @@ namespace Swagger
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> ApiAdminProductsPostWithHttpMessagesAsync(AdminProduct product = default(AdminProduct), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<IDictionary<string, ModelStateEntry>>> ApiAdminProductsPostWithHttpMessagesAsync(CreateProduct product = default(CreateProduct), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='id'>
         /// </param>

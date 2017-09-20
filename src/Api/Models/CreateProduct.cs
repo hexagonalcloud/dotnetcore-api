@@ -5,10 +5,9 @@ using Newtonsoft.Json;
 namespace Api.Models
 {
     [Table("[SalesLT].[Product]")]
-    public class AdminProduct : BaseProduct, IWeakEntityTag
+    public class CreateProduct : BaseProduct
     {
-        [Key]
-        [JsonProperty("Id", Order = 1)]
+        [JsonIgnore]
         public Guid RowGuid { get; set; }
 
         [JsonProperty(Order = 11)]
@@ -25,8 +24,5 @@ namespace Api.Models
 
         [JsonProperty(Order = 16)]
         public DateTime? DiscontinuedDate { get; set; }
-
-        [JsonProperty(Order = 17)]
-        public DateTime ModifiedDate { get; set; }
     }
 }

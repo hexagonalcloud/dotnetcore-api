@@ -60,9 +60,27 @@ namespace Api.Data.Sql
             }
         }
 
-        public Task<Guid> Create(AdminProduct product)
+        public async Task<Guid> Create(CreateProduct product)
         {
-            throw new NotImplementedException();
+            if (product.RowGuid == Guid.Empty)
+            {
+                product.RowGuid = Guid.NewGuid();
+            }
+
+            using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
+            {
+                try
+                {
+                    var createResult = await db.InsertAsync(product);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
+            return product.RowGuid;
         }
 
         private static(string query, DynamicParameters parameters) CreateGetProductsQuery(ProductQueryParameters queryParameters, int offset)

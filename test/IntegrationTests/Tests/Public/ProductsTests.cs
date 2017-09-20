@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -6,12 +7,12 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace IntegrationTests.Tests
+namespace IntegrationTests.Tests.Public
 {
     public class ProductsTests
     {
         [Fact]
-        public async Task Run()
+        public async Task Ok()
         {
             var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
             var getResult = await client.ApiPublicProductsGetWithHttpMessagesAsync();
@@ -28,19 +29,14 @@ namespace IntegrationTests.Tests
             string getByIdContent = await getByIdResult.Response.Content.ReadAsStringAsync();
             var product = JsonConvert.DeserializeObject<Swagger.Models.Product>(getByIdContent);
             product.Should().NotBeNull();
+        }
 
-            // TDOO:  no longer applied to public endpoint, add this to an admin integration test
-//            var eTagHeader = getByIdResult.Response.Headers.ETag;
-//            eTagHeader.IsWeak.Should().BeTrue();
-
-            // now make another request with the etag
-            // we expect the result to be empty and the status code to be 304
-//            client.HttpClient.DefaultRequestHeaders.IfNoneMatch.Add(eTagHeader);
-//
-//            var getUnmodifiedByIdResult = await client.ApiPublicProductsByIdGetWithHttpMessagesAsync(selectedProduct.ProductID.GetValueOrDefault());
-//            getUnmodifiedByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.NotModified);
-//            string unmodifiedResult = await getUnmodifiedByIdResult.Response.Content.ReadAsStringAsync();
-//            unmodifiedResult.Should().BeNullOrWhiteSpace();
+        [Fact]
+        public async Task NotFound()
+        {
+            var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
+            var getByIdResult = await client.ApiPublicProductsByIdGetWithHttpMessagesAsync(Guid.NewGuid());
+            getByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
     }
 }

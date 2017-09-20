@@ -62,9 +62,9 @@ namespace Swagger
             /// </param>
             /// <param name='product'>
             /// </param>
-            public static void ApiAdminProductsPost(this IDotnetcoreApiv1 operations, AdminProduct product = default(AdminProduct))
+            public static IDictionary<string, ModelStateEntry> ApiAdminProductsPost(this IDotnetcoreApiv1 operations, CreateProduct product = default(CreateProduct))
             {
-                operations.ApiAdminProductsPostAsync(product).GetAwaiter().GetResult();
+                return operations.ApiAdminProductsPostAsync(product).GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
@@ -75,9 +75,12 @@ namespace Swagger
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task ApiAdminProductsPostAsync(this IDotnetcoreApiv1 operations, AdminProduct product = default(AdminProduct), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IDictionary<string, ModelStateEntry>> ApiAdminProductsPostAsync(this IDotnetcoreApiv1 operations, CreateProduct product = default(CreateProduct), CancellationToken cancellationToken = default(CancellationToken))
             {
-                (await operations.ApiAdminProductsPostWithHttpMessagesAsync(product, null, cancellationToken).ConfigureAwait(false)).Dispose();
+                using (var _result = await operations.ApiAdminProductsPostWithHttpMessagesAsync(product, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <param name='operations'>

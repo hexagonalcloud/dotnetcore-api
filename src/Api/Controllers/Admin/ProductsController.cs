@@ -7,7 +7,9 @@ using Api.Models;
 using Api.Parameters;
 using Api.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Controllers.Admin
 {
@@ -39,23 +41,40 @@ namespace Api.Controllers.Admin
         // [EntityTagFilter]
         [ProducesResponseType(typeof(AdminProduct), 200)]
         [ProducesResponseType(304)]
+        [ProducesResponseType(404)]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetById(Guid id)
         {
-            return Ok(await _data.GetAdminProductById(id));
-        }
-
-        [ProducesResponseType(201)]
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AdminProduct product)
-        {
-            if (ModelState.IsValid)
+            var result = await _data.GetAdminProductById(id);
+            if (result == null)
             {
-                var result = await _data.Create(product);
+                return new NotFoundResult();
             }
 
-            return new CreatedResult(string.Empty, null);
+            return Ok(result);
+        }
+
+        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ModelStateDictionary), 422)]
+        [ProducesResponseType(201)]
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] CreateProduct product)
+        {
+            if (product == null)
+            {
+                return new BadRequestResult();
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _data.Create(product);
+                return CreatedAtRoute("GetAdminProducts", new { id = product.RowGuid }, product);
+            }
+
+            var invalidResult = new ObjectResult(ModelState); // TODO: return validation errors
+            invalidResult.StatusCode = StatusCodes.Status422UnprocessableEntity;
+            return invalidResult;
         }
     }
 }
