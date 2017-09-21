@@ -114,6 +114,36 @@ namespace Swagger
             /// </param>
             /// <param name='id'>
             /// </param>
+            /// <param name='product'>
+            /// </param>
+            public static IDictionary<string, ModelStateEntry> ApiAdminProductsByIdPut(this IDotnetcoreApiv1 operations, System.Guid id, UpdateProduct product = default(UpdateProduct))
+            {
+                return operations.ApiAdminProductsByIdPutAsync(id, product).GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='product'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<IDictionary<string, ModelStateEntry>> ApiAdminProductsByIdPutAsync(this IDotnetcoreApiv1 operations, System.Guid id, UpdateProduct product = default(UpdateProduct), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ApiAdminProductsByIdPutWithHttpMessagesAsync(id, product, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
             public static void ApiAdminProductsByIdDelete(this IDotnetcoreApiv1 operations, System.Guid id)
             {
                 operations.ApiAdminProductsByIdDeleteAsync(id).GetAwaiter().GetResult();

@@ -179,6 +179,7 @@ namespace Api
                 options.Filters.Add(typeof(RequestLogFilter));
                 options.Filters.Add(typeof(ExceptionLogFilter));
                 options.Filters.Add(new ProducesAttribute("application/json"));
+                options.ReturnHttpNotAcceptable = true;
             })
                 .AddJsonOptions(options =>
                 {

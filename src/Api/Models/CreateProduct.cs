@@ -8,7 +8,7 @@ namespace Api.Models
     public class CreateProduct : BaseProduct
     {
         [JsonIgnore]
-        public Guid RowGuid { get; set; }
+        public virtual Guid RowGuid { get; set; }
 
         [JsonProperty(Order = 11)]
         public string ThumbnailPhotoFileName { get; set; }

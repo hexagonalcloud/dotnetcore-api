@@ -84,7 +84,16 @@ namespace Api.Data.Sql
             }
         }
 
-        private static (string query, DynamicParameters parameters) CreateGetProductsQuery(ProductQueryParameters queryParameters, int offset)
+        public async Task<bool> Update(UpdateProduct product)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionStrings.SqlAdventure))
+            {
+                var result = await db.UpdateAsync(product);
+                return result;
+            }
+        }
+
+        private static(string query, DynamicParameters parameters) CreateGetProductsQuery(ProductQueryParameters queryParameters, int offset)
         {
             string whereClause;
 

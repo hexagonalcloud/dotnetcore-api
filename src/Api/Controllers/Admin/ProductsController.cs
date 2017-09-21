@@ -69,7 +69,7 @@ namespace Api.Controllers.Admin
             if (ModelState.IsValid)
             {
                 await _data.Create(product);
-                return CreatedAtRoute("GetAdminProducts", new { id = product.RowGuid }, product);
+                return CreatedAtRoute("GetAdminProducts", new { id = product.RowGuid }, product); // TODO: do we need to return the product here?
             }
 
             var invalidResult = new ObjectResult(ModelState); // TODO: return validation errors
@@ -90,6 +90,32 @@ namespace Api.Controllers.Admin
             }
 
             return NotFound();
+        }
+
+        [ProducesResponseType(404)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ModelStateDictionary), 422)]
+        [ProducesResponseType(204)]
+        [Route("{id}")]
+        [HttpPut]
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateProduct product)
+        {
+            if (product == null)
+            {
+                return new BadRequestResult();
+            }
+
+            product.RowGuid = id; // TODO: also allow requests with id's in the request object
+
+            if (ModelState.IsValid)
+            {
+                await _data.Update(product);
+                return new NoContentResult();
+            }
+
+            var invalidResult = new ObjectResult(ModelState); // TODO: return validation errors
+            invalidResult.StatusCode = StatusCodes.Status422UnprocessableEntity;
+            return invalidResult;
         }
     }
 }

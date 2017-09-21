@@ -16,5 +16,7 @@ namespace Api.Data
         Task<Guid> Create(CreateProduct product);
 
         Task<bool> Delete(Guid id);
+
+        Task<bool> Update(UpdateProduct product);
     }
 }

@@ -79,6 +79,31 @@ namespace IntegrationTests.Tests.Admin
 
             var getCreated = await client.ApiAdminProductsByIdGetWithHttpMessagesAsync(createdId);
             getCreated.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            string getCreatedContent = await getCreated.Response.Content.ReadAsStringAsync();
+            var createdProduct = JsonConvert.DeserializeObject<Swagger.Models.AdminProduct>(getCreatedContent);
+            createdProduct.Should().NotBeNull();
+
+            // TODO: verify  contents
+
+            // update the product
+
+            var updateProduct = new UpdateProduct();
+            updateProduct.Color = createdProduct.Color;
+            updateProduct.ListPrice = createdProduct.ListPrice;
+            updateProduct.Name = createdProduct.Name;
+            updateProduct.ProductNumber = createdProduct.ProductNumber;
+            updateProduct.SellStartDate = createdProduct.SellStartDate;
+            updateProduct.Size = createdProduct.Size;
+            updateProduct.StandardCost = createdProduct.StandardCost;
+
+            updateProduct.SellEndDate = DateTime.Now.AddDays(30);
+
+            var update =
+                await client.ApiAdminProductsByIdPutWithHttpMessagesAsync(createdProduct.Id.GetValueOrDefault(),
+                    updateProduct);
+            update.Response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            // TODO: verify  contents
 
             var delete = await client.ApiAdminProductsByIdDeleteWithHttpMessagesAsync(createdId);
             delete.Response.StatusCode.Should().Be(HttpStatusCode.OK);
