@@ -160,34 +160,35 @@ namespace Api
         private void ConfigureMvc(IServiceCollection services)
         {
             services.AddMvcCore(options =>
-            {
-                options.CacheProfiles.Add(
-                    "Default",
-                    new CacheProfile()
-                    {
-                        Duration = 60,
-                        VaryByHeader = "Accept",
-                        Location = ResponseCacheLocation.Any
-                    });
-                options.CacheProfiles.Add(
-                    "Never",
-                    new CacheProfile()
-                    {
-                        Location = ResponseCacheLocation.None,
-                        NoStore = true
-                    });
-                options.Filters.Add(typeof(RequestLogFilter));
-                options.Filters.Add(typeof(ExceptionLogFilter));
-                options.Filters.Add(new ProducesAttribute("application/json"));
-                options.ReturnHttpNotAcceptable = true;
-            })
+                {
+                    options.CacheProfiles.Add(
+                        "Default",
+                        new CacheProfile()
+                        {
+                            Duration = 60,
+                            VaryByHeader = "Accept",
+                            Location = ResponseCacheLocation.Any
+                        });
+                    options.CacheProfiles.Add(
+                        "Never",
+                        new CacheProfile()
+                        {
+                            Location = ResponseCacheLocation.None,
+                            NoStore = true
+                        });
+                    options.Filters.Add(typeof(RequestLogFilter));
+                    options.Filters.Add(typeof(ExceptionLogFilter));
+                    options.Filters.Add(new ProducesAttribute("application/json"));
+                    options.ReturnHttpNotAcceptable = true;
+                })
                 .AddJsonOptions(options =>
                 {
                     options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 })
                 .AddAuthorization()
                 .AddJsonFormatters()
-                .AddApiExplorer();
+                .AddApiExplorer()
+                .AddDataAnnotations();
         }
 
         private void ConfigureOptions(IServiceCollection services)

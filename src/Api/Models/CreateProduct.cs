@@ -1,28 +1,52 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using Dapper.Contrib.Extensions;
 using Newtonsoft.Json;
 
 namespace Api.Models
 {
     [Table("[SalesLT].[Product]")]
-    public class CreateProduct : BaseProduct
+    public class CreateProduct
     {
         [JsonIgnore]
-        public virtual Guid RowGuid { get; set; }
+        public Guid RowGuid { get; set; }
 
-        [JsonProperty(Order = 11)]
+        [MaxLength(50)]
+        [Required]
+        public string Name { get; set; }
+
+        [MaxLength(15)]
+        public string Color { get; set; }
+
+        [Required]
+        public decimal? ListPrice { get; set; }
+
+        [MaxLength(25)]
+        [Required]
+        public string ProductNumber { get; set; }
+
+        [MaxLength(5)]
+        public string Size { get; set; }
+
+        public decimal? Weight { get; set; }
+
+        public int? ProductCategoryId { get; set; }
+
+        public int? ProductModelId { get; set; }
+
+        public byte[] ThumbNailPhoto { get; set; }
+
+        [MaxLength(50)]
         public string ThumbnailPhotoFileName { get; set; }
 
-        [JsonProperty(Order = 12)]
-        public decimal? StandardCost { get; set; }
+        [Required]
+        public decimal StandardCost { get; set; }
 
-        [JsonProperty(Order = 13)]
+        [Required]
         public DateTime SellStartDate { get; set; }
 
-        [JsonProperty(Order = 15)]
         public DateTime? SellEndDate { get; set; }
 
-        [JsonProperty(Order = 16)]
         public DateTime? DiscontinuedDate { get; set; }
     }
 }

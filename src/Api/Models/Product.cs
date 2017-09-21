@@ -13,5 +13,11 @@ namespace Api.Models
 
         [JsonIgnore]
         public DateTime ModifiedDate { get; set; }
+
+        [JsonIgnore]
+        public DateTime SellStartDate { get; set; }
+
+        [JsonIgnore]
+        public DateTime? DiscontinuedDate { get; set; }
     }
 }

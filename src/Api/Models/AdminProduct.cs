@@ -15,7 +15,7 @@ namespace Api.Models
         public string ThumbnailPhotoFileName { get; set; }
 
         [JsonProperty(Order = 12)]
-        public decimal? StandardCost { get; set; }
+        public decimal StandardCost { get; set; }
 
         [JsonProperty(Order = 13)]
         public DateTime SellStartDate { get; set; }

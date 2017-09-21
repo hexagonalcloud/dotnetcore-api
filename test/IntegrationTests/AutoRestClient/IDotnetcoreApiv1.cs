@@ -95,6 +95,18 @@ namespace Swagger
 
         /// <param name='id'>
         /// </param>
+        /// <param name='patchProduct'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<IDictionary<string, ModelStateEntry>>> ApiAdminProductsByIdPatchWithHttpMessagesAsync(System.Guid id, IList<Operation> patchProduct = default(IList<Operation>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='id'>
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>

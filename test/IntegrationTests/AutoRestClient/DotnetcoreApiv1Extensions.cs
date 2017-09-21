@@ -167,6 +167,36 @@ namespace Swagger
             /// </param>
             /// <param name='id'>
             /// </param>
+            /// <param name='patchProduct'>
+            /// </param>
+            public static IDictionary<string, ModelStateEntry> ApiAdminProductsByIdPatch(this IDotnetcoreApiv1 operations, System.Guid id, IList<Operation> patchProduct = default(IList<Operation>))
+            {
+                return operations.ApiAdminProductsByIdPatchAsync(id, patchProduct).GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='patchProduct'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<IDictionary<string, ModelStateEntry>> ApiAdminProductsByIdPatchAsync(this IDotnetcoreApiv1 operations, System.Guid id, IList<Operation> patchProduct = default(IList<Operation>), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ApiAdminProductsByIdPatchWithHttpMessagesAsync(id, patchProduct, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
             public static Product ApiIntegrationCacheByIdGet(this IDotnetcoreApiv1 operations, string id)
             {
                 return operations.ApiIntegrationCacheByIdGetAsync(id).GetAwaiter().GetResult();

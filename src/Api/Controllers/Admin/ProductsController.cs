@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Api.Data;
-using Api.Filters;
 using Api.Models;
 using Api.Parameters;
+using Api.Results;
 using Api.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -55,6 +55,7 @@ namespace Api.Controllers.Admin
             return Ok(result);
         }
 
+        [ProducesResponseType(409)]
         [ProducesResponseType(400)]
         [ProducesResponseType(typeof(ModelStateDictionary), 422)]
         [ProducesResponseType(typeof(CreateProduct), 201)]
@@ -68,13 +69,11 @@ namespace Api.Controllers.Admin
 
             if (ModelState.IsValid)
             {
-                await _data.Create(product);
-                return CreatedAtRoute("GetAdminProducts", new { id = product.RowGuid }, product); // TODO: do we need to return the product here?
+               var result = await _data.Create(product); // todo: check if exists
+                return CreatedAtRoute("GetAdminProducts", new { id = product.RowGuid }, product); // TODO: do we need to return the product here? Yes, but not this one, we want to return one with an id....
             }
 
-            var invalidResult = new ObjectResult(ModelState); // TODO: return validation errors
-            invalidResult.StatusCode = StatusCodes.Status422UnprocessableEntity;
-            return invalidResult;
+            return new UnprocessableEntityObjectResult(ModelState);
         }
 
         [ProducesResponseType(404)]
@@ -105,7 +104,7 @@ namespace Api.Controllers.Admin
                 return new BadRequestResult();
             }
 
-            product.RowGuid = id; // TODO: also allow requests with id's in the request object
+            product.RowGuid = id; // TODO: also allow requests with id's in the request object? and allow creation? (will always create a new product)
 
             if (ModelState.IsValid)
             {
@@ -113,9 +112,39 @@ namespace Api.Controllers.Admin
                 return new NoContentResult();
             }
 
-            var invalidResult = new ObjectResult(ModelState); // TODO: return validation errors
-            invalidResult.StatusCode = StatusCodes.Status422UnprocessableEntity;
-            return invalidResult;
+            return new UnprocessableEntityObjectResult(ModelState);
+        }
+
+        [ProducesResponseType(404)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ModelStateDictionary), 422)]
+        [ProducesResponseType(204)]
+        [Route("{id}")]
+        [HttpPatch]
+        public async Task<IActionResult> Patch(Guid id, [FromBody] JsonPatchDocument<UpdateProduct> patchProduct)
+        {
+            if (patchProduct == null)
+            {
+                return new BadRequestResult();
+            }
+
+            var adminProduct = await _data.GetAdminProductById(id);
+            if (adminProduct == null)
+            {
+                return new NotFoundResult();
+            }
+
+            var updateProduct = new UpdateProduct(adminProduct);
+            patchProduct.ApplyTo(updateProduct, ModelState);
+            TryValidateModel(updateProduct);
+
+            if (ModelState.IsValid)
+            {
+                await _data.Update(updateProduct);
+                return new NoContentResult();
+            }
+
+            return new UnprocessableEntityObjectResult(ModelState);
         }
     }
 }

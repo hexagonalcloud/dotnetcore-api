@@ -26,6 +26,10 @@ namespace IntegrationTests.Tests
             var product = new Product();
             product.Id = Guid.NewGuid();
             product.Name = "Top top product";
+            product.Color = "Yellow";
+            product.ListPrice = 100d;
+            product.ProductNumber = "not a number";
+            product.Size = "M";
 
             var postRequest = await client.ApiIntegrationCachePostWithHttpMessagesAsync(product);
 
@@ -56,6 +60,10 @@ namespace IntegrationTests.Tests
             var product = new Product();
             product.Id = Guid.NewGuid();
             product.Name = "Top top product";
+            product.Color = "Yellow";
+            product.ListPrice = 100d;
+            product.ProductNumber = "not a number";
+            product.Size = "M";
 
             var postRequest = await client.ApiIntegrationCachePostWithHttpMessagesAsync(product);
 

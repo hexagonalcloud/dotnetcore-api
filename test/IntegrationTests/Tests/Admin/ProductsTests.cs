@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using IdentityModel.Client;
 using Newtonsoft.Json;
+using Swagger;
 using Swagger.Models;
 using Xunit;
 
@@ -17,20 +19,13 @@ namespace IntegrationTests.Tests.Admin
         [Fact]
         public async Task Ok()
         {
-            var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
-
-            var disco = await DiscoveryClient.GetAsync(TestConfiguration.IdentityServerUrl);
-            // request token
-            var tokenClient = new TokenClient(disco.TokenEndpoint, TestConfiguration.ClientId,
-                TestConfiguration.ClientSecret);
-            var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
-            client.HttpClient.SetBearerToken(tokenResponse.AccessToken);
+            var client = await CreateAuthenticatedAutoRestClient();
 
             var getResult = await client.ApiAdminProductsGetWithHttpMessagesAsync();
             getResult.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             string getContent = await getResult.Response.Content.ReadAsStringAsync();
 
-            var products = JsonConvert.DeserializeObject<IEnumerable<Swagger.Models.Product>>(getContent);
+            var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(getContent);
             products.Should().NotBeNullOrEmpty();
 
             // pick one of the products to get by id
@@ -59,7 +54,7 @@ namespace IntegrationTests.Tests.Admin
             newProduct.SellStartDate = DateTime.Now.AddDays(14);
             newProduct.Size = product.Size;
             //newProduct.DiscontinuedDate = null;
-            newProduct.StandardCost = product.StandardCost;
+            newProduct.StandardCost = product.StandardCost.GetValueOrDefault();
             //newProduct.Weight = product.Weight;
             //newProduct.ThumbNailPhoto = product.ThumbNailPhoto;
             //newProduct.ThumbnailPhotoFileName = product.ThumbnailPhotoFileName;
@@ -92,9 +87,9 @@ namespace IntegrationTests.Tests.Admin
             updateProduct.ListPrice = createdProduct.ListPrice;
             updateProduct.Name = createdProduct.Name;
             updateProduct.ProductNumber = createdProduct.ProductNumber;
-            updateProduct.SellStartDate = createdProduct.SellStartDate;
+            updateProduct.SellStartDate = createdProduct.SellStartDate.GetValueOrDefault();
             updateProduct.Size = createdProduct.Size;
-            updateProduct.StandardCost = createdProduct.StandardCost;
+            updateProduct.StandardCost = createdProduct.StandardCost.GetValueOrDefault();
 
             updateProduct.SellEndDate = DateTime.Now.AddDays(30);
 
@@ -104,6 +99,18 @@ namespace IntegrationTests.Tests.Admin
             update.Response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             // TODO: verify  contents
+
+            var patch = new Operation("Yellow", "/color", "replace");
+            var patches = new List<Operation>();
+            patches.Add(patch);
+
+            var pathcProduct =
+                await client.ApiAdminProductsByIdPatchWithHttpMessagesAsync(createdProduct.Id.GetValueOrDefault(),
+                    patches);
+
+            pathcProduct.Response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            // TODO : verify contents
 
             var delete = await client.ApiAdminProductsByIdDeleteWithHttpMessagesAsync(createdId);
             delete.Response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -115,7 +122,74 @@ namespace IntegrationTests.Tests.Admin
         [Fact]
         public async Task NotFound()
         {
-            var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
+            var client = await CreateAuthenticatedAutoRestClient();
+
+            var getByIdResult = await client.ApiAdminProductsByIdGetWithHttpMessagesAsync(Guid.NewGuid());
+            getByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+            // TODO: other verbs
+        }
+
+        [Fact]
+        public async Task UnprocessableEntity()
+        {
+            var httpClient = await CreateAuthenticatedHttpClient();
+
+            var newProduct = new CreateProduct();
+            var jsonContent = JsonConvert.SerializeObject(newProduct);
+
+            // POST
+            
+            var postResult = await httpClient.PostAsync("api/admin/products", new StringContent(jsonContent, Encoding.UTF8, "application/json"));
+            postResult.StatusCode.Should().Be((HttpStatusCode) 422);
+
+            // PUT
+
+            var autorestClient = await CreateAuthenticatedAutoRestClient();
+
+            var getResult = await autorestClient.ApiAdminProductsGetWithHttpMessagesAsync();
+            getResult.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            string getContent = await getResult.Response.Content.ReadAsStringAsync();
+
+            var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(getContent);
+            var selectedProduct = products.FirstOrDefault();
+
+            var putResult = await httpClient.PutAsync("api/admin/products/" + selectedProduct.Id.GetValueOrDefault(), new StringContent(jsonContent, Encoding.UTF8, "application/json"));
+            putResult.StatusCode.Should().Be((HttpStatusCode)422);
+
+            // PATCH
+
+            var patch = new Operation("", "/name", "replace");
+            var patches = new List<Operation>();
+            patches.Add(patch);
+
+            var jsonPatch = JsonConvert.SerializeObject(patches);
+
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), "api/admin/products/" + selectedProduct.Id.GetValueOrDefault());
+            request.Content = new StringContent(jsonPatch, Encoding.UTF8, "application/json-patch+json");
+
+            var patchResult = await httpClient.SendAsync(request);
+
+            patchResult.StatusCode.Should().Be((HttpStatusCode)422);
+
+        }
+
+        private static async Task<HttpClient> CreateAuthenticatedHttpClient()
+        {
+            var client = new HttpClient();
+            client.BaseAddress = TestConfiguration.ApiUri;
+            var disco = await DiscoveryClient.GetAsync(TestConfiguration.IdentityServerUrl);
+            // request token
+            var tokenClient = new TokenClient(disco.TokenEndpoint, TestConfiguration.ClientId,
+                TestConfiguration.ClientSecret);
+            var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
+            client.SetBearerToken(tokenResponse.AccessToken);
+            return client;
+        }
+
+        private static async Task<DotnetcoreApiv1> CreateAuthenticatedAutoRestClient()
+        {
+            var client = new DotnetcoreApiv1(TestConfiguration.ApiUri);
 
             var disco = await DiscoveryClient.GetAsync(TestConfiguration.IdentityServerUrl);
             // request token
@@ -123,9 +197,8 @@ namespace IntegrationTests.Tests.Admin
                 TestConfiguration.ClientSecret);
             var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
             client.HttpClient.SetBearerToken(tokenResponse.AccessToken);
- 
-            var getByIdResult = await client.ApiAdminProductsByIdGetWithHttpMessagesAsync(Guid.NewGuid());
-            getByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            return client;
         }
     }
 }
+
