@@ -1,4 +1,3 @@
-﻿using System;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 // ReSharper disable once CheckNamespace

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Api.Filters;
+using AspNetCoreRateLimit;
 using Autofac;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -41,6 +42,10 @@ namespace Api
                 return new UrlHelper(actionContext);
             });
 
+            ConfigureCache(services);
+
+            ConfigureRateLimiting(services);
+
             ConfigureMvc(services);
 
             ConfigureAuthorization(services);
@@ -48,8 +53,6 @@ namespace Api
             ConfigureSwagger(services);
 
             ConfigureOptions(services);
-
-            ConfigureCache(services);
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -73,6 +76,8 @@ namespace Api
             var origins = _configuration.GetSection("CorsOrigins").GetChildren().Select(o => o.Value).ToArray();
             app.UseCors(builder => builder.WithOrigins(origins)
                 .AllowAnyHeader());
+
+            app.UseIpRateLimiting();
 
             app.UseAuthentication();
             app.UseResponseCaching();
@@ -135,7 +140,7 @@ namespace Api
                     }
                 });
 
-                options.OperationFilter<AuthrorizationOperationFilter>();
+                options.OperationFilter<ResponseOperationFilter>();
                 options.TagActionsBy(apidesc => apidesc.FormatForSwaggerActionGroup());
                 options.DocumentFilter<LowercaseDocumentFilter>();
             });
@@ -201,6 +206,16 @@ namespace Api
                 options.SqlAdventure =
                     _configuration.GetConnectionString("SqlAdventure");
             });
+        }
+
+        private void ConfigureRateLimiting(IServiceCollection services)
+        {
+            // More configuration information at https://github.com/stefanprodan/AspNetCoreRateLimit
+            services.Configure<IpRateLimitOptions>(_configuration.GetSection("IpRateLimiting"));
+            services.Configure<IpRateLimitPolicies>(_configuration.GetSection("IpRateLimitPolicies"));
+
+            services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
         }
     }
 }

@@ -1,22 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Api.Filters
 {
-    public class AuthrorizationOperationFilter : IOperationFilter
+    public class ResponseOperationFilter : IOperationFilter
     {
-        private readonly IOptions<AuthorizationOptions> authorizationOptions;
-
-        public AuthrorizationOperationFilter(IOptions<AuthorizationOptions> authorizationOptions)
-        {
-            this.authorizationOptions = authorizationOptions;
-        }
-
         public void Apply(Operation operation, OperationFilterContext context)
         {
             var controllerPolicies = context.ApiDescription.ControllerAttributes().OfType<AuthorizeAttribute>();
@@ -39,6 +30,8 @@ namespace Api.Filters
                             { "oauth2", new List<string>() { "api1" } }
                     });
             }
+
+            operation.Responses.Add("429", new Response { Description = "Too Many Requests" });
         }
     }
 }
