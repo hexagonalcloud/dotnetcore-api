@@ -21,6 +21,7 @@ namespace Api.Controllers.Public
             _urlService = urlService;
         }
 
+        [ProducesResponseType(304)]
         [ResponseCache(CacheProfileName = "Default", VaryByQueryKeys = new[] { "PageNumber", "PageSize", "SearchQuery", "Color", "OrderBy" })]
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         [HttpGet(Name = "GetProducts")]
@@ -32,6 +33,7 @@ namespace Api.Controllers.Public
             return Ok(pagedList);
         }
 
+        [ProducesResponseType(304)]
         [ProducesResponseType(404)]
         [ResponseCache(CacheProfileName = "Default")]
         [ProducesResponseType(typeof(Product), 200)]

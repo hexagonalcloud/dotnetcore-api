@@ -77,7 +77,6 @@ namespace Api
             app.UseAuthentication();
             app.UseResponseCaching();
 
-            app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
@@ -89,6 +88,10 @@ namespace Api
                     "Swagger UI");
                 options.ShowRequestHeaders();
             });
+
+            app.UseETags();
+
+            app.UseMvc();
         }
 
         private void ConfigureCache(IServiceCollection services)
