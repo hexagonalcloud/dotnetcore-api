@@ -8,6 +8,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -69,15 +70,12 @@ namespace Api
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
+            app.UseCustomtExceptionHandler();
+
             if (!env.IsDevelopment())
             {
                 var options = new RewriteOptions().AddRedirectToHttps();
                 app.UseRewriter(options);
-                app.UseExceptionHandler();
-            }
-            else
-            {
-                app.UseDeveloperExceptionPage();
             }
 
             var origins = _configuration.GetSection("CorsOrigins").GetChildren().Select(o => o.Value).ToArray();

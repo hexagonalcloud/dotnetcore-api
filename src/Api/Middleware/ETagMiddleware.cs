@@ -10,11 +10,11 @@ namespace Api.Middleware
     /// <summary>
     /// https://gist.github.com/madskristensen/36357b1df9ddbfd123162cd4201124c4
     /// </summary>
-    public class ETag
+    public class ETagMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public ETag(RequestDelegate next)
+        public ETagMiddleware(RequestDelegate next)
         {
             _next = next;
         }
@@ -90,4 +90,3 @@ namespace Api.Middleware
         }
     }
 }
-
