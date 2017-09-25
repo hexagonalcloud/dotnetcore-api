@@ -7,7 +7,7 @@ namespace Api
     {
         public static void UseETags(this IApplicationBuilder app)
         {
-            app.UseMiddleware<ETags>();
+            app.UseMiddleware<ETag>();
         }
     }
 }

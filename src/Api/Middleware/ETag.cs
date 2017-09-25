@@ -10,11 +10,11 @@ namespace Api.Middleware
     /// <summary>
     /// https://gist.github.com/madskristensen/36357b1df9ddbfd123162cd4201124c4
     /// </summary>
-    public class ETags
+    public class ETag
     {
         private readonly RequestDelegate _next;
 
-        public ETags(RequestDelegate next)
+        public ETag(RequestDelegate next)
         {
             _next = next;
         }
@@ -29,6 +29,12 @@ namespace Api.Middleware
                 response.Body = ms;
 
                 await _next(context);
+
+                // TODO: verify other status codes to exclude (204 does not allow writing to response stream)
+                if (context.Response.StatusCode == 204)
+                {
+                    return;
+                }
 
                 if (IsEtagSupported(response))
                 {
@@ -84,3 +90,4 @@ namespace Api.Middleware
         }
     }
 }
+
