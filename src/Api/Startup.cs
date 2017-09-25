@@ -77,11 +77,6 @@ namespace Api
             app.UseCors(builder => builder.WithOrigins(origins)
                 .AllowAnyHeader());
 
-            app.UseIpRateLimiting();
-
-            app.UseAuthentication();
-            app.UseResponseCaching();
-
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
@@ -93,6 +88,11 @@ namespace Api
                     "Swagger UI");
                 options.ShowRequestHeaders();
             });
+
+            app.UseIpRateLimiting();
+
+            app.UseAuthentication();
+            app.UseResponseCaching();
 
             app.UseETags();
 
