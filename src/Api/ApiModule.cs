@@ -9,7 +9,7 @@ namespace Api
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterLogger();
-            builder.RegisterType<UrlService>().As<IUrlService>().SingleInstance();
+            builder.RegisterType<UrlService>().As<IUrlService>().InstancePerLifetimeScope();
         }
     }
 }
