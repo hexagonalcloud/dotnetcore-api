@@ -21,8 +21,9 @@ namespace Swagger.Models
         /// <summary>
         /// Initializes a new instance of the UpdateProduct class.
         /// </summary>
-        public UpdateProduct(string name, double listPrice, string productNumber, double standardCost, System.DateTime sellStartDate, string color = default(string), string size = default(string), double? weight = default(double?), int? productCategoryId = default(int?), int? productModelId = default(int?), byte[] thumbNailPhoto = default(byte[]), string thumbnailPhotoFileName = default(string), System.DateTime? sellEndDate = default(System.DateTime?), System.DateTime? discontinuedDate = default(System.DateTime?))
+        public UpdateProduct(string name, double listPrice, string productNumber, double standardCost, System.DateTime sellStartDate, System.Guid? id = default(System.Guid?), string color = default(string), string size = default(string), double? weight = default(double?), int? productCategoryId = default(int?), int? productModelId = default(int?), byte[] thumbNailPhoto = default(byte[]), string thumbnailPhotoFileName = default(string), System.DateTime? sellEndDate = default(System.DateTime?), System.DateTime? discontinuedDate = default(System.DateTime?), System.DateTime? modifiedDate = default(System.DateTime?))
         {
+            Id = id;
             Name = name;
             Color = color;
             ListPrice = listPrice;
@@ -37,6 +38,7 @@ namespace Swagger.Models
             SellStartDate = sellStartDate;
             SellEndDate = sellEndDate;
             DiscontinuedDate = discontinuedDate;
+            ModifiedDate = modifiedDate;
             CustomInit();
         }
 
@@ -44,6 +46,11 @@ namespace Swagger.Models
         /// An initialization method that performs custom operations like setting defaults
         /// </summary>
         partial void CustomInit();
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "id")]
+        public System.Guid? Id { get; set; }
 
         /// <summary>
         /// </summary>
@@ -114,6 +121,11 @@ namespace Swagger.Models
         /// </summary>
         [JsonProperty(PropertyName = "discontinuedDate")]
         public System.DateTime? DiscontinuedDate { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "modifiedDate")]
+        public System.DateTime? ModifiedDate { get; set; }
 
         /// <summary>
         /// Validate the object.

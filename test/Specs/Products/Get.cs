@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Api.Controllers.Public;
-using Api.Data;
-using Api.Models;
-using Api.Parameters;
 using Api.Services;
+using Core;
+using Core.Entities;
+using Core.Parameters;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +38,7 @@ namespace Specs.Products
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(200);
 
-            var products = result.Value as IEnumerable<BaseProduct>;
+            var products = result.Value as IEnumerable<Product>;
             products.Should().NotBeNullOrEmpty();
         }
     }

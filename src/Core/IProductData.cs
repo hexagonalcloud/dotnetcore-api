@@ -1,13 +1,13 @@
 using System;
 using System.Threading.Tasks;
-using Api.Models;
-using Api.Parameters;
+using Core.Entities;
+using Core.Parameters;
 
-namespace Api.Data
+namespace Core
 {
     public interface IProductData
     {
-        Task<PagedList<Product>> Get(ProductQueryParameters queryParameters);
+        Task<IPagedList<Product>> Get(ProductQueryParameters queryParameters);
 
         Task<Product> GetById(Guid id);
 

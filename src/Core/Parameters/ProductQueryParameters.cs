@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Api.Parameters
+namespace Core.Parameters
 {
     public class ProductQueryParameters : PagingParameters
     {

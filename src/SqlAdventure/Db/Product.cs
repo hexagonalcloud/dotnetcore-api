@@ -1,23 +1,18 @@
 using System;
 using Dapper.Contrib.Extensions;
-using Newtonsoft.Json;
 
-namespace Api.Models
+namespace SqlAdventure.Db
 {
     [Table("[SalesLT].[Product]")]
-    public class Product : BaseProduct, IWeakEntityTag
+    public class Product : BaseProduct
     {
         [Key]
-        [JsonProperty("Id", Order = 1)]
         public Guid RowGuid { get; set; }
 
-        [JsonIgnore]
         public DateTime ModifiedDate { get; set; }
 
-        [JsonIgnore]
         public DateTime SellStartDate { get; set; }
 
-        [JsonIgnore]
         public DateTime? DiscontinuedDate { get; set; }
     }
 }

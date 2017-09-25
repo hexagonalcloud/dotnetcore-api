@@ -1,31 +1,19 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using Dapper.Contrib.Extensions;
-using Newtonsoft.Json;
 
-namespace Api.Models
+namespace Core.Entities
 {
-    [Table("[SalesLT].[Product]")]
-    public class CreateProduct
+    public class AdminProduct: IBaseEntity
     {
-        [JsonIgnore]
-        public Guid RowGuid { get; set; }
+        public Guid Id { get; set; }
 
-        [MaxLength(50)]
-        [Required]
         public string Name { get; set; }
 
-        [MaxLength(15)]
         public string Color { get; set; }
 
-        [Required]
         public decimal? ListPrice { get; set; }
 
-        [MaxLength(25)]
-        [Required]
         public string ProductNumber { get; set; }
 
-        [MaxLength(5)]
         public string Size { get; set; }
 
         public decimal? Weight { get; set; }
@@ -36,17 +24,16 @@ namespace Api.Models
 
         public byte[] ThumbNailPhoto { get; set; }
 
-        [MaxLength(50)]
         public string ThumbnailPhotoFileName { get; set; }
 
-        [Required]
         public decimal StandardCost { get; set; }
 
-        [Required]
         public DateTime SellStartDate { get; set; }
 
         public DateTime? SellEndDate { get; set; }
 
         public DateTime? DiscontinuedDate { get; set; }
+      
+        public DateTime ModifiedDate { get; set; }
     }
 }

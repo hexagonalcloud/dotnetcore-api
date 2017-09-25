@@ -1,12 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using Dapper.Contrib.Extensions;
-using Newtonsoft.Json;
 
-namespace Api.Models
+namespace Core.Entities
 {
-    [Table("[SalesLT].[Product]")]
-    public sealed class UpdateProduct
+    public sealed class UpdateProduct: IBaseEntity
     {
         public UpdateProduct()
         {
@@ -14,7 +11,7 @@ namespace Api.Models
 
         public UpdateProduct(AdminProduct product)
         {
-            RowGuid = product.RowGuid;
+            Id = product.Id;
             DiscontinuedDate = product.DiscontinuedDate;
             SellEndDate = product.SellEndDate;
             SellStartDate = product.SellStartDate;
@@ -31,9 +28,7 @@ namespace Api.Models
             Weight = product.Weight;
         }
 
-        [Dapper.Contrib.Extensions.Key]
-        [JsonIgnore]
-        public Guid RowGuid { get; set; }
+        public Guid Id { get; set; }
 
         [MaxLength(50)]
         [Required]
@@ -72,5 +67,7 @@ namespace Api.Models
         public DateTime? SellEndDate { get; set; }
 
         public DateTime? DiscontinuedDate { get; set; }
+
+        public DateTime ModifiedDate { get; set; }
     }
 }

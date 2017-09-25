@@ -1,7 +1,7 @@
 using System;
-using Api.Parameters;
+using Core.Parameters;
 
-namespace Api.Models
+namespace Core.Entities
 {
     public interface IPagedList
     {
@@ -21,8 +21,13 @@ namespace Api.Models
 
         bool IsLastPage { get; }
 
-        DateTime ModifiedDate { get; }
+        DateTime LastModified { get; }
 
         PagingParameters PagingParameters { get; }
+    }
+
+    public interface IPagedList <T> : IPagedList
+        where T: IBaseEntity
+    {
     }
 }

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Api.Models;
+using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Services

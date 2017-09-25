@@ -1189,10 +1189,6 @@ namespace Swagger
         /// </return>
         public async Task<HttpOperationResponse> ApiIntegrationCachePostWithHttpMessagesAsync(Product product = default(Product), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (product != null)
-            {
-                product.Validate();
-            }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;

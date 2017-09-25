@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Api.Controllers.Public;
-using Api.Data;
-using Api.Models;
 using Api.Services;
+using Core;
+using Core.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -28,7 +28,7 @@ namespace Specs.Products
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(200);
 
-            var products = result.Value as BaseProduct;
+            var products = result.Value as Product;
             products.Should().NotBeNull();
         }
     }

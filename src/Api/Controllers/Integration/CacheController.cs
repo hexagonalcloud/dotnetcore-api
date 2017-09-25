@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Api.Models;
+using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -36,7 +36,7 @@ namespace Api.Controllers.Integration
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Product product)
         {
-            await SetAsync(product.RowGuid.ToString(), product);
+            await SetAsync(product.Id.ToString(), product);
 
             // TODO: return Created()
             return Ok();

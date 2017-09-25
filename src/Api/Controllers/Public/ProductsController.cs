@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Api.Data;
-using Api.Models;
-using Api.Parameters;
 using Api.Services;
+using Core;
+using Core.Entities;
+using Core.Parameters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.Public

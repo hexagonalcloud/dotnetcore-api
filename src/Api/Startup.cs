@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Api.Filters;
 using AspNetCoreRateLimit;
 using Autofac;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +15,8 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SqlAdventure;
+using SqlAdventure.Mappers;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Api
@@ -53,11 +57,14 @@ namespace Api
             ConfigureSwagger(services);
 
             ConfigureOptions(services);
+
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(ProductProfile)));
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.RegisterModule(new AutofacModule(_configuration));
+            builder.RegisterModule(new ApiModule());
+            builder.RegisterModule(new SqlAdventureModule());
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)

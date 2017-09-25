@@ -1,4 +1,4 @@
-using Api.Models;
+using Core.Entities;
 
 namespace Api.Services
 {

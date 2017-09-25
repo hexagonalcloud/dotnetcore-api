@@ -44,7 +44,7 @@ namespace IntegrationTests.Tests.Admin
             var newProduct = new CreateProduct();
             newProduct.Color = product.Color;
             //newProduct.DiscontinuedDate = null;
-            newProduct.ListPrice = product.ListPrice;
+            newProduct.ListPrice = product.ListPrice.GetValueOrDefault();
             //newProduct.ModifiedDate // todo remove from create
             newProduct.Name = product.Name + " " + id;
             //newProduct.ProductCategoryId = product.ProductCategoryId;
@@ -84,7 +84,7 @@ namespace IntegrationTests.Tests.Admin
 
             var updateProduct = new UpdateProduct();
             updateProduct.Color = createdProduct.Color;
-            updateProduct.ListPrice = createdProduct.ListPrice;
+            updateProduct.ListPrice = createdProduct.ListPrice.GetValueOrDefault();
             updateProduct.Name = createdProduct.Name;
             updateProduct.ProductNumber = createdProduct.ProductNumber;
             updateProduct.SellStartDate = createdProduct.SellStartDate.GetValueOrDefault();

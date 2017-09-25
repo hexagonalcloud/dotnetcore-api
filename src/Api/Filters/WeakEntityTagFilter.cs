@@ -1,11 +1,11 @@
-﻿using System;
-using Api.Models;
+using System;
+using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Api.Filters
 {
-    public class EntityTagFilter : Attribute, IActionFilter
+    public class WeakEntityTagFilter : Attribute, IActionFilter
     {
         public void OnActionExecuting(ActionExecutingContext context)
         {
@@ -23,7 +23,7 @@ namespace Api.Filters
                         return;
                     }
 
-                    var weakEntityTag = result?.Value as IWeakEntityTag;
+                    var weakEntityTag = result?.Value as IBaseEntity;
                     if (weakEntityTag != null)
                     {
                         var modifiedDate = weakEntityTag.ModifiedDate.ToUniversalTime();

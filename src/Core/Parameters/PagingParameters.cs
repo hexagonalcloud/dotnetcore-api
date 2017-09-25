@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
 
-namespace Api.Parameters
+namespace Core.Parameters
 {
     public class PagingParameters
     {

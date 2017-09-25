@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Api.Data;
-using Api.Models;
-using Api.Parameters;
 using Api.Results;
 using Api.Services;
+using Core;
+using Core.Entities;
+using Core.Parameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +26,7 @@ namespace Api.Controllers.Admin
             _urlService = urlService;
         }
 
-        // [EntityTagFilter]
+        // [WeakEntityTagFilter]
         [ProducesResponseType(304)]
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         [HttpGet(Name = "GetAdminProducts")]
@@ -38,7 +38,7 @@ namespace Api.Controllers.Admin
             return Ok(pagedList);
         }
 
-        // [EntityTagFilter]
+        // [WeakEntityTagFilter]
         [ProducesResponseType(typeof(AdminProduct), 200)]
         [ProducesResponseType(304)]
         [ProducesResponseType(404)]
@@ -69,8 +69,8 @@ namespace Api.Controllers.Admin
 
             if (ModelState.IsValid)
             {
-               var result = await _data.Create(product); // todo: check if exists
-                return CreatedAtRoute("GetAdminProducts", new { id = product.RowGuid }, product); // TODO: do we need to return the product here? Yes, but not this one, we want to return one with an id....
+               var result = await _data.Create(product);
+                return CreatedAtRoute("GetAdminProducts", new { id = result }, product); // TODO: do we need to return the product here? Yes, but not this one, we want to return one with an id....
             }
 
             return new UnprocessableEntityObjectResult(ModelState);
@@ -104,7 +104,7 @@ namespace Api.Controllers.Admin
                 return new BadRequestResult();
             }
 
-            product.RowGuid = id; // TODO: also allow requests with id's in the request object? and allow creation? (will always create a new product)
+            product.Id = id; // TODO: also allow requests with id's in the request object? and allow creation? (will always create a new product)
 
             if (ModelState.IsValid)
             {
