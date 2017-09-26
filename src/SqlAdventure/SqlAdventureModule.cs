@@ -1,5 +1,6 @@
 using Autofac;
 using Core;
+using SqlAdventure.Database;
 
 namespace SqlAdventure
 {
@@ -8,7 +9,8 @@ namespace SqlAdventure
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<ConfigurationOptions>().AsSelf().SingleInstance();
-            builder.RegisterType<ProductData>().As<IProductData>();
+            builder.RegisterType<EFroductData>().As<IProductData>();
+            builder.RegisterType<SqlAdventureContext>().AsSelf();
         }
     }
 }
