@@ -4,7 +4,6 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
-using Serilog.Events;
 
 namespace Api
 {
@@ -23,14 +22,8 @@ namespace Api
                 .AddCommandLine(args);
             Configuration = builder.Build();
 
-            var fileLog = Configuration.GetValue<string>("FileLogLocation");
-
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .Enrich.FromLogContext()
-                .WriteTo.File(fileLog, fileSizeLimitBytes: 31457280)
-                .WriteTo.Console()
+                .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
 
             try
