@@ -10,7 +10,7 @@ namespace SqlAdventure
         {
             builder.RegisterType<ConfigurationOptions>().AsSelf().SingleInstance();
             builder.RegisterType<EFroductData>().As<IProductData>();
-            builder.RegisterType<SqlAdventureContext>().AsSelf();
+            builder.RegisterType<SqlAdventureContext>().As<ISqlAdventureContext>();
         }
     }
 }

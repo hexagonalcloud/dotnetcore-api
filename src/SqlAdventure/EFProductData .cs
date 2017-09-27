@@ -18,9 +18,9 @@ namespace SqlAdventure
     {
         private readonly ConfigurationOptions _configurationOptions;
         private readonly IMapper _mapper;
-        private readonly SqlAdventureContext _dbContext;
+        private readonly ISqlAdventureContext _dbContext;
 
-        public EFroductData(ConfigurationOptions options, IMapper mapper, SqlAdventureContext dbContext)
+        public EFroductData(ConfigurationOptions options, IMapper mapper, ISqlAdventureContext dbContext)
         {
             _configurationOptions = options;
             _mapper = mapper;

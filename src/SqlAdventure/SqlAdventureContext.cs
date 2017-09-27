@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 // ReSharper disable once CheckNamespace
 namespace SqlAdventure.Database
 {
-    public partial class SqlAdventureContext
+    public partial class SqlAdventureContext : ISqlAdventureContext
     {
         private readonly ConfigurationOptions _configurationOptions;
 
