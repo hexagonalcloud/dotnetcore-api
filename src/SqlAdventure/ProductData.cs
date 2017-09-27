@@ -100,6 +100,21 @@ namespace SqlAdventure
             }
         }
 
+        public Task<IEnumerable<string>> GetModels()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<string>> GetCategories()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<string>> GetColors()
+        {
+            throw new NotImplementedException();
+        }
+
         private static(string query, DynamicParameters parameters) CreateGetProductsQuery(ProductQueryParameters queryParameters, int offset)
         {
             string whereClause;

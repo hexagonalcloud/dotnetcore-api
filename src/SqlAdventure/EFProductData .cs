@@ -43,7 +43,7 @@ namespace SqlAdventure
             
             var dbQuery =  _dbContext.Product
                 .Include(p => p.ProductCategory)
-                .Include(p => p.ProductModel)
+                .Include(p => p.ProductModel) 
                 .OrderBy(p => p.Name).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(queryParameters.SearchQuery))
@@ -55,6 +55,8 @@ namespace SqlAdventure
             {
                 dbQuery = dbQuery.Where(p => p.Color == queryParameters.Color.Trim());
             }
+
+            //var orderByClause = !string.IsNullOrWhiteSpace(queryParameters.OrderBy) ? $"ORDER BY {queryParameters.OrderBy}" : "ORDER BY Name";
 
             totalCount = await dbQuery.CountAsync();
             var dbResult = dbQuery.Skip(offset).Take(queryParameters.PageSize);
@@ -163,6 +165,36 @@ namespace SqlAdventure
                 var result = await db.UpdateAsync(dbProduct);
                 return result;
             }
+        }
+
+        public async Task<IEnumerable<string>> GetModels()
+        {
+            var dbQuery = _dbContext.ProductModel
+                .OrderBy(p => p.Name)
+                .Select(p => p.Name);
+
+            return await dbQuery.ToListAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetCategories()
+        {
+            var dbQuery = _dbContext.ProductCategory
+                .Where(p => p.ParentProductCategoryId == null)
+                .OrderBy(p => p.Name)
+                .Select(p => p.Name);
+
+            return await dbQuery.ToListAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetColors()
+        {
+            var dbQuery = _dbContext.Product
+                .Select(p => p.Color)
+                .Where(p => p != null)
+                .Distinct()
+                .OrderBy(p => p);
+
+            return await dbQuery.ToListAsync();
         }
 
         private static(string query, DynamicParameters parameters) CreateGetProductsQuery(ProductQueryParameters queryParameters, int offset)

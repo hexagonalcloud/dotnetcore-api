@@ -20,7 +20,7 @@ namespace Swagger.Models
         /// <summary>
         /// Initializes a new instance of the Product class.
         /// </summary>
-        public Product(System.Guid? id = default(System.Guid?), string name = default(string), string color = default(string), double? listPrice = default(double?), string productNumber = default(string), string size = default(string), double? weight = default(double?), int? productCategoryId = default(int?), int? productModelId = default(int?), byte[] thumbNailPhoto = default(byte[]), System.DateTime? sellStartDate = default(System.DateTime?), System.DateTime? discontinuedDate = default(System.DateTime?), System.DateTime? modifiedDate = default(System.DateTime?))
+        public Product(System.Guid? id = default(System.Guid?), string name = default(string), string color = default(string), double? listPrice = default(double?), string productNumber = default(string), string size = default(string), double? weight = default(double?), string category = default(string), string model = default(string), byte[] thumbNailPhoto = default(byte[]), System.DateTime? sellStartDate = default(System.DateTime?), System.DateTime? discontinuedDate = default(System.DateTime?), System.DateTime? modifiedDate = default(System.DateTime?))
         {
             Id = id;
             Name = name;
@@ -29,8 +29,8 @@ namespace Swagger.Models
             ProductNumber = productNumber;
             Size = size;
             Weight = weight;
-            ProductCategoryId = productCategoryId;
-            ProductModelId = productModelId;
+            Category = category;
+            Model = model;
             ThumbNailPhoto = thumbNailPhoto;
             SellStartDate = sellStartDate;
             DiscontinuedDate = discontinuedDate;
@@ -80,13 +80,13 @@ namespace Swagger.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "productCategoryId")]
-        public int? ProductCategoryId { get; set; }
+        [JsonProperty(PropertyName = "category")]
+        public string Category { get; set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "productModelId")]
-        public int? ProductModelId { get; set; }
+        [JsonProperty(PropertyName = "model")]
+        public string Model { get; set; }
 
         /// <summary>
         /// </summary>

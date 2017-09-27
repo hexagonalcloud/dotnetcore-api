@@ -20,7 +20,7 @@ namespace Swagger.Models
         /// <summary>
         /// Initializes a new instance of the AdminProduct class.
         /// </summary>
-        public AdminProduct(System.Guid? id = default(System.Guid?), string name = default(string), string color = default(string), double? listPrice = default(double?), string productNumber = default(string), string size = default(string), double? weight = default(double?), int? productCategoryId = default(int?), int? productModelId = default(int?), byte[] thumbNailPhoto = default(byte[]), string thumbnailPhotoFileName = default(string), double? standardCost = default(double?), System.DateTime? sellStartDate = default(System.DateTime?), System.DateTime? sellEndDate = default(System.DateTime?), System.DateTime? discontinuedDate = default(System.DateTime?), System.DateTime? modifiedDate = default(System.DateTime?))
+        public AdminProduct(System.Guid? id = default(System.Guid?), string name = default(string), string color = default(string), double? listPrice = default(double?), string productNumber = default(string), string size = default(string), double? weight = default(double?), int? productCategoryId = default(int?), string category = default(string), int? productModelId = default(int?), string model = default(string), byte[] thumbNailPhoto = default(byte[]), string thumbnailPhotoFileName = default(string), double? standardCost = default(double?), System.DateTime? sellStartDate = default(System.DateTime?), System.DateTime? sellEndDate = default(System.DateTime?), System.DateTime? discontinuedDate = default(System.DateTime?), System.DateTime? modifiedDate = default(System.DateTime?))
         {
             Id = id;
             Name = name;
@@ -30,7 +30,9 @@ namespace Swagger.Models
             Size = size;
             Weight = weight;
             ProductCategoryId = productCategoryId;
+            Category = category;
             ProductModelId = productModelId;
+            Model = model;
             ThumbNailPhoto = thumbNailPhoto;
             ThumbnailPhotoFileName = thumbnailPhotoFileName;
             StandardCost = standardCost;
@@ -88,8 +90,18 @@ namespace Swagger.Models
 
         /// <summary>
         /// </summary>
+        [JsonProperty(PropertyName = "category")]
+        public string Category { get; set; }
+
+        /// <summary>
+        /// </summary>
         [JsonProperty(PropertyName = "productModelId")]
         public int? ProductModelId { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "model")]
+        public string Model { get; set; }
 
         /// <summary>
         /// </summary>

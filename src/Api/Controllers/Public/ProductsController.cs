@@ -49,5 +49,35 @@ namespace Api.Controllers.Public
 
             return Ok(result);
         }
+
+        [Route("models")]
+        [ProducesResponseType(304)]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [HttpGet]
+        public async Task<IActionResult> GetModels()
+        {
+            var models = await _data.GetModels();
+            return Ok(models);
+        }
+
+        [Route("colors")]
+        [ProducesResponseType(304)]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [HttpGet]
+        public async Task<IActionResult> GetColors()
+        {
+            var models = await _data.GetColors();
+            return Ok(models);
+        }
+
+        [Route("categories")]
+        [ProducesResponseType(304)]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [HttpGet]
+        public async Task<IActionResult> GetCategories()
+        {
+            var models = await _data.GetCategories();
+            return Ok(models);
+        }
     }
 }

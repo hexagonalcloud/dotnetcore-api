@@ -1,7 +1,4 @@
-Scaffold-DbContext "Server=.;Database=dotnetcore-adventure;Integrated Security=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Database -Context SqlAdventureContext -DataAnnotations -Force
+Scaffold-DbContext "Server=.;Database=dotnetcore-adventure;Integrated Security=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Database -Context SqlAdventureContext -DataAnnotations -Force -Schemas "SalesLT"
 
 After scaffolding:
 - Adapt the generated SqlAdventureContext (remove the override)
-- Adapt ErrorLog:
-       [Column(TypeName = "nvarchar(4000)")]
-       public string ErrorMessage { get; set; }

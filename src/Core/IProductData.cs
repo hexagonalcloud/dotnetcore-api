@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Entities;
 using Core.Parameters;
@@ -18,5 +19,11 @@ namespace Core
         Task<bool> Delete(Guid id);
 
         Task<bool> Update(UpdateProduct product);
+
+        Task<IEnumerable<string>> GetModels();
+
+        Task<IEnumerable<string>> GetCategories();
+
+        Task<IEnumerable<string>> GetColors();
     }
 }
