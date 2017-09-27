@@ -5,10 +5,8 @@ namespace SqlAdventure.Database
     public partial class SqlAdventureContext : DbContext
     {
         public virtual DbSet<Address> Address { get; set; }
-        public virtual DbSet<BuildVersion> BuildVersion { get; set; }
         public virtual DbSet<Customer> Customer { get; set; }
         public virtual DbSet<CustomerAddress> CustomerAddress { get; set; }
-        public virtual DbSet<ErrorLog> ErrorLog { get; set; }
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<ProductCategory> ProductCategory { get; set; }
         public virtual DbSet<ProductDescription> ProductDescription { get; set; }
@@ -32,13 +30,6 @@ namespace SqlAdventure.Database
                 entity.Property(e => e.ModifiedDate).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Rowguid).HasDefaultValueSql("(newid())");
-            });
-
-            modelBuilder.Entity<BuildVersion>(entity =>
-            {
-                entity.Property(e => e.SystemInformationId).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.ModifiedDate).HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -81,11 +72,6 @@ namespace SqlAdventure.Database
                     .WithMany(p => p.CustomerAddress)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
-            });
-
-            modelBuilder.Entity<ErrorLog>(entity =>
-            {
-                entity.Property(e => e.ErrorTime).HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<Product>(entity =>

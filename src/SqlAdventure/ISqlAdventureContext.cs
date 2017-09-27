@@ -6,10 +6,8 @@ namespace SqlAdventure.Database
     public interface ISqlAdventureContext
     {
         DbSet<Address> Address { get; set; }
-        DbSet<BuildVersion> BuildVersion { get; set; }
         DbSet<Customer> Customer { get; set; }
         DbSet<CustomerAddress> CustomerAddress { get; set; }
-        DbSet<ErrorLog> ErrorLog { get; set; }
         DbSet<Product> Product { get; set; }
         DbSet<ProductCategory> ProductCategory { get; set; }
         DbSet<ProductDescription> ProductDescription { get; set; }

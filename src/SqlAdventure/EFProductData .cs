@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core;
@@ -10,6 +11,7 @@ using Core.Parameters;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using SqlAdventure.Database;
 
 namespace SqlAdventure
@@ -19,66 +21,114 @@ namespace SqlAdventure
         private readonly ConfigurationOptions _configurationOptions;
         private readonly IMapper _mapper;
         private readonly ISqlAdventureContext _dbContext;
+        private readonly ILogger _logger;
 
-        public EFroductData(ConfigurationOptions options, IMapper mapper, ISqlAdventureContext dbContext)
+        public EFroductData(ConfigurationOptions options, IMapper mapper, ISqlAdventureContext dbContext, ILogger logger)
         {
             _configurationOptions = options;
             _mapper = mapper;
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public async Task<Entities.IPagedList<Entities.Product>> Get(ProductQueryParameters queryParameters)
         {
-            // TODO: filter products depending on admin or not
+            // TODO: filter products depending on admin or not (sell start date? discontinued?)
             var offset = (queryParameters.PageNumber - 1) * queryParameters.PageSize;
             int totalCount = 0;
 
-            var createQuery = CreateGetProductsQuery(queryParameters, offset);
+            /* Looks like we will need to load all the data to get the total count here... TODO: find out if there is way to do the same as in the dapper implementation since this will be an issue with large result sets. Running a separate count query will not work with EF it seems due to the current limitations (https://docs.microsoft.com/en-us/ef/core/querying/raw-sql), so either use ado.net or dapper...
+             TODO: run 2 queries  in parallel?
+            var totalCountQuery = "SELECT COUNT(DISTINCT ProductID) from [SalesLT].Product";*/
+            
+            var dbQuery =  _dbContext.Product
+                .Include(p => p.ProductCategory)
+                .Include(p => p.ProductModel)
+                .OrderBy(p => p.Name).AsQueryable();
 
-            Func<Db.Product, int, Db.Product> map = (result, count) =>
+            if (!string.IsNullOrWhiteSpace(queryParameters.SearchQuery))
             {
-                totalCount = count;
-                return result;
-            };
-
-            using (IDbConnection db = new SqlConnection(_configurationOptions.SqlConnectionString))
-            {
-                var response = await db.QueryAsync<Db.Product, int, Db.Product>(createQuery.query, map, splitOn: "TotalCount", param: createQuery.parameters);
-
-                var result = _mapper.Map<List<Entities.Product>>(response);
-                var pagedResult = new Entities.PagedList<Entities.Product>(result, totalCount, queryParameters);
-                return pagedResult;
+                dbQuery = dbQuery.Where(p => p.Name.Contains(queryParameters.SearchQuery));
             }
+
+            if (!string.IsNullOrWhiteSpace(queryParameters.Color))
+            {
+                dbQuery = dbQuery.Where(p => p.Color == queryParameters.Color.Trim());
+            }
+
+            totalCount = await dbQuery.CountAsync();
+            var dbResult = dbQuery.Skip(offset).Take(queryParameters.PageSize);
+
+            // map
+            var result = _mapper.Map<List<Entities.Product>>(dbResult);
+            var pagedResult = new Entities.PagedList<Entities.Product>(result, totalCount, queryParameters);
+            return pagedResult;
+
+            //var createQuery = CreateGetProductsQuery(queryParameters, offset);
+
+            //Func<Db.Product, int, Db.Product> map = (result, count) =>
+            //{
+            //    totalCount = count;
+            //    return result;
+            //};
+
+            //using (IDbConnection db = new SqlConnection(_configurationOptions.SqlConnectionString))
+            //{
+            //    var response = await db.QueryAsync<Db.Product, int, Db.Product>(createQuery.query, map, splitOn: "TotalCount", param: createQuery.parameters);
+
+            //    var result = _mapper.Map<List<Entities.Product>>(response);
+            //    //var pagedResult = new Entities.PagedList<Entities.Product>(result, totalCount, queryParameters);
+            //    return pagedResult;
+            //}
         }
 
         public async Task<Entities.Product> GetById(Guid id)
         {
             try
             {
-                var product = await _dbContext.Product.SingleOrDefaultAsync(p => p.Rowguid == id);
-                if (product != null)
+                var dbProduct = await _dbContext.Product
+                    .Include(p => p.ProductCategory)
+                    .Include(p => p.ProductModel)
+                    .SingleOrDefaultAsync(p => p.Rowguid == id);    
+
+                if (dbProduct != null)
                 {
-                    var result = Mapper.Map<Entities.Product>(product);
+                    var result = Mapper.Map<Entities.Product>(dbProduct);
                     return result;
                 }
 
                 return null;
             }
-            catch (Exception e)
+            catch (SqlException exception)
             {
-                Console.WriteLine(e);
+                // we seem to be loosing the context when we get an exception here
+                _logger.Error(exception, string.Empty);
                 throw;
-            }
-          
+            } 
         }
 
         public async Task<Entities.AdminProduct> GetAdminProductById(Guid id)
         {
-            using (IDbConnection db = new SqlConnection(_configurationOptions.SqlConnectionString))
+            try
             {
-                var response = await db.GetAsync<Db.AdminProduct>(id);
-                var result = _mapper.Map<Entities.AdminProduct>(response);
-                return result;
+                var dbProduct = await _dbContext.Product
+                    .Include(p => p.ProductCategory)
+                    .Include(p => p.ProductModel)
+                    .SingleOrDefaultAsync(p => p.Rowguid == id);
+
+                if (dbProduct != null)
+                {
+                    var result = Mapper.Map<Entities.AdminProduct>(dbProduct);
+                    return result;
+                }
+
+                return null;
+            }
+            catch (SqlException exception)
+            {
+                // we seem to be loosing the context when we get an exception here
+                _logger.Error(exception, string.Empty);
+                throw;
             }
         }
 

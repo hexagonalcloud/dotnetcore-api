@@ -1,6 +1,5 @@
 using AutoMapper;
 using SqlAdventure.Db;
-using Database = SqlAdventure.Database;
 
 namespace SqlAdventure.Mappers
 {
@@ -9,18 +8,29 @@ namespace SqlAdventure.Mappers
         public ProductProfile()
         {
             var productMap = CreateMap<Core.Entities.Product, Product>().ReverseMap();
-            productMap.ForMember(source => source.Id, opt => opt.MapFrom(dest => dest.RowGuid)).ReverseMap();
+            productMap.ForMember(ent => ent.Id, opt => opt.MapFrom(db => db.RowGuid)).ReverseMap();
 
-            var efProductMap = CreateMap<Core.Entities.Product, Database.Product>().ReverseMap();
-            efProductMap.ForMember(source => source.Id, opt => opt.MapFrom(dest => dest.Rowguid)).ReverseMap();
+            var efProductMap = CreateMap<Database.Product, Core.Entities.Product>();
+            efProductMap.ForMember(ent => ent.Id, opt => opt.MapFrom(db => db.Rowguid));
+            efProductMap.ForMember(ent => ent.Category,
+                opt => opt.MapFrom(db => db.ProductCategory != null ? db.ProductCategory.Name : string.Empty));
+            efProductMap.ForMember(ent => ent.Model,
+                opt => opt.MapFrom(db => db.ProductModel != null ? db.ProductModel.Name : string.Empty));
 
             var adminMap = CreateMap<Core.Entities.AdminProduct, AdminProduct>().ReverseMap();
-            adminMap.ForMember(source => source.Id, opt => opt.MapFrom(dest => dest.RowGuid)).ReverseMap();
+            adminMap.ForMember(ent => ent.Id, opt => opt.MapFrom(db => db.RowGuid)).ReverseMap();
+
+            var efAdminProductMap = CreateMap<Database.Product, Core.Entities.AdminProduct>();
+            efAdminProductMap.ForMember(ent => ent.Id, opt => opt.MapFrom(db => db.Rowguid));
+            efAdminProductMap.ForMember(ent => ent.Category,
+                opt => opt.MapFrom(db => db.ProductCategory != null ? db.ProductCategory.Name : string.Empty));
+            efAdminProductMap.ForMember(ent => ent.Model,
+                opt => opt.MapFrom(db => db.ProductModel != null ? db.ProductModel.Name : string.Empty));
 
             CreateMap<Core.Entities.CreateProduct, CreateProduct>().ReverseMap();
 
             var updateMap = CreateMap<Core.Entities.UpdateProduct, UpdateProduct>().ReverseMap();
-            updateMap.ForMember(source => source.Id, opt => opt.MapFrom(dest => dest.RowGuid)).ReverseMap();
+            updateMap.ForMember(ent => ent.Id, opt => opt.MapFrom(db => db.RowGuid)).ReverseMap();
         }
     }
 }

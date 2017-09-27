@@ -18,9 +18,9 @@ namespace Core.Entities
 
         public decimal? Weight { get; set; }
 
-        public int? ProductCategoryId { get; set; }
+        public string Category { get; set; }
 
-        public int? ProductModelId { get; set; }
+        public string Model { get; set; }
 
         public byte[] ThumbNailPhoto { get; set; }
 
