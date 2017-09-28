@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{6B60D665-F85E-4921-87AE-B486AFEBB0AF}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,13 +14,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "test\In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Specs", "test\Specs\Specs.csproj", "{CE128338-A8C1-4E3B-866F-6439B087BC8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "src\Core\Core.csproj", "{80ABB60A-6A3D-4F6B-9F25-53CDDB015FA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "src\Core\Core.csproj", "{80ABB60A-6A3D-4F6B-9F25-53CDDB015FA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlAdventure", "src\SqlAdventure\SqlAdventure.csproj", "{06719764-01A4-4A84-8E2D-6E7824971927}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlAdventure", "src\SqlAdventure\SqlAdventure.csproj", "{06719764-01A4-4A84-8E2D-6E7824971927}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0241214A-8785-443E-AB59-F1AE18025C54}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4529ADF5-9835-497C-8F72-E032884B5586}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "test\UnitTests\UnitTests.csproj", "{308310EE-14C3-4A41-A1CC-7E2557AC9938}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{06719764-01A4-4A84-8E2D-6E7824971927}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06719764-01A4-4A84-8E2D-6E7824971927}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06719764-01A4-4A84-8E2D-6E7824971927}.Release|Any CPU.Build.0 = Release|Any CPU
+		{308310EE-14C3-4A41-A1CC-7E2557AC9938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{308310EE-14C3-4A41-A1CC-7E2557AC9938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{308310EE-14C3-4A41-A1CC-7E2557AC9938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{308310EE-14C3-4A41-A1CC-7E2557AC9938}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{CE128338-A8C1-4E3B-866F-6439B087BC8B} = {4529ADF5-9835-497C-8F72-E032884B5586}
 		{80ABB60A-6A3D-4F6B-9F25-53CDDB015FA4} = {0241214A-8785-443E-AB59-F1AE18025C54}
 		{06719764-01A4-4A84-8E2D-6E7824971927} = {0241214A-8785-443E-AB59-F1AE18025C54}
+		{308310EE-14C3-4A41-A1CC-7E2557AC9938} = {4529ADF5-9835-497C-8F72-E032884B5586}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F5CA686-3C9E-45D6-A9C1-4001F7D6037E}

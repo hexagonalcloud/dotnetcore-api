@@ -1,6 +1,7 @@
 using Autofac;
 using Core;
 using SqlAdventure.Database;
+using SqlAdventure.Services;
 
 namespace SqlAdventure
 {
@@ -11,6 +12,7 @@ namespace SqlAdventure
             builder.RegisterType<ConfigurationOptions>().AsSelf().SingleInstance();
             builder.RegisterType<EFroductData>().As<IProductData>();
             builder.RegisterType<SqlAdventureContext>().As<ISqlAdventureContext>();
+            builder.RegisterType<SqlClauseService>().As<ISqlClauseService>();
         }
     }
 }

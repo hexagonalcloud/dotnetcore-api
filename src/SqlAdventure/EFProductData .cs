@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core;
-using Entities = Core.Entities;
+using Core.Entities;
 using Core.Parameters;
-using Dapper;
 using Dapper.Contrib.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SqlAdventure.Database;
+using SqlAdventure.Services;
+using Product = Core.Entities.Product;
 
 namespace SqlAdventure
 {
@@ -22,16 +24,18 @@ namespace SqlAdventure
         private readonly IMapper _mapper;
         private readonly ISqlAdventureContext _dbContext;
         private readonly ILogger _logger;
+        private readonly ISqlClauseService _sqlClauseService;
 
-        public EFroductData(ConfigurationOptions options, IMapper mapper, ISqlAdventureContext dbContext, ILogger logger)
+        public EFroductData(ConfigurationOptions options, IMapper mapper, ISqlAdventureContext dbContext, ILogger logger, ISqlClauseService sqlClauseService)
         {
             _configurationOptions = options;
             _mapper = mapper;
             _dbContext = dbContext;
             _logger = logger;
+            _sqlClauseService = sqlClauseService;
         }
 
-        public async Task<Entities.IPagedList<Entities.Product>> Get(ProductQueryParameters queryParameters)
+        public async Task<IPagedList<Product>> Get(ProductQueryParameters queryParameters)
         {
             // TODO: filter products depending on admin or not (sell start date? discontinued?)
             var offset = (queryParameters.PageNumber - 1) * queryParameters.PageSize;
@@ -53,7 +57,11 @@ namespace SqlAdventure
 
             if (!string.IsNullOrWhiteSpace(queryParameters.Color))
             {
-                dbQuery = dbQuery.Where(p => p.Color == queryParameters.Color.Trim());
+                var whereClause = _sqlClauseService.CreateWhereClause("Color", queryParameters.Color);
+                if (!string.IsNullOrWhiteSpace(whereClause.predicate))
+                {
+                    dbQuery = dbQuery.Where(whereClause.predicate, whereClause.parameters);
+                }
             }
 
             //var orderByClause = !string.IsNullOrWhiteSpace(queryParameters.OrderBy) ? $"ORDER BY {queryParameters.OrderBy}" : "ORDER BY Name";
@@ -61,30 +69,12 @@ namespace SqlAdventure
             totalCount = await dbQuery.CountAsync();
             var dbResult = dbQuery.Skip(offset).Take(queryParameters.PageSize);
 
-            // map
-            var result = _mapper.Map<List<Entities.Product>>(dbResult);
-            var pagedResult = new Entities.PagedList<Entities.Product>(result, totalCount, queryParameters);
+            var result = _mapper.Map<List<Product>>(dbResult);
+            var pagedResult = new PagedList<Product>(result, totalCount, queryParameters);
             return pagedResult;
-
-            //var createQuery = CreateGetProductsQuery(queryParameters, offset);
-
-            //Func<Db.Product, int, Db.Product> map = (result, count) =>
-            //{
-            //    totalCount = count;
-            //    return result;
-            //};
-
-            //using (IDbConnection db = new SqlConnection(_configurationOptions.SqlConnectionString))
-            //{
-            //    var response = await db.QueryAsync<Db.Product, int, Db.Product>(createQuery.query, map, splitOn: "TotalCount", param: createQuery.parameters);
-
-            //    var result = _mapper.Map<List<Entities.Product>>(response);
-            //    //var pagedResult = new Entities.PagedList<Entities.Product>(result, totalCount, queryParameters);
-            //    return pagedResult;
-            //}
         }
 
-        public async Task<Entities.Product> GetById(Guid id)
+        public async Task<Product> GetById(Guid id)
         {
             try
             {
@@ -95,7 +85,7 @@ namespace SqlAdventure
 
                 if (dbProduct != null)
                 {
-                    var result = Mapper.Map<Entities.Product>(dbProduct);
+                    var result = Mapper.Map<Product>(dbProduct);
                     return result;
                 }
 
@@ -109,7 +99,7 @@ namespace SqlAdventure
             } 
         }
 
-        public async Task<Entities.AdminProduct> GetAdminProductById(Guid id)
+        public async Task<AdminProduct> GetAdminProductById(Guid id)
         {
             try
             {
@@ -120,7 +110,7 @@ namespace SqlAdventure
 
                 if (dbProduct != null)
                 {
-                    var result = Mapper.Map<Entities.AdminProduct>(dbProduct);
+                    var result = Mapper.Map<AdminProduct>(dbProduct);
                     return result;
                 }
 
@@ -129,12 +119,13 @@ namespace SqlAdventure
             catch (SqlException exception)
             {
                 // we seem to be loosing the context when we get an exception here
+
                 _logger.Error(exception, string.Empty);
                 throw;
             }
         }
 
-        public async Task<Guid> Create(Entities.CreateProduct product)
+        public async Task<Guid> Create(CreateProduct product)
         {
             var dbProduct = _mapper.Map<Db.CreateProduct>(product);
             dbProduct.RowGuid = Guid.NewGuid();
@@ -155,7 +146,7 @@ namespace SqlAdventure
             }
         }
 
-        public async Task<bool> Update(Entities.UpdateProduct product)
+        public async Task<bool> Update(UpdateProduct product)
         {
             using (IDbConnection db = new SqlConnection(_configurationOptions.SqlConnectionString))
             {
@@ -195,41 +186,6 @@ namespace SqlAdventure
                 .OrderBy(p => p);
 
             return await dbQuery.ToListAsync();
-        }
-
-        private static(string query, DynamicParameters parameters) CreateGetProductsQuery(ProductQueryParameters queryParameters, int offset)
-        {
-            string whereClause;
-
-            var parameters = new DynamicParameters();
-
-            if (!string.IsNullOrWhiteSpace(queryParameters.SearchQuery) && !string.IsNullOrWhiteSpace(queryParameters.Color))
-            {
-                whereClause =
-                    "WHERE [Name] LIKE @Name AND [Color] = @Color";
-                parameters.Add("@Name", "%" + queryParameters.SearchQuery + "%");
-                parameters.Add("@Color", queryParameters.Color);
-            }
-            else if (!string.IsNullOrWhiteSpace(queryParameters.SearchQuery))
-            {
-                whereClause = $"WHERE [Name] LIKE @Name";
-                parameters.Add("@Name", "%" + queryParameters.SearchQuery + "%");
-            }
-            else if (!string.IsNullOrWhiteSpace(queryParameters.Color))
-            {
-                whereClause = $"WHERE [Color] = @Color";
-                parameters.Add("@Color", queryParameters.Color);
-            }
-            else
-            {
-                whereClause = string.Empty;
-            }
-
-            var orderByClause = !string.IsNullOrWhiteSpace(queryParameters.OrderBy) ? $"ORDER BY {queryParameters.OrderBy}" : "ORDER BY Name";
-
-            var query = $"SELECT *, COUNT(*) OVER () as TotalCount FROM [SalesLT].[Product] {whereClause} {orderByClause} OFFSET {offset} ROWS FETCH NEXT {queryParameters.PageSize} ROWS ONLY";
-
-            return (query, parameters);
         }
     }
 }
