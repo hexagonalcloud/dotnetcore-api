@@ -64,7 +64,14 @@ namespace SqlAdventure
                 }
             }
 
-            //var orderByClause = !string.IsNullOrWhiteSpace(queryParameters.OrderBy) ? $"ORDER BY {queryParameters.OrderBy}" : "ORDER BY Name";
+            if (!string.IsNullOrWhiteSpace(queryParameters.OrderBy))
+            {
+                var orderClause = _sqlClauseService.CreateOrderClause(queryParameters.OrderBy);
+                if (!string.IsNullOrWhiteSpace(orderClause))
+                {
+                    dbQuery = dbQuery.OrderBy(orderClause);
+                }
+            }
 
             totalCount = await dbQuery.CountAsync();
             var dbResult = dbQuery.Skip(offset).Take(queryParameters.PageSize);

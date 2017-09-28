@@ -74,5 +74,44 @@ namespace UnitTests.SqlAdventure
             blue.Should().NotBeNull();
             blue.ToString().Should().Be("blue");
         }
+
+        [Fact]
+        public void CreateOrderClause_Accepts_Null_Parameter()
+        {
+            var service = new SqlClauseService();
+            var result = service.CreateOrderClause(null);
+            result.Should().Be("Name");
+        }
+
+        [Fact]
+        public void CreateOrderClause_Accepts_Empty_Parameter()
+        {
+            var service = new SqlClauseService();
+            var result = service.CreateOrderClause(string.Empty);
+            result.Should().Be("Name");
+        }
+
+        [Fact]
+        public void CreateOrderClause_Accepts_Valid_Parameters()
+        {
+            var service = new SqlClauseService();
+            var result = service.CreateOrderClause("Name");
+            result.Should().Be("Name");
+
+            result = service.CreateOrderClause("Name desc, color");
+            result.Should().Be("Name desc, color");
+        }
+
+        [Fact]
+        public void CreateOrderClause_Accepts_Invalid_Parameters()
+        {
+            var service = new SqlClauseService();
+            var result = service.CreateOrderClause("Colors, Name dec");
+            result.Should().Be("Name");
+
+            result = service.CreateOrderClause("Color desc, names");
+            result.Should().Be("Color desc");
+        }
+
     }
 }

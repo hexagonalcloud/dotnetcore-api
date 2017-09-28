@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SqlAdventure.Services
 {
     public class SqlClauseService : ISqlClauseService
     {
-        private readonly string[] _allowedOrdering = { "Color", "Color desc", "Color asc", "Name", "Name asc", "Name desc" };
+        private readonly string[] _allowedOrderParameters = { "Color", "Color desc", "Color asc", "Name", "Name asc", "Name desc" };
+        private readonly string _defaultOrder = "Name";
 
         public (string predicate, object[] parameters) CreateWhereClause(string columnName, string parameter)
         {
@@ -41,12 +43,17 @@ namespace SqlAdventure.Services
                 i++;
             }
 
-           return (predicate, sqlParams.ToArray()); 
+            return (predicate, sqlParams.ToArray());
         }
 
         public string CreateOrderClause(string parameter)
         {
-            var orderByClause = String.Empty;
+            if (string.IsNullOrWhiteSpace(parameter))
+            {
+                return _defaultOrder;
+            }
+
+            var orderClause = String.Empty;
             var list = ParameterToList(parameter);
             if (String.IsNullOrWhiteSpace(parameter))
             {
@@ -55,22 +62,29 @@ namespace SqlAdventure.Services
 
             int i = 0;
 
-            foreach (var s in list)
+            foreach (var item in list)
             {
+                if(_allowedOrderParameters.Contains(item, StringComparer.OrdinalIgnoreCase))
                 {
                     if (i == 0)
                     {
-                        orderByClause += "ORDER BY " + s;
+                        orderClause += item;
                     }
-                    //    else
-                    //    {
-                    //        whereClause += " OR " + columnName + " = '" + s + "'";
-                    //    }
+                    else
+                    {
+                        orderClause += ", " + item;
+                    }
 
                     i++;
-                } 
+                }
             }
-            return orderByClause;
+
+            if (string.IsNullOrWhiteSpace(orderClause))
+            {
+                return _defaultOrder;
+            }
+
+            return orderClause;
         }
 
         private static IEnumerable<string> ParameterToList(string parameter)
@@ -79,7 +93,7 @@ namespace SqlAdventure.Services
             var trimmedList = new List<string>();
             foreach (var s in list)
             {
-                trimmedList.Add(s.Trim());
+               trimmedList.Add(s.Trim());  
             }
 
             return trimmedList;
