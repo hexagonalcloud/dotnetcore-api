@@ -29,8 +29,13 @@ namespace SqlAdventure.Mappers
 
             CreateMap<Core.Entities.CreateProduct, CreateProduct>().ReverseMap();
 
+            var efCreateMap = CreateMap<Core.Entities.CreateProduct, Database.Product>();
+
             var updateMap = CreateMap<Core.Entities.UpdateProduct, UpdateProduct>().ReverseMap();
             updateMap.ForMember(ent => ent.Id, opt => opt.MapFrom(db => db.RowGuid)).ReverseMap();
+
+            var efUpdateMap = CreateMap<Core.Entities.UpdateProduct, Database.Product>();
+            efUpdateMap.ForMember(db => db.Rowguid, opt => opt.MapFrom(ent => ent.Id));
         }
     }
 }

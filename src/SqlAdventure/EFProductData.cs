@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -9,7 +8,6 @@ using AutoMapper;
 using Core;
 using Core.Entities;
 using Core.Parameters;
-using Dapper.Contrib.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SqlAdventure.Database;
@@ -18,17 +16,16 @@ using Product = Core.Entities.Product;
 
 namespace SqlAdventure
 {
-    public class EFroductData : IProductData
+    // ReSharper disable once InconsistentNaming
+    public class EFProductData : IProductData
     {
-        private readonly ConfigurationOptions _configurationOptions;
         private readonly IMapper _mapper;
         private readonly ISqlAdventureContext _dbContext;
         private readonly ILogger _logger;
         private readonly ISqlClauseService _sqlClauseService;
 
-        public EFroductData(ConfigurationOptions options, IMapper mapper, ISqlAdventureContext dbContext, ILogger logger, ISqlClauseService sqlClauseService)
+        public EFProductData(IMapper mapper, ISqlAdventureContext dbContext, ILogger logger, ISqlClauseService sqlClauseService)
         {
-            _configurationOptions = options;
             _mapper = mapper;
             _dbContext = dbContext;
             _logger = logger;
@@ -44,10 +41,10 @@ namespace SqlAdventure
             /* Looks like we will need to load all the data to get the total count here... TODO: find out if there is way to do the same as in the dapper implementation since this will be an issue with large result sets. Running a separate count query will not work with EF it seems due to the current limitations (https://docs.microsoft.com/en-us/ef/core/querying/raw-sql), so either use ado.net or dapper...
              TODO: run 2 queries  in parallel?
             var totalCountQuery = "SELECT COUNT(DISTINCT ProductID) from [SalesLT].Product";*/
-            
-            var dbQuery =  _dbContext.Product
+
+            var dbQuery = _dbContext.Product
                 .Include(p => p.ProductCategory)
-                .Include(p => p.ProductModel) 
+                .Include(p => p.ProductModel)
                 .OrderBy(p => p.Name).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(queryParameters.SearchQuery))
@@ -83,86 +80,87 @@ namespace SqlAdventure
 
         public async Task<Product> GetById(Guid id)
         {
-            try
+            var dbProduct = await _dbContext.Product
+                .AsNoTracking()
+                .Include(p => p.ProductCategory)
+                .Include(p => p.ProductModel)
+                .SingleOrDefaultAsync(p => p.Rowguid == id);
+
+            if (dbProduct != null)
             {
-                var dbProduct = await _dbContext.Product
-                    .Include(p => p.ProductCategory)
-                    .Include(p => p.ProductModel)
-                    .SingleOrDefaultAsync(p => p.Rowguid == id);    
-
-                if (dbProduct != null)
-                {
-                    var result = Mapper.Map<Product>(dbProduct);
-                    return result;
-                }
-
-                return null;
+                var result = Mapper.Map<Product>(dbProduct);
+                return result;
             }
-            catch (SqlException exception)
-            {
-                // we seem to be loosing the context when we get an exception here
-                _logger.Error(exception, string.Empty);
-                throw;
-            } 
+
+            return null;
         }
 
         public async Task<AdminProduct> GetAdminProductById(Guid id)
         {
-            try
+            var dbProduct = await _dbContext.Product
+                .AsNoTracking()
+                .Include(p => p.ProductCategory)
+                .Include(p => p.ProductModel)
+                .SingleOrDefaultAsync(p => p.Rowguid == id);
+
+            if (dbProduct != null)
             {
-                var dbProduct = await _dbContext.Product
-                    .Include(p => p.ProductCategory)
-                    .Include(p => p.ProductModel)
-                    .SingleOrDefaultAsync(p => p.Rowguid == id);
-
-                if (dbProduct != null)
-                {
-                    var result = Mapper.Map<AdminProduct>(dbProduct);
-                    return result;
-                }
-
-                return null;
+                var result = Mapper.Map<AdminProduct>(dbProduct);
+                return result;
             }
-            catch (SqlException exception)
-            {
-                // we seem to be loosing the context when we get an exception here
 
-                _logger.Error(exception, string.Empty);
-                throw;
-            }
+            return null;
         }
 
         public async Task<Guid> Create(CreateProduct product)
         {
-            var dbProduct = _mapper.Map<Db.CreateProduct>(product);
-            dbProduct.RowGuid = Guid.NewGuid();
+            var dbProduct = _mapper.Map<Database.Product>(product);
+            dbProduct.Rowguid = Guid.NewGuid();
 
-            using (IDbConnection db = new SqlConnection(_configurationOptions.SqlConnectionString))
+            _dbContext.Product.Add(dbProduct);
+            var result = await _dbContext.SaveChangesAsync();
+            if (result == 1)
             {
-                await db.InsertAsync(dbProduct);
+                return dbProduct.Rowguid;
             }
-            return dbProduct.RowGuid;
+
+            return Guid.Empty;
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            using (IDbConnection db = new SqlConnection(_configurationOptions.SqlConnectionString))
+            var product = await _dbContext.Product
+                .SingleOrDefaultAsync(p => p.Rowguid == id);
+            if (product == null)
             {
-                var result = await db.DeleteAsync(new Db.AdminProduct { RowGuid = id });
-                return result;
+                return false;
             }
+
+            _dbContext.Product.Remove(product);
+            var result = await _dbContext.SaveChangesAsync();
+
+            return result == 1;
         }
 
         public async Task<bool> Update(UpdateProduct product)
         {
-            using (IDbConnection db = new SqlConnection(_configurationOptions.SqlConnectionString))
+            // TODO: verify modified date based on incming ETAG
+            // add ETAG constraint header to API PUT and PATCH?
+            var updatedProduct = _mapper.Map<Database.Product>(product);
+
+            var dbProduct = await _dbContext.Product.AsNoTracking()
+                .SingleOrDefaultAsync(p => p.Rowguid == product.Id);
+            if (dbProduct == null)
             {
-                // TODO: verify modified date based on incming ETAG
-                // add ETAG constraint header to API PUT and PATCH?
-                var dbProduct = _mapper.Map<Db.UpdateProduct>(product);
-                var result = await db.UpdateAsync(dbProduct);
-                return result;
+                return false;
             }
+
+            updatedProduct.ProductId = dbProduct.ProductId;
+            _dbContext.Product.Update(dbProduct);
+
+            var result = await _dbContext.SaveChangesAsync();
+
+            return result == 1;
         }
 
         public async Task<IEnumerable<string>> GetModels()
