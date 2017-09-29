@@ -15,9 +15,6 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AutoRestClient\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove=".DS_Store" />
     <!-- <None Remove="testsettings.json" /> -->
   </ItemGroup>
