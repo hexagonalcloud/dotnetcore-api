@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using Core.Parameters;
 
 namespace Core.Entities
@@ -42,5 +44,49 @@ namespace Core.Entities
         public DateTime LastModified { get; }
 
         public PagingParameters PagingParameters { get; }
+
+        public IEnumerable<ExpandoObject> SelectFields(string fields)
+        {
+            if (string.IsNullOrWhiteSpace(fields))
+            {
+                throw new ArgumentNullException(nameof(fields));
+            }
+
+            var result = new List<ExpandoObject>();
+            var propertyInfoList = new List<PropertyInfo>();
+            var fieldsToReturn = fields.Split(',');
+
+            foreach (var field in fieldsToReturn)
+            {
+                var propertyName = field.Trim();
+                var propertyInfo = typeof(T)
+                    .GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+                if (propertyInfo != null)
+                {
+                    propertyInfoList.Add(propertyInfo);
+                }
+            }
+
+            if (propertyInfoList.Count == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(fields));
+            }
+
+            foreach (T source in this)
+            {
+                var expando = new ExpandoObject();
+
+                foreach (var propertyInfo in propertyInfoList)
+                {
+                    var propertyValue = propertyInfo.GetValue(source);
+                    ((IDictionary<string, object>)expando).Add(propertyInfo.Name, propertyValue);
+                }
+
+                result.Add(expando);
+            }
+
+            return result;
+        }
     }
 }

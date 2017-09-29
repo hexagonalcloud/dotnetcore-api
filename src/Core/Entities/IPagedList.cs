@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Dynamic;
 using Core.Parameters;
 
 namespace Core.Entities
@@ -23,11 +25,12 @@ namespace Core.Entities
 
         DateTime LastModified { get; }
 
-        PagingParameters PagingParameters { get; }
+        PagingParameters PagingParameters { get; } 
     }
 
     public interface IPagedList <T> : IPagedList
         where T: IBaseEntity
     {
+        IEnumerable<ExpandoObject> SelectFields(string fields);
     }
 }

@@ -32,10 +32,16 @@ namespace Api.Controllers.Admin
         [HttpGet(Name = "GetAdminProducts")]
         public async Task<IActionResult> Get([FromQuery] ProductQueryParameters queryParameters)
         {
-            var pagedList = await _data.Get(queryParameters);
-            var linkHeader = _urlService.GetLinkHeader("GetAdminProducts", pagedList);
+            var products = await _data.Get(queryParameters);
+            var linkHeader = _urlService.GetLinkHeader("GetAdminProducts", products);
             Response.Headers.Add("Link", linkHeader);
-            return Ok(pagedList);
+
+            if (!string.IsNullOrWhiteSpace(queryParameters.Fields))
+            {
+                return Ok(products.SelectFields(queryParameters.Fields));
+            }
+
+            return Ok(products);
         }
 
         // [WeakEntityTagFilter]

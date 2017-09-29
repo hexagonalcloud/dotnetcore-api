@@ -7,5 +7,7 @@ namespace Core.Parameters
         public string Color { get; set; }
 
         public string OrderBy { get; set; } = "Name";
+
+        public string Fields { get; set; }
     }
 }

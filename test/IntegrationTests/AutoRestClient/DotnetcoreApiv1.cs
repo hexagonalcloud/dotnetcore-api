@@ -148,6 +148,8 @@ namespace Swagger
         /// </param>
         /// <param name='orderBy'>
         /// </param>
+        /// <param name='fields'>
+        /// </param>
         /// <param name='pageNumber'>
         /// </param>
         /// <param name='pageSize'>
@@ -167,7 +169,7 @@ namespace Swagger
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<IList<Product>>> ApiAdminProductsGetWithHttpMessagesAsync(string searchQuery = default(string), string color = default(string), string orderBy = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<IList<Product>>> ApiAdminProductsGetWithHttpMessagesAsync(string searchQuery = default(string), string color = default(string), string orderBy = default(string), string fields = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -179,6 +181,7 @@ namespace Swagger
                 tracingParameters.Add("searchQuery", searchQuery);
                 tracingParameters.Add("color", color);
                 tracingParameters.Add("orderBy", orderBy);
+                tracingParameters.Add("fields", fields);
                 tracingParameters.Add("pageNumber", pageNumber);
                 tracingParameters.Add("pageSize", pageSize);
                 tracingParameters.Add("cancellationToken", cancellationToken);
@@ -199,6 +202,10 @@ namespace Swagger
             if (orderBy != null)
             {
                 _queryParameters.Add(string.Format("OrderBy={0}", System.Uri.EscapeDataString(orderBy)));
+            }
+            if (fields != null)
+            {
+                _queryParameters.Add(string.Format("Fields={0}", System.Uri.EscapeDataString(fields)));
             }
             if (pageNumber != null)
             {
@@ -1497,6 +1504,8 @@ namespace Swagger
         /// </param>
         /// <param name='orderBy'>
         /// </param>
+        /// <param name='fields'>
+        /// </param>
         /// <param name='pageNumber'>
         /// </param>
         /// <param name='pageSize'>
@@ -1516,7 +1525,7 @@ namespace Swagger
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<IList<Product>>> ApiPublicProductsGetWithHttpMessagesAsync(string searchQuery = default(string), string color = default(string), string orderBy = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<IList<Product>>> ApiPublicProductsGetWithHttpMessagesAsync(string searchQuery = default(string), string color = default(string), string orderBy = default(string), string fields = default(string), int? pageNumber = default(int?), int? pageSize = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -1528,6 +1537,7 @@ namespace Swagger
                 tracingParameters.Add("searchQuery", searchQuery);
                 tracingParameters.Add("color", color);
                 tracingParameters.Add("orderBy", orderBy);
+                tracingParameters.Add("fields", fields);
                 tracingParameters.Add("pageNumber", pageNumber);
                 tracingParameters.Add("pageSize", pageSize);
                 tracingParameters.Add("cancellationToken", cancellationToken);
@@ -1548,6 +1558,10 @@ namespace Swagger
             if (orderBy != null)
             {
                 _queryParameters.Add(string.Format("OrderBy={0}", System.Uri.EscapeDataString(orderBy)));
+            }
+            if (fields != null)
+            {
+                _queryParameters.Add(string.Format("Fields={0}", System.Uri.EscapeDataString(fields)));
             }
             if (pageNumber != null)
             {

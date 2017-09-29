@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 using SqlAdventure;
 using SqlAdventure.Mappers;
 using Swashbuckle.AspNetCore.Swagger;
@@ -197,6 +198,7 @@ namespace Api
                 .AddJsonOptions(options =>
                 {
                     options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 })
                 .AddAuthorization()
                 .AddJsonFormatters()

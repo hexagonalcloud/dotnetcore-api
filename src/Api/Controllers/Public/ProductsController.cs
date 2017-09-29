@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Api;
 using Api.Services;
 using Core;
 using Core.Entities;
@@ -22,15 +23,22 @@ namespace Api.Controllers.Public
         }
 
         [ProducesResponseType(304)]
-        [ResponseCache(CacheProfileName = "Default", VaryByQueryKeys = new[] { "PageNumber", "PageSize", "SearchQuery", "Color", "OrderBy" })]
+        [ResponseCache(CacheProfileName = "Default", VaryByQueryKeys = new[] { "PageNumber", "PageSize", "SearchQuery", "Color", "OrderBy", "Fields" })]
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         [HttpGet(Name = "GetProducts")]
         public async Task<IActionResult> Get([FromQuery] ProductQueryParameters queryParameters)
         {
-            var pagedList = await _data.Get(queryParameters);
-            var linkHeader = _urlService.GetLinkHeader("GetProducts", pagedList);
+            var products = await _data.Get(queryParameters);
+
+            var linkHeader = _urlService.GetLinkHeader("GetProducts", products);
             Response.Headers.Add("Link", linkHeader);
-            return Ok(pagedList);
+
+            if (!string.IsNullOrWhiteSpace(queryParameters.Fields))
+            {
+                return Ok(products.SelectFields(queryParameters.Fields));
+            }
+
+            return Ok(products);
         }
 
         [ProducesResponseType(304)]
