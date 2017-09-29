@@ -9,17 +9,17 @@ namespace SqlAdventure.Services
         private readonly string[] _allowedOrderParameters = { "Color", "Color desc", "Color asc", "Name", "Name asc", "Name desc" };
         private readonly string _defaultOrder = "Name";
 
-        public (string predicate, object[] parameters) CreateWhereClause(string columnName, string parameter)
+        public(string predicate, object[] parameters) CreateWhereClause(string columnName, string parameter)
         {
             string predicate = string.Empty;
             List<object> sqlParams = new List<object>();
 
-            if (String.IsNullOrWhiteSpace(columnName))
+            if (string.IsNullOrWhiteSpace(columnName))
             {
                 throw new ArgumentNullException(nameof(columnName));
             }
 
-            if (String.IsNullOrWhiteSpace(parameter))
+            if (string.IsNullOrWhiteSpace(parameter))
             {
                 return (predicate, sqlParams.ToArray());
             }
@@ -53,18 +53,18 @@ namespace SqlAdventure.Services
                 return _defaultOrder;
             }
 
-            var orderClause = String.Empty;
+            var orderClause = string.Empty;
             var list = ParameterToList(parameter);
-            if (String.IsNullOrWhiteSpace(parameter))
+            if (string.IsNullOrWhiteSpace(parameter))
             {
-                return String.Empty;
+                return string.Empty;
             }
 
             int i = 0;
 
             foreach (var item in list)
             {
-                if(_allowedOrderParameters.Contains(item, StringComparer.OrdinalIgnoreCase))
+                if (_allowedOrderParameters.Contains(item, StringComparer.OrdinalIgnoreCase))
                 {
                     if (i == 0)
                     {
@@ -93,7 +93,7 @@ namespace SqlAdventure.Services
             var trimmedList = new List<string>();
             foreach (var s in list)
             {
-               trimmedList.Add(s.Trim());  
+               trimmedList.Add(s.Trim());
             }
 
             return trimmedList;

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entities
 {
-    public sealed class UpdateProduct: IBaseEntity
+    public sealed class UpdateProduct : IBaseEntity
     {
         public UpdateProduct()
         {

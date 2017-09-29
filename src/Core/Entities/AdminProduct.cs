@@ -2,7 +2,7 @@ using System;
 
 namespace Core.Entities
 {
-    public class AdminProduct: IBaseEntity
+    public class AdminProduct : IBaseEntity
     {
         public Guid Id { get; set; }
 
@@ -37,7 +37,7 @@ namespace Core.Entities
         public DateTime? SellEndDate { get; set; }
 
         public DateTime? DiscontinuedDate { get; set; }
-      
+
         public DateTime ModifiedDate { get; set; }
     }
 }

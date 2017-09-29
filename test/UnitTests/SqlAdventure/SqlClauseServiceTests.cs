@@ -13,8 +13,8 @@ namespace UnitTests.SqlAdventure
         public void CreateWhereClause_Without_ColumnName_Throws_ArgumentNullException()
         {
             var service = new SqlClauseService();
-            Assert.Throws<ArgumentNullException>(() => service.CreateWhereClause(null, ""));
-            Assert.Throws<ArgumentNullException>(() => service.CreateWhereClause(string.Empty, ""));
+            Assert.Throws<ArgumentNullException>(() => service.CreateWhereClause(null, string.Empty));
+            Assert.Throws<ArgumentNullException>(() => service.CreateWhereClause(string.Empty, string.Empty));
         }
 
         [Fact]
@@ -112,6 +112,5 @@ namespace UnitTests.SqlAdventure
             result = service.CreateOrderClause("Color desc, names");
             result.Should().Be("Color desc");
         }
-
     }
 }

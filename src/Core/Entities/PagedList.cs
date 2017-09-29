@@ -8,7 +8,7 @@ using Core.Parameters;
 namespace Core.Entities
 {
     public class PagedList<T> : List<T>, IPagedList<T>
-        where T: IBaseEntity
+        where T : IBaseEntity
     {
         public PagedList(List<T> items, int count, PagingParameters pagingParameters)
         {

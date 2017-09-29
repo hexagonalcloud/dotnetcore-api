@@ -25,11 +25,11 @@ namespace Core.Entities
 
         DateTime LastModified { get; }
 
-        PagingParameters PagingParameters { get; } 
+        PagingParameters PagingParameters { get; }
     }
 
-    public interface IPagedList <T> : IPagedList
-        where T: IBaseEntity
+    public interface IPagedList<T> : IPagedList
+        where T : IBaseEntity
     {
         IEnumerable<ExpandoObject> SelectFields(string fields);
     }

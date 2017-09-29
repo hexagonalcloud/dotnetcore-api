@@ -5,7 +5,7 @@ using SqlAdventure.Services;
 
 namespace SqlAdventure
 {
-    public class SqlAdventureModule: Module
+    public class SqlAdventureModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

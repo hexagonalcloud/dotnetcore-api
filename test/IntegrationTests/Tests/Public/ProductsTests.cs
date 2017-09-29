@@ -22,7 +22,6 @@ namespace IntegrationTests.Tests.Public
             products.Should().NotBeNullOrEmpty();
 
             // pick one of the products to get by id
-
             var selectedProduct = products.FirstOrDefault();
             var getByIdResult = await client.ApiPublicProductsByIdGetWithHttpMessagesAsync(selectedProduct.Id.GetValueOrDefault());
             getByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.OK);

@@ -5,10 +5,11 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core;
-using Entities = Core.Entities;
 using Core.Parameters;
 using Dapper;
 using Dapper.Contrib.Extensions;
+
+using Entities = Core.Entities;
 
 namespace SqlAdventure
 {
@@ -76,6 +77,7 @@ namespace SqlAdventure
             {
                 await db.InsertAsync(dbProduct);
             }
+
             return dbProduct.RowGuid;
         }
 

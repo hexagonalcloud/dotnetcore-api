@@ -29,7 +29,6 @@ namespace IntegrationTests.Tests.Admin
             products.Should().NotBeNullOrEmpty();
 
             // pick one of the products to get by id
-
             var selectedProduct = products.FirstOrDefault();
             var getByIdResult = await client.ApiAdminProductsByIdGetWithHttpMessagesAsync(selectedProduct.Id.GetValueOrDefault());
             getByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -38,36 +37,24 @@ namespace IntegrationTests.Tests.Admin
             product.Should().NotBeNull();
 
             // try and create a new product
-
             var id = Guid.NewGuid().ToString().Substring(25);
 
             var newProduct = new CreateProduct();
             newProduct.Color = product.Color;
-            //newProduct.DiscontinuedDate = null;
             newProduct.ListPrice = product.ListPrice.GetValueOrDefault();
-            //newProduct.ModifiedDate // todo remove from create
             newProduct.Name = product.Name + " " + id;
-            //newProduct.ProductCategoryId = product.ProductCategoryId;
-            //newProduct.ProductModelId = product.ProductModelId;
             newProduct.ProductNumber = id;
-            //newProduct.SellEndDate = null;
             newProduct.SellStartDate = DateTime.Now.AddDays(14);
             newProduct.Size = product.Size;
-            //newProduct.DiscontinuedDate = null;
             newProduct.StandardCost = product.StandardCost.GetValueOrDefault();
-            //newProduct.Weight = product.Weight;
-            //newProduct.ThumbNailPhoto = product.ThumbNailPhoto;
-            //newProduct.ThumbnailPhotoFileName = product.ThumbnailPhotoFileName;
-
             var createResult = await client.ApiAdminProductsPostWithHttpMessagesAsync(newProduct);
             createResult.Response.StatusCode.Should().Be(HttpStatusCode.Created);
             string createContent = await createResult.Response.Content.ReadAsStringAsync();
             var created = JsonConvert.DeserializeObject<Swagger.Models.CreateProduct>(getByIdContent);
             created.Should().NotBeNull();
 
-            //Location = {
-            //    http://localhost:5001/api/admin/products?id=82397ebe-5b70-4643-9cae-c8470c575179}
-
+            // Location = {
+            // http://localhost:5001/api/admin/products?id=82397ebe-5b70-4643-9cae-c8470c575179}
             var getUrl = createResult.Response.Headers.Location;
             var getId = getUrl.Query.Substring(getUrl.Query.IndexOf('=') + 1);
             Guid createdId = new Guid(getId);
@@ -81,7 +68,6 @@ namespace IntegrationTests.Tests.Admin
             // TODO: verify  contents
 
             // update the product
-
             var updateProduct = new UpdateProduct();
             updateProduct.Color = createdProduct.Color;
             updateProduct.ListPrice = createdProduct.ListPrice.GetValueOrDefault();
@@ -94,24 +80,20 @@ namespace IntegrationTests.Tests.Admin
             updateProduct.SellEndDate = DateTime.Now.AddDays(30);
 
             var update =
-                await client.ApiAdminProductsByIdPutWithHttpMessagesAsync(createdProduct.Id.GetValueOrDefault(),
-                    updateProduct);
+                await client.ApiAdminProductsByIdPutWithHttpMessagesAsync(createdProduct.Id.GetValueOrDefault(), updateProduct);
             update.Response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             // TODO: verify  contents
-
             var patch = new Operation("Yellow", "/color", "replace");
             var patches = new List<Operation>();
             patches.Add(patch);
 
             var pathcProduct =
-                await client.ApiAdminProductsByIdPatchWithHttpMessagesAsync(createdProduct.Id.GetValueOrDefault(),
-                    patches);
+                await client.ApiAdminProductsByIdPatchWithHttpMessagesAsync(createdProduct.Id.GetValueOrDefault(), patches);
 
             pathcProduct.Response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             // TODO : verify contents
-
             var delete = await client.ApiAdminProductsByIdDeleteWithHttpMessagesAsync(createdId);
             delete.Response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -139,12 +121,10 @@ namespace IntegrationTests.Tests.Admin
             var jsonContent = JsonConvert.SerializeObject(newProduct);
 
             // POST
-            
             var postResult = await httpClient.PostAsync("api/admin/products", new StringContent(jsonContent, Encoding.UTF8, "application/json"));
-            postResult.StatusCode.Should().Be((HttpStatusCode) 422);
+            postResult.StatusCode.Should().Be((HttpStatusCode)422);
 
             // PUT
-
             var autorestClient = await CreateAuthenticatedAutoRestClient();
 
             var getResult = await autorestClient.ApiAdminProductsGetWithHttpMessagesAsync();
@@ -158,8 +138,7 @@ namespace IntegrationTests.Tests.Admin
             putResult.StatusCode.Should().Be((HttpStatusCode)422);
 
             // PATCH
-
-            var patch = new Operation("", "/name", "replace");
+            var patch = new Operation(string.Empty, "/name", "replace");
             var patches = new List<Operation>();
             patches.Add(patch);
 
@@ -171,7 +150,6 @@ namespace IntegrationTests.Tests.Admin
             var patchResult = await httpClient.SendAsync(request);
 
             patchResult.StatusCode.Should().Be((HttpStatusCode)422);
-
         }
 
         private static async Task<HttpClient> CreateAuthenticatedHttpClient()
@@ -179,9 +157,8 @@ namespace IntegrationTests.Tests.Admin
             var client = new HttpClient();
             client.BaseAddress = TestConfiguration.ApiUri;
             var disco = await DiscoveryClient.GetAsync(TestConfiguration.IdentityServerUrl);
-            // request token
-            var tokenClient = new TokenClient(disco.TokenEndpoint, TestConfiguration.ClientId,
-                TestConfiguration.ClientSecret);
+
+            var tokenClient = new TokenClient(disco.TokenEndpoint, TestConfiguration.ClientId, TestConfiguration.ClientSecret);
             var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
             client.SetBearerToken(tokenResponse.AccessToken);
             return client;
@@ -192,13 +169,10 @@ namespace IntegrationTests.Tests.Admin
             var client = new DotnetcoreApiv1(TestConfiguration.ApiUri);
 
             var disco = await DiscoveryClient.GetAsync(TestConfiguration.IdentityServerUrl);
-            // request token
-            var tokenClient = new TokenClient(disco.TokenEndpoint, TestConfiguration.ClientId,
-                TestConfiguration.ClientSecret);
+            var tokenClient = new TokenClient(disco.TokenEndpoint, TestConfiguration.ClientId, TestConfiguration.ClientSecret);
             var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
             client.HttpClient.SetBearerToken(tokenResponse.AccessToken);
             return client;
         }
     }
 }
-

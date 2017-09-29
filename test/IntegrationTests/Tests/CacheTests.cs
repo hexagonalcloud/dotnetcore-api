@@ -17,9 +17,7 @@ namespace IntegrationTests.Tests
             var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
 
             var disco = await DiscoveryClient.GetAsync(TestConfiguration.IdentityServerUrl);
-            // request token
-            var tokenClient = new TokenClient(disco.TokenEndpoint, TestConfiguration.ClientId,
-                TestConfiguration.ClientSecret);
+            var tokenClient = new TokenClient(disco.TokenEndpoint, TestConfiguration.ClientId, TestConfiguration.ClientSecret);
             var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
             client.HttpClient.SetBearerToken(tokenResponse.AccessToken);
 
@@ -40,7 +38,6 @@ namespace IntegrationTests.Tests
             getRequest.Response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             // TODO: check response content
-
             var deleteRequest =
                 await client.ApiIntegrationCacheByIdDeleteWithHttpMessagesAsync(product.Id.ToString());
 
@@ -75,7 +72,6 @@ namespace IntegrationTests.Tests
             getRequest.Response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 
             // TODO: check response content
-
             var deleteRequest =
                 await client.ApiIntegrationCacheByIdDeleteWithHttpMessagesAsync(product.Id.ToString());
 
