@@ -90,7 +90,7 @@ namespace Api
                 options.ConfigureOAuth2(
                     _configuration.GetValue<string>("SwaggerClientId"),
                     _configuration.GetValue<string>("SwaggerClientSecret"),
-                    "http://localhost:5001", // TODO: not the correct realm for deployed app...
+                    "http://localhost:8081", // TODO: not the correct realm for deployed app...
                     "Swagger UI");
                 options.ShowRequestHeaders();
             });
