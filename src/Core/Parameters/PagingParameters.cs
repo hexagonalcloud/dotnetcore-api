@@ -18,12 +18,18 @@ namespace Core.Parameters
             PageSize = DefaultPageSize;
         }
 
+        /// <summary>
+        /// Default = 1.
+        /// </summary>
         public int PageNumber
         {
             get => _pageNumber;
             set => _pageNumber = value > 0 ? value : 1;
         }
 
+        /// <summary>
+        /// Default = 10. Maximum = 20.
+        /// </summary>
         public int PageSize
         {
             get => _pageSize;

@@ -13,5 +13,11 @@
         <Rule Id="SA1309" Action="None" />
         <!--The parameter spans multiple lines-->
         <Rule Id="SA1118" Action="None" />
+		<!--SA1600ElementsMustBeDocumented-->
+        <Rule Id="SA1600" Action="None" />
+		<!--SA1623PropertySummaryDocumentationMustMatchAccessors-->
+        <Rule Id="SA1623" Action="None" />
+		<!--SA1615ElementReturnValueMustBeDocumented-->
+        <Rule Id="SA1615" Action="None" />
     </Rules>
 </RuleSet>

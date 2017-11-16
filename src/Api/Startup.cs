@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using Api.Conventions;
 using Api.Filters;
 using AspNetCoreRateLimit;
 using Autofac;
@@ -86,7 +88,8 @@ namespace Api
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("v1/swagger.json", "dotnetcore-api v1");
+                options.SwaggerEndpoint("public/swagger.json", "ASP>NET Core API: Public");
+                options.SwaggerEndpoint("admin/swagger.json", "ASP>NET Core API: Admin");
                 options.ConfigureOAuth2(
                     _configuration.GetValue<string>("SwaggerClientId"),
                     _configuration.GetValue<string>("SwaggerClientSecret"),
@@ -125,13 +128,23 @@ namespace Api
 
         private void ConfigureSwagger(IServiceCollection services)
         {
+            var apiDocs = Path.Combine(System.AppContext.BaseDirectory, "Api.xml");
+            var coreDocs = Path.Combine(System.AppContext.BaseDirectory, "Core.xml");
+
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new Info()
+                options.SwaggerDoc("public", new Info()
                 {
-                    Title = "dotnetcore-api v1",
+                    Title = "Public Adventure API",
                     Version = "v1",
-                    Description = "Prototype .NET Core API"
+                    Description = "Prototype ASP.NET Core API using the AdventureWorks database. Public Section. No authorization required.",
+                });
+
+                options.SwaggerDoc("admin", new Info()
+                {
+                    Title = "Admin Adventure API",
+                    Version = "v1",
+                    Description = "Prototype ASP.NET Core API using the AdventureWorks database. Admin Section. Authorization required."
                 });
 
                 options.AddSecurityDefinition("oauth2", new OAuth2Scheme
@@ -147,8 +160,9 @@ namespace Api
                 });
 
                 options.OperationFilter<ResponseOperationFilter>();
-                options.TagActionsBy(apidesc => apidesc.FormatForSwaggerActionGroup());
                 options.DocumentFilter<LowercaseDocumentFilter>();
+                options.IncludeXmlComments(coreDocs);
+                options.IncludeXmlComments(apiDocs);
             });
         }
 
@@ -194,6 +208,7 @@ namespace Api
                     options.Filters.Add(typeof(ExceptionLogFilter));
                     options.Filters.Add(new ProducesAttribute("application/json"));
                     options.ReturnHttpNotAcceptable = true;
+                    options.Conventions.Add(new ApiExplorerGroupPerVersionConvention());
                 })
                 .AddJsonOptions(options =>
                 {
