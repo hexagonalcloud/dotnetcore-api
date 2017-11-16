@@ -88,8 +88,8 @@ namespace Api
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("public/swagger.json", "ASP>NET Core API: Public");
-                options.SwaggerEndpoint("admin/swagger.json", "ASP>NET Core API: Admin");
+                options.SwaggerEndpoint("public/swagger.json", "ASP.NET Core API: Public");
+                options.SwaggerEndpoint("admin/swagger.json", "ASP.NET Core API: Admin");
                 options.ConfigureOAuth2(
                     _configuration.GetValue<string>("SwaggerClientId"),
                     _configuration.GetValue<string>("SwaggerClientSecret"),
@@ -208,7 +208,7 @@ namespace Api
                     options.Filters.Add(typeof(ExceptionLogFilter));
                     options.Filters.Add(new ProducesAttribute("application/json"));
                     options.ReturnHttpNotAcceptable = true;
-                    options.Conventions.Add(new ApiExplorerGroupPerVersionConvention());
+                    options.Conventions.Add(new ApiExplorerGroupPerNamespaceConvention());
                 })
                 .AddJsonOptions(options =>
                 {

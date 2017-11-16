@@ -23,7 +23,7 @@ namespace Specs.Products
             dataMock.Setup(data => data.GetById(It.IsAny<Guid>())).ReturnsAsync(new Product() { Name = "Product One" });
             var controller = new ProductsController(dataMock.Object, urlServiceMock.Object);
 
-            var result = await controller.GetById(Guid.Empty) as OkObjectResult;
+            var result = await controller.GetById(Guid.NewGuid()) as OkObjectResult;
 
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(200);
