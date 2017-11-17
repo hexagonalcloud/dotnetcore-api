@@ -1,9 +1,11 @@
 using System;
+using Api.Logging;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Serilog.Exceptions;
 
 namespace Api
 {
@@ -26,9 +28,15 @@ namespace Api
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
+                .Enrich.FromLogContext()
+                .Enrich.WithMachineName()
+                .Enrich.WithEnvironmentUserName()
+                .Enrich.WithThreadId()
+                .Enrich.WithProcessId()
+                .Enrich.WithProcessName()
+                .Enrich.WithExceptionDetails()
+                .Enrich.With<ApplicationDetailsEnricher>()
                 .CreateLogger();
-
-            //Serilog.Debugging.SelfLog.Out = Console.Out;
 
             try
             {

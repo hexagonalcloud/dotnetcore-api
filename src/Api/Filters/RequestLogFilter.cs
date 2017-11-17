@@ -17,7 +17,8 @@ namespace Api.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var userInfo = new UserInfo(context.HttpContext.User); // TODO: or can I add this using an enricher? I do not want to log it, I want to add it to the context....
+            var userInfo = new UserInfo(context.HttpContext.User); // TODO: or add this using an enricher? It should not be part of the message but should be in the context
+
             var controllerName = string.Empty;
             var actionName = string.Empty;
 

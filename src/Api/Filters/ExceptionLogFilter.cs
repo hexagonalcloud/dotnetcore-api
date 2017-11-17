@@ -1,5 +1,7 @@
-﻿using System.Dynamic;
+using System;
+using System.Dynamic;
 using System.Threading.Tasks;
+using Api.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -21,17 +23,20 @@ namespace Api.Filters
 
         public Task OnExceptionAsync(ExceptionContext context)
         {
+            var userInfo = new UserInfo(context.HttpContext.User); // TODO: or add this using an enricher? It should not be part of the message but should be in the context
+
+            var errorId = Guid.NewGuid();
+
             var controllerName = string.Empty;
             var actionName = string.Empty;
 
-            var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
-            if (descriptor != null)
+            if (context.ActionDescriptor is ControllerActionDescriptor descriptor)
             {
                 controllerName = descriptor.ControllerName;
                 actionName = descriptor.ActionName;
             }
 
-            _logger.Error(context.Exception, "Error Action {ControllerName} - {ActionName}", controllerName, actionName);
+            _logger.Error(context.Exception, "Error Action {ControllerName} - {ActionName} - {ErrorId} - {@UserInfo}", controllerName, actionName, errorId, userInfo);
 
             context.ExceptionHandled = true;
 
@@ -40,6 +45,7 @@ namespace Api.Filters
                 dynamic errorResult = new ExpandoObject();
                 errorResult.Message = context.Exception.Message;
                 errorResult.StackTrace = context.Exception.StackTrace;
+                errorResult.ErrorId = errorId;
 
                 var result = new JsonResult(errorResult);
                 result.StatusCode = 500;
@@ -47,7 +53,12 @@ namespace Api.Filters
             }
             else
             {
-                var result = new StatusCodeResult(500);
+                // TODO: return custom ErrorResult and configure Swagger responses
+                dynamic errorResult = new ExpandoObject();
+                errorResult.ErrorId = errorId;
+
+                var result = new JsonResult(errorResult);
+                result.StatusCode = 500;
                 context.Result = result;
             }
 
