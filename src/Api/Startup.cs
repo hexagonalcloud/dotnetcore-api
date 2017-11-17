@@ -137,14 +137,14 @@ namespace Api
                 {
                     Title = "Public Adventure API",
                     Version = "v1",
-                    Description = "Prototype ASP.NET Core API using the AdventureWorks database. Public Section. No authorization required.",
+                    Description = "Prototype ASP.NET Core API using the AdventureWorks database. Public section. No authorization required.",
                 });
 
                 options.SwaggerDoc("admin", new Info()
                 {
                     Title = "Admin Adventure API",
                     Version = "v1",
-                    Description = "Prototype ASP.NET Core API using the AdventureWorks database. Admin Section. Authorization required."
+                    Description = "Prototype ASP.NET Core API using the AdventureWorks database. Admin section. Authorization required."
                 });
 
                 options.AddSecurityDefinition("oauth2", new OAuth2Scheme

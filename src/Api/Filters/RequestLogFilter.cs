@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
+using Api.Logging;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Serilog;
@@ -16,11 +17,11 @@ namespace Api.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            var userInfo = new UserInfo(context.HttpContext.User); // TODO: or can I add this using an enricher? I do not want to log it, I want to add it to the context....
             var controllerName = string.Empty;
             var actionName = string.Empty;
 
-            var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
-            if (descriptor != null)
+            if (context.ActionDescriptor is ControllerActionDescriptor descriptor)
             {
                 controllerName = descriptor.ControllerName;
                 actionName = descriptor.ActionName;
@@ -28,8 +29,7 @@ namespace Api.Filters
 
             var args = context.ActionArguments;
 
-            // TODO: what else do we need here: application name, machine name?
-             _logger.Information("Executing Action {ControllerName} - {ActionName} - {@Args} ", controllerName, actionName, args);
+             _logger.Information("Executing Action {ControllerName} - {ActionName} - {@Args} - {@userInfo} ", controllerName, actionName, args, userInfo);
 
             var actionExecuted = await next(); // the actual action
 

@@ -22,9 +22,13 @@ namespace Api
                 .AddCommandLine(args);
             Configuration = builder.Build();
 
+            // TODO: initialize application insights telemetry here if we have a key in the config
+
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
+
+            //Serilog.Debugging.SelfLog.Out = Console.Out;
 
             try
             {
