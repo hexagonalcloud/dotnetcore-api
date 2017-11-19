@@ -11,7 +11,7 @@ namespace IntegrationTests.Tests
 {
     public class CacheTests
     {
-        [Fact]
+        [Fact(Skip = "Needs review, currently no longer generated with autorest")]
         public async Task Run()
         {
             var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
@@ -49,7 +49,7 @@ namespace IntegrationTests.Tests
             validateRequest.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
-        [Fact]
+        [Fact(Skip = "Needs review, currently no longer generated with autorest")]
         public async Task RunUnauthorized()
         {
             var client = new Swagger.DotnetcoreApiv1(TestConfiguration.ApiUri);
