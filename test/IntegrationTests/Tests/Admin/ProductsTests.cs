@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using IdentityModel.Client;
 using Newtonsoft.Json;
-using Swagger;
-using Swagger.Models;
+using Swagger.Admin;
+using Swagger.Admin.Models;
 using Xunit;
 
 namespace IntegrationTests.Tests.Admin
@@ -33,7 +33,7 @@ namespace IntegrationTests.Tests.Admin
             var getByIdResult = await client.ApiAdminProductsByIdGetWithHttpMessagesAsync(selectedProduct.Id.GetValueOrDefault());
             getByIdResult.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             string getByIdContent = await getByIdResult.Response.Content.ReadAsStringAsync();
-            var product = JsonConvert.DeserializeObject<Swagger.Models.AdminProduct>(getByIdContent);
+            var product = JsonConvert.DeserializeObject<Swagger.Admin.Models.AdminProduct>(getByIdContent);
             product.Should().NotBeNull();
 
             // try and create a new product
@@ -50,7 +50,7 @@ namespace IntegrationTests.Tests.Admin
             var createResult = await client.ApiAdminProductsPostWithHttpMessagesAsync(newProduct);
             createResult.Response.StatusCode.Should().Be(HttpStatusCode.Created);
             string createContent = await createResult.Response.Content.ReadAsStringAsync();
-            var created = JsonConvert.DeserializeObject<Swagger.Models.CreateProduct>(getByIdContent);
+            var created = JsonConvert.DeserializeObject<Swagger.Admin.Models.CreateProduct>(getByIdContent);
             created.Should().NotBeNull();
 
             // Location = {
@@ -62,7 +62,7 @@ namespace IntegrationTests.Tests.Admin
             var getCreated = await client.ApiAdminProductsByIdGetWithHttpMessagesAsync(createdId);
             getCreated.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             string getCreatedContent = await getCreated.Response.Content.ReadAsStringAsync();
-            var createdProduct = JsonConvert.DeserializeObject<Swagger.Models.AdminProduct>(getCreatedContent);
+            var createdProduct = JsonConvert.DeserializeObject<Swagger.Admin.Models.AdminProduct>(getCreatedContent);
             createdProduct.Should().NotBeNull();
 
             // TODO: verify  contents
@@ -164,9 +164,9 @@ namespace IntegrationTests.Tests.Admin
             return client;
         }
 
-        private static async Task<DotnetcoreApiv1> CreateAuthenticatedAutoRestClient()
+        private static async Task<AdminAdventureAPI> CreateAuthenticatedAutoRestClient()
         {
-            var client = new DotnetcoreApiv1(TestConfiguration.ApiUri);
+            var client = new Swagger.Admin.AdminAdventureAPI(TestConfiguration.ApiUri);
 
             var disco = await DiscoveryClient.GetAsync(TestConfiguration.IdentityServerUrl);
             var tokenClient = new TokenClient(disco.TokenEndpoint, TestConfiguration.ClientId, TestConfiguration.ClientSecret);
