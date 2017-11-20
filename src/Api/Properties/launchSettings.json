@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "Api": {
+    "IIS Express": {
       "commandName": "IISExpress",
       "commandLineArgs": "server-urls=http://localhost:8081",
       "launchBrowser": true,
@@ -16,6 +16,16 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "commandLineArgs": "server-urls=http://localhost:8081",
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:8081/"
     }
   }
 }
