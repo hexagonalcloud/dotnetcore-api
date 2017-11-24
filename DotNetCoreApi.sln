@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{3EB4D3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestApi", "src\RestApi\RestApi.csproj", "{C19203CE-1E8B-4091-AE28-B046CCDE7A62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQLApi", "src\GraphQLApi\GraphQLApi.csproj", "{661A59F2-6621-4602-95EC-30E8EC8931D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{C19203CE-1E8B-4091-AE28-B046CCDE7A62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C19203CE-1E8B-4091-AE28-B046CCDE7A62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C19203CE-1E8B-4091-AE28-B046CCDE7A62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{661A59F2-6621-4602-95EC-30E8EC8931D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{661A59F2-6621-4602-95EC-30E8EC8931D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{661A59F2-6621-4602-95EC-30E8EC8931D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{661A59F2-6621-4602-95EC-30E8EC8931D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +78,7 @@ Global
 		{06719764-01A4-4A84-8E2D-6E7824971927} = {0241214A-8785-443E-AB59-F1AE18025C54}
 		{308310EE-14C3-4A41-A1CC-7E2557AC9938} = {4529ADF5-9835-497C-8F72-E032884B5586}
 		{C19203CE-1E8B-4091-AE28-B046CCDE7A62} = {0241214A-8785-443E-AB59-F1AE18025C54}
+		{661A59F2-6621-4602-95EC-30E8EC8931D9} = {0241214A-8785-443E-AB59-F1AE18025C54}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F5CA686-3C9E-45D6-A9C1-4001F7D6037E}
