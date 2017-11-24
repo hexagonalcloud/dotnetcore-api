@@ -9,7 +9,7 @@ namespace Core.Entities
         {
         }
 
-        public UpdateProduct(AdminProduct product)
+        public UpdateProduct(Product product)
         {
             Id = product.Id;
             DiscontinuedDate = product.DiscontinuedDate;

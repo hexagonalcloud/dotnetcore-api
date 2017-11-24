@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Api;
 using Api.Services;
 using Core;
+using Core.Data;
 using Core.Entities;
 using Core.Parameters;
 using Microsoft.AspNetCore.Http.Headers;
@@ -14,12 +15,12 @@ namespace Api.Controllers.Public
     [Route("api/public/[controller]")]
     public class ProductsController : Controller
     {
-        private readonly IProductData _data;
+        private readonly IProductRepository _repository;
         private readonly IUrlService _urlService;
 
-        public ProductsController(IProductData data, IUrlService urlService)
+        public ProductsController(IProductRepository repository, IUrlService urlService)
         {
-            _data = data;
+            _repository = repository;
             _urlService = urlService;
         }
 
@@ -36,7 +37,7 @@ namespace Api.Controllers.Public
         [HttpGet(Name = "GetProducts")]
         public async Task<IActionResult> Get([FromQuery] ProductQueryParameters queryParameters)
         {
-            var products = await _data.Get(queryParameters);
+            var products = await _repository.Get(queryParameters);
 
             var linkHeader = _urlService.GetLinkHeader("GetProducts", products);
             Response.Headers.Add("Link", linkHeader);
@@ -69,7 +70,7 @@ namespace Api.Controllers.Public
                 return new NotFoundResult();
             }
 
-            var result = await _data.GetById(id);
+            var result = await _repository.GetById(id);
             if (result == null)
             {
                 return new NotFoundResult();
@@ -88,7 +89,7 @@ namespace Api.Controllers.Public
         [HttpGet]
         public async Task<IActionResult> GetModels()
         {
-            var models = await _data.GetModels();
+            var models = await _repository.GetModels();
             return Ok(models);
         }
 
@@ -102,7 +103,7 @@ namespace Api.Controllers.Public
         [HttpGet]
         public async Task<IActionResult> GetColors()
         {
-            var models = await _data.GetColors();
+            var models = await _repository.GetColors();
             return Ok(models);
         }
 
@@ -116,7 +117,7 @@ namespace Api.Controllers.Public
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
-            var models = await _data.GetCategories();
+            var models = await _repository.GetCategories();
             return Ok(models);
         }
     }

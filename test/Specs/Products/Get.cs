@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Api.Controllers.Public;
 using Api.Services;
 using Core;
+using Core.Data;
 using Core.Entities;
 using Core.Parameters;
 using FluentAssertions;
@@ -19,7 +20,7 @@ namespace Specs.Products
         [Fact(DisplayName = "Send Products response")]
         public async Task Send_Products_Response()
         {
-            var dataMock = new Mock<IProductData>();
+            var dataMock = new Mock<IProductRepository>();
             var urlServiceMock = new Mock<IUrlService>();
             var httpContextMock = new Mock<HttpContext>();
 

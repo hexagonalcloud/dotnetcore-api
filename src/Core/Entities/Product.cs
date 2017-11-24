@@ -18,13 +18,23 @@ namespace Core.Entities
 
         public decimal? Weight { get; set; }
 
+        public int? ProductCategoryId { get; set; }
+
         public string Category { get; set; }
+
+        public int? ProductModelId { get; set; }
 
         public string Model { get; set; }
 
         public byte[] ThumbNailPhoto { get; set; }
 
+        public string ThumbnailPhotoFileName { get; set; }
+
+        public decimal StandardCost { get; set; }
+
         public DateTime SellStartDate { get; set; }
+
+        public DateTime? SellEndDate { get; set; }
 
         public DateTime? DiscontinuedDate { get; set; }
 

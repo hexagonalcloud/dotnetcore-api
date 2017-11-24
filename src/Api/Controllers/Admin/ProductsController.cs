@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Api.Results;
 using Api.Services;
-using Core;
+using AutoMapper;
+using Core.Data;
 using Core.Entities;
 using Core.Parameters;
 using Microsoft.AspNetCore.Authorization;
@@ -17,13 +18,15 @@ namespace Api.Controllers.Admin
     [Route("api/admin/[controller]")]
     public class ProductsController : Controller
     {
-        private readonly IProductData _data;
+        private readonly IProductRepository _repository;
         private readonly IUrlService _urlService;
+        private readonly IMapper _mapper;
 
-        public ProductsController(IProductData data, IUrlService urlService)
+        public ProductsController(IProductRepository repository, IUrlService urlService, IMapper mapper)
         {
-            _data = data;
+            _repository = repository;
             _urlService = urlService;
+            _mapper = mapper;
         }
 
         // [WeakEntityTagFilter]
@@ -32,7 +35,7 @@ namespace Api.Controllers.Admin
         [HttpGet(Name = "GetAdminProducts")]
         public async Task<IActionResult> Get([FromQuery] ProductQueryParameters queryParameters)
         {
-            var products = await _data.Get(queryParameters);
+            var products = await _repository.Get(queryParameters);
             var linkHeader = _urlService.GetLinkHeader("GetAdminProducts", products);
             Response.Headers.Add("Link", linkHeader);
 
@@ -45,19 +48,20 @@ namespace Api.Controllers.Admin
         }
 
         // [WeakEntityTagFilter]
-        [ProducesResponseType(typeof(AdminProduct), 200)]
+        [ProducesResponseType(typeof(Models.Admin.Product), 200)]
         [ProducesResponseType(304)]
         [ProducesResponseType(404)]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _data.GetAdminProductById(id);
-            if (result == null)
+            var product = await _repository.GetById(id);
+            if (product == null)
             {
                 return new NotFoundResult();
             }
 
+            var result = _mapper.Map<Models.Admin.Product>(product);
             return Ok(result);
         }
 
@@ -75,7 +79,7 @@ namespace Api.Controllers.Admin
 
             if (ModelState.IsValid)
             {
-               var result = await _data.Create(product);
+               var result = await _repository.Add(product);
                 return CreatedAtRoute("GetAdminProducts", new { id = result }, product); // TODO: do we need to return the product here? Yes, but not this one, we want to return one with an id....
             }
 
@@ -88,7 +92,7 @@ namespace Api.Controllers.Admin
         [HttpDelete]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _data.Delete(id);
+            var result = await _repository.Remove(id);
             if (result)
             {
                 return Ok();
@@ -114,7 +118,7 @@ namespace Api.Controllers.Admin
 
             if (ModelState.IsValid)
             {
-                await _data.Update(product);
+                await _repository.Update(product);
                 return new NoContentResult();
             }
 
@@ -134,19 +138,19 @@ namespace Api.Controllers.Admin
                 return new BadRequestResult();
             }
 
-            var adminProduct = await _data.GetAdminProductById(id);
-            if (adminProduct == null)
+            var product = await _repository.GetById(id);
+            if (product == null)
             {
                 return new NotFoundResult();
             }
 
-            var updateProduct = new UpdateProduct(adminProduct);
+            var updateProduct = new UpdateProduct(product);
             patchProduct.ApplyTo(updateProduct, ModelState);
             TryValidateModel(updateProduct);
 
             if (ModelState.IsValid)
             {
-                await _data.Update(updateProduct);
+                await _repository.Update(updateProduct);
                 return new NoContentResult();
             }
 

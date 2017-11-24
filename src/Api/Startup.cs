@@ -10,7 +10,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -20,7 +19,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using SqlAdventure;
-using SqlAdventure.Mappers;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Api
@@ -62,7 +60,7 @@ namespace Api
 
             ConfigureOptions(services);
 
-            services.AddAutoMapper(Assembly.GetAssembly(typeof(ProductProfile)));
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(SqlAdventureModule)), Assembly.GetAssembly(typeof(ApiModule)));
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

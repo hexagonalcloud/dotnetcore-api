@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Api.Controllers.Public;
 using Api.Services;
 using Core;
+using Core.Data;
 using Core.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace Specs.Products
         [Fact(DisplayName = "Send Single Product response")]
         public async Task Send_Product_Response()
         {
-            var dataMock = new Mock<IProductData>();
+            var dataMock = new Mock<IProductRepository>();
             var urlServiceMock = new Mock<IUrlService>();
 
             dataMock.Setup(data => data.GetById(It.IsAny<Guid>())).ReturnsAsync(new Product() { Name = "Product One" });

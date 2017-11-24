@@ -1,30 +1,28 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using AutoMapper;
-using Core;
+using Core.Data;
 using Core.Entities;
 using Core.Parameters;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using SqlAdventure.Database;
 using SqlAdventure.Services;
 using Product = Core.Entities.Product;
 
 namespace SqlAdventure
 {
     // ReSharper disable once InconsistentNaming
-    public class EFProductData : IProductData
+    public class ProductRepository : IProductRepository
     {
         private readonly IMapper _mapper;
         private readonly ISqlAdventureContext _dbContext;
         private readonly ILogger _logger;
         private readonly ISqlClauseService _sqlClauseService;
 
-        public EFProductData(IMapper mapper, ISqlAdventureContext dbContext, ILogger logger, ISqlClauseService sqlClauseService)
+        public ProductRepository(IMapper mapper, ISqlAdventureContext dbContext, ILogger logger, ISqlClauseService sqlClauseService)
         {
             _mapper = mapper;
             _dbContext = dbContext;
@@ -95,24 +93,7 @@ namespace SqlAdventure
             return null;
         }
 
-        public async Task<AdminProduct> GetAdminProductById(Guid id)
-        {
-            var dbProduct = await _dbContext.Product
-                .AsNoTracking()
-                .Include(p => p.ProductCategory)
-                .Include(p => p.ProductModel)
-                .SingleOrDefaultAsync(p => p.Rowguid == id);
-
-            if (dbProduct != null)
-            {
-                var result = Mapper.Map<AdminProduct>(dbProduct);
-                return result;
-            }
-
-            return null;
-        }
-
-        public async Task<Guid> Create(CreateProduct product)
+        public async Task<Guid> Add(CreateProduct product)
         {
             var dbProduct = _mapper.Map<Database.Product>(product);
             dbProduct.Rowguid = Guid.NewGuid();
@@ -127,7 +108,7 @@ namespace SqlAdventure
             return Guid.Empty;
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<bool> Remove(Guid id)
         {
             var product = await _dbContext.Product
                 .SingleOrDefaultAsync(p => p.Rowguid == id);

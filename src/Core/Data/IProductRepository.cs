@@ -4,19 +4,17 @@ using System.Threading.Tasks;
 using Core.Entities;
 using Core.Parameters;
 
-namespace Core
+namespace Core.Data
 {
-    public interface IProductData
+    public interface IProductRepository
     {
         Task<IPagedList<Product>> Get(ProductQueryParameters queryParameters);
 
         Task<Product> GetById(Guid id);
 
-        Task<AdminProduct> GetAdminProductById(Guid id);
+        Task<Guid> Add(CreateProduct product);
 
-        Task<Guid> Create(CreateProduct product);
-
-        Task<bool> Delete(Guid id);
+        Task<bool> Remove(Guid id);
 
         Task<bool> Update(UpdateProduct product);
 

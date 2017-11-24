@@ -1,9 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SqlAdventure.Database;
 
-// ReSharper disable once CheckNamespace
-namespace SqlAdventure.Database
+namespace SqlAdventure
 {
     public interface ISqlAdventureContext
     {
