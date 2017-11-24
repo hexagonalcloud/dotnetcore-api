@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Api.Controllers.Public;
-using Api.Services;
 using Core;
 using Core.Data;
 using Core.Entities;
@@ -10,6 +8,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using RestApi.Controllers.Public;
+using RestApi.Services;
 using Xunit;
 
 namespace Specs.Products
