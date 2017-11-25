@@ -15,7 +15,7 @@ Check out the [API on Azure App Services](https://dotnetcore-api.azurewebsites.n
 - ``cd dotnetcore-api``
 - ``docker-compose up -d``
 - ``dotnet restore``
-- ``dotnet run -p src/Api/Api.csproj --server.urls=http://localhost:8081``
+- ``dotnet run -p src/RestApi/RestApi.csproj --server.urls=http://localhost:8081``
 - The API should be available at ``http://localhost:8081/swagger``
 
 ## Authenticating
