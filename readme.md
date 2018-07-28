@@ -2,7 +2,7 @@
 
 Prototype .NET Core API implementation (work in progress).
 
-Check out the [API on Azure App Services](https://dotnetcore-api.azurewebsites.net/swagger/).
+~~Check out the API on Azure App Services.~~
 
 ## Prerequisites
 
@@ -63,7 +63,7 @@ Check out the [API on Azure App Services](https://dotnetcore-api.azurewebsites.n
 
 ### Build and deployment
 
-- Continuous integration and delivery to [Azure App Service](https://azure.microsoft.com/en-us/services/app-service/) using [Visual Studio Team Services](https://www.visualstudio.com/team-services/).
+~~Continuous integration and delivery to Azure App Services using [Visual Studio Team Services](https://www.visualstudio.com/team-services/).~~
 
 ## Integration tests
 
